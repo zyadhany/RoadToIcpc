@@ -5,6 +5,7 @@
  * 
  * Functions you can use:
  * @set: set index to value.
+ * @get: get element at K_th position.
  * @geteange: get summ of given range.
  * @build: build tree with given vector.
  * 
@@ -20,6 +21,10 @@ public:
 
     void set(int index, int value) {
         set(0, 0, size - 1, index, value);
+    }
+
+    item get(int k) {
+        return get(k, 0, 0, size - 1);
     }
 
     item getrange(int l, int r) {
@@ -59,6 +64,20 @@ private:
         s1 = tree[m * 2 + 1], s2 = tree[m * 2 + 2];
 
         tree[m] = merge(s1, s2);
+    }
+
+    item get(int k, int m, int lx, int rx) {
+        if (lx == rx)
+            return (lx);
+        
+        int mid = (lx + rx) / 2;
+        item s1, s2;
+        s1 = tree[m * 2 + 1];
+        s2 = tree[m * 2 + 2];
+
+        if (s1 >= k)
+            return (get(k, m * 2 + 1, lx, mid));
+        return (get(k - s1, m * 2 + 2, mid + 1, rx));
     }
 
     item getrange(int m, int lx, int rx, int l, int r) {
