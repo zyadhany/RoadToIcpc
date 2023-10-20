@@ -31,6 +31,13 @@ public:
         return (getrange(0, 0, size - 1, l, r));
     }
 
+    void build(int n) {
+        size = 1;
+        while (size < n)
+            size *= 2;
+        tree.assign(size * 2, item());
+    }
+
     void build(vector<item>& X) {
         size = 1;
         while (size < X.size())
