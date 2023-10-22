@@ -5,12 +5,13 @@
  * SegmentTree sg;
  * 
  * Functions you can use:
- * @set: set index to value.
- * @geteange: get summ of given range.
+ * @set: set index or range to value.
+ * @geteange: get value of given range.
  * @build: build tree with given vector or size.
  * 
  * make sure to look at item typedef.
  * you can change merge function to change it's oppration.
+ * it you want to make change to segment work in checkLazy().
 */
 
 typedef long long item;
@@ -32,6 +33,9 @@ public:
     void set(int index, int value) {
         set(0, 0, size - 1, index, value);
     }
+    void set(int l, int r, int value) {
+        set(0, 0, size - 1, l, r, value);
+    }
 
     item getrange(int l, int r) {
         return (getrange(0, 0, size - 1, l, r));
@@ -42,6 +46,7 @@ public:
         while (size < n)
             size *= 2;
         tree.assign(size * 2, item());
+        lazy.assign(size * 2, 0);
     }
 
     void build(vector<item>& X) {
@@ -49,6 +54,7 @@ public:
         while (size < X.size())
             size *= 2;
         tree.assign(size * 2, item());
+        lazy.assign(size * 2, 0);
 
         build(X, 0, 0, size - 1);
     }
@@ -56,20 +62,34 @@ public:
 private:
     int size;
     vector<item> tree;
+    vector<long long> lazy;
 
     item merge(item a, item b) {
         item res;
         return (res);
     }
 
+    void checkLazy(int m, int lx, int rx) {
+        if (!lazy[m]) return;
+        tree[m] += lazy[m];
+        
+        if (lx != rx) {
+            lazy[2 * m + 1] += lazy[m];
+            lazy[2 * m + 2] += lazy[m];
+        }
+
+        lazy[m] = 0;
+    }
+
     void set(int m, int lx, int rx, int pos, int val) {
         if (pos < lx || rx < pos) return;
+        checkLazy(m, lx, rx);
         if (lx == rx && lx == pos)
         {
             tree[m] = val;
             return;
         }
-        
+
         int mid = (lx + rx) / 2;
         item s1, s2;
 
@@ -80,8 +100,28 @@ private:
         tree[m] = merge(s1, s2);
     }
 
+    void set(int m, int lx, int rx, int l, int r, int val) {
+        if (rx < l || r < lx) return;
+        checkLazy(m, lx, rx);
+        if (l <= lx && rx <= r)
+        {
+            lazy[m] = val;
+            return;
+        }
+
+        int mid = (lx + rx) / 2;
+        item s1, s2;
+
+        set(m * 2 + 1, lx, mid, l, r, val);
+        set(m * 2 + 2, mid + 1, rx, l, r, val);
+        s1 = tree[m * 2 + 1], s2 = tree[m * 2 + 2];
+
+        tree[m] = merge(s1, s2);
+    }
+
     item getrange(int m, int lx, int rx, int l, int r) {
         if (rx < l || r < lx) return (0);
+        checkLazy(m, lx, rx);
         if (l <= lx && rx <= r) return (tree[m]);
 
         int mid = (lx + rx) / 2;
