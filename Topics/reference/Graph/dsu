@@ -1,0 +1,42 @@
+/**
+ * usage:-
+ * creat dsu element.
+ * DSU du;
+ * 
+ * Functions you can use:
+ * @get: get the parent of element.
+ * @marge: marge two elements.
+ * @build: build graph with given size.
+ * 
+*/
+
+class DSU
+{
+public:  
+    int get(int a) {
+        if (P[a] == a) return (a);
+        return (get(P[a]));
+    }
+
+    void marge(int l, int r) {
+        int a, b;
+        a = get(l), b = get(r);
+       
+        if (R[a] == R[b])
+            R[a]++;
+        else if (R[a] < R[b])
+            swap(a, b);
+
+        P[b] = a;
+    }
+
+    void build(int n) {
+        P.assign(n + 1, 0);
+        R.assign(n + 1, 0);
+
+        for (int i = 0; i <= n; i++)
+            P[i] = i;
+    }
+private:
+    vector<int> P, R;
+};
