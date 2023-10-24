@@ -82,8 +82,8 @@ private:
     }
 
     void set(int m, int lx, int rx, int pos, int val) {
-        if (pos < lx || rx < pos) return;
         checkLazy(m, lx, rx);
+        if (pos < lx || rx < pos) return;
         if (lx == rx && lx == pos)
         {
             tree[m] = val;
@@ -101,11 +101,12 @@ private:
     }
 
     void set(int m, int lx, int rx, int l, int r, int val) {
-        if (rx < l || r < lx) return;
         checkLazy(m, lx, rx);
+        if (rx < l || r < lx) return;
         if (l <= lx && rx <= r)
         {
             lazy[m] = val;
+            checkLazy(m, lx, rx);
             return;
         }
 
@@ -120,8 +121,8 @@ private:
     }
 
     item getrange(int m, int lx, int rx, int l, int r) {
-        if (rx < l || r < lx) return (0);
         checkLazy(m, lx, rx);
+        if (rx < l || r < lx) return (0);
         if (l <= lx && rx <= r) return (tree[m]);
 
         int mid = (lx + rx) / 2;
