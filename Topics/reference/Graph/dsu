@@ -2,41 +2,70 @@
  * usage:-
  * creat dsu element.
  * DSU du;
- * 
+ *
  * Functions you can use:
+ * @val: get value of set.
  * @get: get the parent of element.
- * @marge: marge two elements.
+ * @add: marge two elements.
  * @build: build graph with given size.
- * 
+ *
+ * make sure to look at item typedef.
+ * you can change marge function to change it's oppration.
+*/
+
+typedef long long item;
+/*
+struct item
+{
+	int val;
+
+	item(){
+		val = 0;
+	}
+};
 */
 
 class DSU
 {
-public:  
-    int get(int a) {
-        if (P[a] == a) return (a);
-        return (get(P[a]));
-    }
+public:
 
-    void marge(int l, int r) {
-        int a, b;
-        a = get(l), b = get(r);
-       
-        if (R[a] == R[b])
-            R[a]++;
-        else if (R[a] < R[b])
-            swap(a, b);
+	item val(int n) {
+		return(op[get(n)]);
+	}
 
-        P[b] = a;
-    }
+	int get(int n) {
+		if (P[n] == n) return (n);
+		return (get(P[n]));
+	}
 
-    void build(int n) {
-        P.assign(n + 1, 0);
-        R.assign(n + 1, 0);
+	void add(int l, int r) {
+		int a, b;
+		a = get(l), b = get(r);
 
-        for (int i = 0; i <= n; i++)
-            P[i] = i;
-    }
+		if (a == b) return;
+
+		if (R[a] == R[b])
+			R[a]++;
+		else if (R[a] < R[b])
+			swap(a, b);
+
+		P[b] = a;
+		marge(op[a], op[b]);
+	}
+
+	void build(int n) {
+		P.assign(n + 1, 0);
+		R.assign(n + 1, 0);
+		op.assign(n + 1, item());
+
+		for (int i = 0; i <= n; i++)
+			P[i] = i;
+	}
 private:
-    vector<int> P, R;
+	vector<int> P, R;
+	vector<item> op;
+
+	void marge(item &a, item &b) {
+		/*any oppration you want*/
+	}
 };
