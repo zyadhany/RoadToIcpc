@@ -35,7 +35,7 @@ public:
 
 	int get(int n) {
 		if (P[n] == n) return (n);
-		return (get(P[n]));
+		return (P[n] = get(P[n]));
 	}
 
 	void add(int l, int r) {
