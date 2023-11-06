@@ -3,6 +3,7 @@
         "xiosbase": "cpp",
         "vector": "cpp",
         "iostream": "cpp",
-        "map": "cpp"
+        "map": "cpp",
+        "01- template": "cpp"
     }
 }
