@@ -4,6 +4,8 @@
         "vector": "cpp",
         "iostream": "cpp",
         "map": "cpp",
-        "01- template": "cpp"
+        "01- template": "cpp",
+        "list": "cpp",
+        "xstring": "cpp"
     }
 }
