@@ -20,18 +20,15 @@
 
 using namespace std;
 
-int main(int argc, char *argv[]) {
-    registerGen(argc, argv, 1);
-    int n, k;	
-    int maxx = opt<int>("maxx");
-    n = rnd.next(1, maxx);
-    k = rnd.next(1, log10(n));
-
-    cout << n << ' ' << k << endl;
+int main(int argc, char* argv[]) {
+    registerValidation(argc, argv);
+    
+    int a, b;
+    
+    a = inf.readInt(1, 999, "a");
+    
+    ensure(a % 2, "input must be odd");
+    
+    inf.readEoln();
+    inf.readEof();
 }
-
-/*
-<#list 1..40 as i >
-     igen --minn 1 --maxx 1000000 ${i} > $ 
-</#list>
-*/

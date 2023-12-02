@@ -1,0 +1,135 @@
+https://betterprogramming.pub/the-ultimate-guide-for-the-icpc-407b7f6409dd
+https://www.geeksforgeeks.org/how-to-prepare-for-acm-icpc/
+
+(very good algorithms topic)
+https://www.geeksforgeeks.org/fundamentals-of-algorithms/
+
+(problem of most topics)
+https://codeforces.com/blog/entry/55274
+
+======================================================================
+Main Topics
+======================================================================
+Numper theory
+
+Euclidian and extended Euclidian algorithm
+modular multiplicative inverse
+Modular Exponentiation
+prime gneration (sieve / segmented sieve)
+Sieve of Eratosthenes
+
+
+(look for it)
+Fermat’s theorem
+Euler’s Totient function
+Primality Test | Set 1,2,3
+Chinese remainder theorem
+Lucas theorem
+nCr nPr/ Combinatrx
+
+(topic)
+https://www.geeksforgeeks.org/number-theory-competitive-programming/
+https://codeforces.com/blog/entry/108622
+https://en.wikipedia.org/wiki/List_of_number_theory_topics
+_________________________________
+Date structure
+
+Binary-indexed tree or Fenwick tree
+Segment Tree (RMQ, range sum, and lazy propagation)
+Tries-tree
+
+(look for it)
+Hashing
+Heap
+Interval Tree
+
+(not important)
+Binary-search tree
+Red-Black trees
+K-D tree
+
+(topic)
+https://www.geeksforgeeks.org/data-structures/
+https://codeforces.com/blog/entry/15729
+_________________________________
+graph
+
+
+Breadth-first search (BFS)
+Depth-first search (DFS)
+Shortest path from source to all vertices (Dijkstra)
+Union Find Disjoint Set (dsu)
+https://www.geeksforgeeks.org/introduction-to-disjoint-set-data-structure-or-union-find-algorithm/
+
+(look for it)
+Shortest path from every vertex to every other vertex (Floyd Warshall)
+Minimum spanning tree (Prim)
+Minimum spanning tree (Kruskal)
+
+(topic)
+https://www.geeksforgeeks.org/graph-data-structure-and-algorithms/
+_________________________________
+String
+
+Suffix arrays
+
+(look for it)
+KMP algorithm
+Rabin karp
+Z’s algorithm
+Aho-Corasick string matching
+Finite automata
+
+(topic)
+https://www.geeksforgeeks.org/trie-insert-and-search/
+
+_________________________________
+Dp
+
+(look for it)
+Longest-common subsequence
+Longest-increasing subsequence
+Edit distance
+Minimum partition
+Ways to cover a distance
+Longest path in matrix
+Subset-sum problem
+Optimal strategy for a game
+0–1 knapsack problem
+Assembly-line scheduling
+
+(topic)
+https://www.geeksforgeeks.org/dynamic-programming/
+https://leetcode.com/discuss/study-guide/1000929/Solved-all-dynamic-programming-(dp)-problems-in-7-months./900006
+
+
+======================================================================
+Free Tieme
+======================================================================
+gready algorithms
+binary search
+Quick/merge sort
+
+Order Statistics
+https://www.geeksforgeeks.org/kth-smallest-largest-element-in-unsorted-array-expected-linear-time/
+
+(game theory)
+https://www.geeksforgeeks.org/introduction-to-combinatorial-game-theory/
+
+
+======================================================================
+Optional
+======================================================================
+
+Geometrical Algorithms 
+Convex Hull
+
+=================
+=================
+*DSU
+*Segment tree
+*Combinatrix
+*Suffix
+*Hash
+
+-Trie tree

@@ -6,6 +6,21 @@
         "map": "cpp",
         "01- template": "cpp",
         "list": "cpp",
-        "xstring": "cpp"
+        "xstring": "cpp",
+        "array": "cpp",
+        "chrono": "cpp",
+        "deque": "cpp",
+        "format": "cpp",
+        "forward_list": "cpp",
+        "initializer_list": "cpp",
+        "ranges": "cpp",
+        "regex": "cpp",
+        "span": "cpp",
+        "valarray": "cpp",
+        "xhash": "cpp",
+        "xtree": "cpp",
+        "xutility": "cpp",
+        "random": "cpp",
+        "utility": "cpp"
     }
 }
