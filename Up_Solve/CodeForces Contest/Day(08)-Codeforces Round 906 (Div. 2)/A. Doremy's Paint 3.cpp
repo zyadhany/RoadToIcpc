@@ -1,4 +1,3 @@
-#define _CRT_SECURE_NO_WARNINGS
 #include <bits/stdc++.h>
 #include <unordered_map>
 
@@ -15,36 +14,37 @@
 #define sortx(X) sort(X.begin(),X.end());
 #define all(X) X.begin(),X.end()
 #define ln '\n'
-#define YES {cout << "YES\n"; return;}
-#define NO {cout << "NO\n"; return;}
+#define YES {cout << "Yes\n"; return;}
+#define NO {cout << "No\n"; return;}
 
-const int MODE = 1e9 + 7;
+const int MODE = 998244353;
 
 using namespace std;
 
 void solve(int tc) {
-    ll n, a;
+    ll n , summ = 0;
 
     cin >> n;
 
-    mi X;
+    vi X(n);
 
-    for (int i = 0; i < n; i++) {
-        cin >> a;
-        X[a]++;
-    }
+    for (int i = 0; i < n; i++)
+        cin >> X[i];
 
-    if (X.size() > 2) NO;
-    if (abs(X.begin()->second - X.rbegin()->second) > 1) NO;
-    YES;
+    for (int i = 1; i < n - 1; i++)
+        if ((X[i] > X[i - 1] && X[i] > X[i + 1]) || (X[i] < X[i - 1] && X[i] < X[i + 1]))
+            summ++;
+
+    cout << summ << "\n";
 }
+
 
 int main()
 {
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;
 
-    cin >> size;
+    //cin >> size;
     for (int i = 1; i <= size; i++)
         solve(i);
 }

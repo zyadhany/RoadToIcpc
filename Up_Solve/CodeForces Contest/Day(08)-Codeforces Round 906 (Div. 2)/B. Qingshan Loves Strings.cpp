@@ -22,20 +22,24 @@ const int MODE = 1e9 + 7;
 
 using namespace std;
 
+bool isGood(string& s) {
+    for (int i = 1; i < s.size(); i++)
+        if (s[i] == s[i - 1]) return (0);
+    return (1);
+}
+
 void solve(int tc) {
-    ll n, a;
+    ll n, m;
+    string s, t;
+    
+    cin >> n >> m >> s >> t;
 
-    cin >> n;
+    if (isGood(s)) YES;
+    if (!isGood(t)) NO;
 
-    mi X;
-
-    for (int i = 0; i < n; i++) {
-        cin >> a;
-        X[a]++;
-    }
-
-    if (X.size() > 2) NO;
-    if (abs(X.begin()->second - X.rbegin()->second) > 1) NO;
+    for (int i = 1; i < n; i++)
+        if (s[i] == s[i - 1] && (s[i - 1] == t.front() || s[i] == t.back()))
+            NO;
     YES;
 }
 
