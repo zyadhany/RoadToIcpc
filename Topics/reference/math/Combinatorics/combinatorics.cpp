@@ -14,7 +14,6 @@ ll gcdExtended(ll a, ll b, ll* x, ll* y)
     *y = x1;
     return gcd;
 }
-
 ll modeenv(ll n) {
     ll x, y;
     gcdExtended(n, MODE, &x, &y);

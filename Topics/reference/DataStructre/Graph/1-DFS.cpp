@@ -11,10 +11,10 @@ void DFS(int s)
         int m = stack.top();
         stack.pop();
 
-        visited[m] = 1;
+        vis[m] = 1;
         
         for (auto a : adj[m]) {
-            if (!visited[a]) {
+            if (!vis[a]) {
                 stack.push(a);
             }
         }

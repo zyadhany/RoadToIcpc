@@ -22,11 +22,21 @@ using namespace std;
 
 int main(int argc, char *argv[]) {
     registerGen(argc, argv, 1);
-    int A;	
+    int n, k, m;	
     int maxx = opt<int>("maxx");
-    A = rnd.next(1, maxx);
+    n = rnd.next(1, 100'000);
+    k = rnd.next(1, 1000'000'000);
+    
+    cout << n << ' ' << k << endl;
 
-    cout <<A << endl;
+    for (int i = 1; i <= n; i++)
+    {
+        m = rnd.next(1, 1000'000'000);
+        cout << m;
+        if (i != n) cout << ' ';
+    }
+
+    cout << endl;
 }
 
 /*

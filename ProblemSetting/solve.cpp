@@ -20,14 +20,43 @@
 using namespace std;
 
 void solve(int tc) {
-    long double a, b, c, t;
+    ll n, m, q, k;
 
-    cin >> a >> b >> c;
+    cin >> n >> m >> q;
 
-    //t(a + b) = c
-    t = c / (a + b);
+    char X[100][100];
 
-    cout << fixed << setprecision(9) << t;
+    for (int i = 0; i < n; i++)
+        for (int j = 0; j < m; j++)
+            cin >> X[i][j];
+    
+    while (q--)
+    {
+        cin >> k;
+
+
+        for (int i = 0; i < k - 1; i++){
+            char Y[100];
+            for (int j = 0; j < n; j++)
+                Y[(i + m - 1) % m] = X[j][i];
+            for (int j = 0; j < n; j++)
+                X[j][i] = Y[j];
+        }
+
+        for (int i = k; i < m; i++){
+            char Y[100];
+            for (int j = 0; j < n; j++)
+                Y[(i + n + 1) % n] = X[j][i];
+            for (int j = 0; j < n; j++)
+                X[j][i] = Y[j];
+        }
+    }
+    
+    for (int i = 0; i < n; i++){
+        for (int j = 0; j < m; j++)
+            cout << X[i][j] << ' ';
+        cout << '\n';
+    }
 }
 
 int main()

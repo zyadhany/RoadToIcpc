@@ -23,12 +23,17 @@ using namespace std;
 int main(int argc, char* argv[]) {
     registerValidation(argc, argv);
     
-    int a, b, d;
-    a = inf.readInt(1, 1000'000, "a");
+    int n, k, a;
+    n = inf.readInt(1, 100'000, "n");
     inf.readSpace();
-    b = inf.readInt(1, 1000'000, "b");
-    inf.readSpace();
-    d = inf.readInt(1, 1000'000, "d");
+    k = inf.readInt(1, 1000'000'000, "k");
+    inf.readEoln();
+    
+    for (int i = 1; i <= n; i++)
+    {
+        a = inf.readInt(1, 1000'000'000, "a");
+        if (i != n) inf.readSpace();
+    }
     
     inf.readEoln();
     inf.readEof();
