@@ -20,9 +20,11 @@
 
 using namespace std;
 
-int main(int argc, char *argv[]) {
-    registerGen(argc, argv, 1);
-    int n, k, m;	
+
+void writeTest(int test) {
+    startTest(test);
+
+        int n, k, m;	
     int maxx = opt<int>("maxx");
     n = rnd.next(1, 100'000);
     k = rnd.next(1, 1000'000'000);
@@ -37,6 +39,16 @@ int main(int argc, char *argv[]) {
     }
 
     cout << endl;
+}
+
+int main(int argc, char *argv[]) {
+    registerGen(argc, argv, 1);
+
+    int TEST = rnd.next(1, 10'000);
+    cout << TEST << endl;
+
+    for (int i = 1; i <= TEST; i++)
+        writeTest(i);
 }
 
 /*
