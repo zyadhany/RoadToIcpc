@@ -1,11 +1,14 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include <bits/stdc++.h>
 #include <unordered_map>
+
 
 #define ll long long
 #define ld long double
 #define pl pair<ll, ll>
 #define vi vector<ll>
 #define vii vector<vi>
+#define viii vector<vii>
 #define vc vector<char>
 #define vcc vector<vc>
 #define vp vector<pl>
@@ -17,23 +20,33 @@
 #define YES {cout << "YES\n"; return;}
 #define NO {cout << "NO\n"; return;}
 
+const int MODE = 1e9 + 7;
+
 using namespace std;
 
-void solve(int tc) {
-    int n;
-    string s;
-    
-    cin >> s >> n;
 
-    cout << "Hello " << s << ", you are " << n << " years old.";
+
+void solve(int tc) {
+    ll n;
+    
+    cin >> n;
+
+    if (n == 1) cout << "0\n";
+    else if (n == 2) cout << "1\n";
+    else if (n % 2 == 0 || n == 3) cout << "2\n";
+    else cout << "3\n";
 }
+
 
 int main()
 {
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;
 
-    //cin >> size;
+    //freopen("input.txt", "r", stdin);
+    //freopen("output.txt", "w", stdout);
+
+    cin >> size;
     for (int i = 1; i <= size; i++)
         solve(i);
 }
