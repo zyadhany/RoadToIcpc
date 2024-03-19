@@ -27,7 +27,7 @@ ll nCr(ll n, ll r) {
     return (res) % MODE;
 }
 
-//nPr = fac(n) / fac(n - r)
+// nPr = fac(n) / fac(n - r)
 ll nPr(ll n, ll r) {
     ll res = fac[n];
     res *= modeenv(fac[n - r]);
