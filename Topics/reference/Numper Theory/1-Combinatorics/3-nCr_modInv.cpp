@@ -1,3 +1,11 @@
+/**
+ * It use factorial fourmal of nCr,
+ * use mod inv to avoid overflow.
+ * Time O(n) - Build.
+ * Time O(log(n)) - query.
+ * Space O(n).
+*/
+
 const int SIZE = 1e6 + 1;
 const int MODE = 998244353;
 vi fac(SIZE, 1);
@@ -20,7 +28,7 @@ ll modeenv(ll n) {
     return (x + MODE) % MODE;
 }
 
-// nCr = fac(n)/fec(r)*fac(n-r)
+// nCr = fac(n)/fac(r)*fac(n-r)
 ll nCr(ll n, ll r) {
     ll res = fac[n];
     res *= modeenv((fac[r] * fac[n - r]) % MODE);
