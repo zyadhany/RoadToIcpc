@@ -16,7 +16,8 @@ for 3 digit number it will have 8 possibilities which is 2*2*2.
 
 more formally we can say if we have n opjects each has k value the number of possipossibilies if we rolling them is k^n.
 
-===================================================================================================
+---
+
 permutations:
 -when throw 3 dice the outcome be: 6*5*4
 -if we got n opject and need to get k of them (don't care about ordering):-
@@ -24,7 +25,9 @@ n*(n-1)*(n-2)*(n-3)*...(n-k+1)
 
 -The number of permutations of n things taken k at a time is
 P(n, k) = n(n − 1)(n − 2)· · ·(n − k + 1) = n! / (n − k)!.
-====================================================================================================
+
+----
+
 combinatorics:
 if we start looking at ordering so 1/2 = 2/1
 by trowing 3 dices the total output is 120 = 6*5*4
