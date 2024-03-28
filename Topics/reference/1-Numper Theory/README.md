@@ -61,4 +61,7 @@ https://cp-algorithms.com/algebra/extended-euclid-algorithm.html
 
 #### Problems
 - https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&page=show_problem&problem=1045
+- https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&page=show_problem&problem=1031
+- https://codeforces.com/gym/100963 (problem J)
+- https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&page=show_problem&problem=4628
 --------

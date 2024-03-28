@@ -1,18 +1,24 @@
-https://betterprogramming.pub/the-ultimate-guide-for-the-icpc-407b7f6409dd
-https://www.geeksforgeeks.org/how-to-prepare-for-acm-icpc/
+# Refrence
 
-(very good algorithms topic)
-https://www.geeksforgeeks.org/fundamentals-of-algorithms/
+## General
+- https://betterprogramming.pub/the-ultimate-guide-for-the-icpc-407b7f6409dd
+- https://www.geeksforgeeks.org/how-to-prepare-for-acm-icpc/
 
-(problem of most topics)
-https://codeforces.com/blog/entry/55274
 
-======================================================================
-Main Topics
-======================================================================
-Numper theory
+## Problem set
+- https://codeforces.com/blog/entry/55274
+- https://leetcode.com/discuss/interview-question/1823289/my-problems
+- https://github.com/yplusplus/aabbyy
 
-Euclidian and extended Euclidian algorithm
+## Numper theory
+
+https://www.geeksforgeeks.org/number-theory-competitive-programming/
+
+- Basic
+- Binomial Coefficient (nCr)
+- Catalan Number 
+- Euclidian and extended Euclidian algorithm
+
 modular multiplicative inverse
 Modular Exponentiation
 prime gneration (sieve / segmented sieve)
@@ -31,8 +37,17 @@ nCr nPr/ Combinatrx
 https://www.geeksforgeeks.org/number-theory-competitive-programming/
 https://codeforces.com/blog/entry/108622
 https://en.wikipedia.org/wiki/List_of_number_theory_topics
-_________________________________
-Date structure
+
+
+
+## algorithms
+(very good algorithms topic)
+https://www.geeksforgeeks.org/fundamentals-of-algorithms/
+
+
+
+
+## DataStructure
 
 Binary-indexed tree or Fenwick tree
 Segment Tree (RMQ, range sum, and lazy propagation)
@@ -51,9 +66,11 @@ K-D tree
 (topic)
 https://www.geeksforgeeks.org/data-structures/
 https://codeforces.com/blog/entry/15729
-_________________________________
-graph
 
+
+
+
+## graph
 
 Breadth-first search (BFS)
 Depth-first search (DFS)
@@ -68,23 +85,11 @@ Minimum spanning tree (Kruskal)
 
 (topic)
 https://www.geeksforgeeks.org/graph-data-structure-and-algorithms/
-_________________________________
-String
 
-Suffix arrays
 
-(look for it)
-KMP algorithm
-Rabin karp
-Z’s algorithm
-Aho-Corasick string matching
-Finite automata
 
-(topic)
-https://www.geeksforgeeks.org/trie-insert-and-search/
 
-_________________________________
-Dp
+## Dp
 
 (look for it)
 Longest-common subsequence
@@ -103,9 +108,27 @@ https://www.geeksforgeeks.org/dynamic-programming/
 https://leetcode.com/discuss/study-guide/1000929/Solved-all-dynamic-programming-(dp)-problems-in-7-months./900006
 
 
-======================================================================
-Free Tieme
-======================================================================
+
+## String
+
+Suffix arrays
+
+(look for it)
+KMP algorithm
+Rabin karp
+Z’s algorithm
+Aho-Corasick string matching
+Finite automata
+
+(topic)
+https://www.geeksforgeeks.org/trie-insert-and-search/
+
+
+
+
+
+## Free Tieme
+
 gready algorithms
 binary search
 Quick/merge sort
@@ -117,19 +140,16 @@ https://www.geeksforgeeks.org/kth-smallest-largest-element-in-unsorted-array-exp
 https://www.geeksforgeeks.org/introduction-to-combinatorial-game-theory/
 
 
-======================================================================
-Optional
-======================================================================
+
+## Optional
+
 
 Geometrical Algorithms 
 Convex Hull
 
-=================
-=================
 *DSU
 *Segment tree
 *Combinatrix
 *Suffix
 *Hash
-
 -Trie tree
