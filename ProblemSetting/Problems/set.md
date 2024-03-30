@@ -35,3 +35,6 @@
  array of n element and q queries
  1 l x, make arr[l] = x
  2 k, say how many elements in array gcd(k, arr[i]) == 1, say how beauty array is for k.
+
+- https://codeforces.com/problemset/problem/877/B
+  sprate them into k parts not just 3.

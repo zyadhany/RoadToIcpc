@@ -1,3 +1,0 @@
-- The first line contains a single integer $t$ ($1 \le t \le 10^4$)~--- number of testcases.
-
-- Since this number can be very large, count it \textbf{modulo} $10^9 + 7$.
