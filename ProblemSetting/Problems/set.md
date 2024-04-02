@@ -38,3 +38,6 @@
 
 - https://codeforces.com/problemset/problem/877/B
   sprate them into k parts not just 3.
+
+-   https://codeforces.com/group/u3Ii79X3NY/contest/270796/problem/E 
+  - make it all the possible solution, dp()
