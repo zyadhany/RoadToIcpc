@@ -7,16 +7,16 @@ https://www.geeksforgeeks.org/number-theory-competitive-programming/
 
 ## Basics
 
-#### steps
+### steps
 - Gcd/LCM
 - Get Factorial of number
 - Prime factors of number
 - summtion of range
 
 --------
-### Binomial Coefficient (nCr) 
+## Binomial Coefficient (nCr) 
 
-#### steps
+### steps
 
 https://www.geeksforgeeks.org/binomial-coefficient-dp-9/
 
@@ -25,13 +25,13 @@ https://www.geeksforgeeks.org/binomial-coefficient-dp-9/
 - Sieve prime factorization & fast power
 - Modular Inversion
 
-#### Problems
+### Problems
 - https://leetcode.com/problems/pascals-triangle/description/
 
 --------
-### Catalan Number
+## Catalan Number
 
-#### steps
+### steps
 
 https://www.geeksforgeeks.org/program-nth-catalan-number/
 https://codeforces.com/blog/entry/87585
@@ -41,15 +41,15 @@ https://en.wikipedia.org/wiki/Catalan_number#Applications_in_combinatorics (extr
 - Using nCr
 - Catalan Convolution (partioning)
 
-#### Problems
+### Problems
 - https://leetcode.com/problems/unique-binary-search-trees/submissions/1210461052/
 - https://cses.fi/problemset/task/2064
 - https://cses.fi/problemset/task/2187/
 --------
 
-### Euclidean algorithm
+## Euclidean algorithm
 	
-#### steps
+### steps
 
 https://www.geeksforgeeks.org/euclidean-algorithms-basic-and-extended/
 https://cp-algorithms.com/algebra/extended-euclid-algorithm.html
@@ -59,7 +59,7 @@ https://cp-algorithms.com/algebra/extended-euclid-algorithm.html
 - mod inverse
 - solve ax + by = c
 
-#### Problems
+### Problems
 - https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&page=show_problem&problem=1045
 - https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&page=show_problem&problem=1031
 - https://codeforces.com/gym/100963 (problem J)

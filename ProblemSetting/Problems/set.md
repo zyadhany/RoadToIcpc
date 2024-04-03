@@ -41,3 +41,11 @@
 
 -   https://codeforces.com/group/u3Ii79X3NY/contest/270796/problem/E 
   - make it all the possible solution, dp()
+
+- you have array and q queries
+  1.  given index say first element is greater than him.
+  2.  gieven index change it's value to k.5
+
+- you have array, and have k opration
+  - what is mx beutful you can get after uing at most k opration
+  - beutful of array is for every i find first j such i X[i] < X[j] add j - i.
