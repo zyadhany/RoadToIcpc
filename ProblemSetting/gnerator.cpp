@@ -43,9 +43,8 @@ void writeTest(int test) {
 int main(int argc, char *argv[]) {
     registerGen(argc, argv, 1);
 
-    int TEST = rnd.next(1, 10'000);
-    TEST = 1;
-    //cout << TEST << endl;
+    int TEST = 1;
+    //TEST = rnd.next(1, 10'000);cout << TEST << endl;
 
     for (int i = 1; i <= TEST; i++)
         writeTest(i);

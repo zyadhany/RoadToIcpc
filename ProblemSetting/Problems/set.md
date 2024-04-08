@@ -28,6 +28,8 @@
 
 - Gcd Extended: xa + yb = n, how many valid postive value of x, y.
 
+- equation x^2 + y^2 + c = n;
+
 - given array of n, k, q queries| each query has 2 opp: 1 l x, replace X[l] = x, 2 l  say how many number from 1 to k is't divided by any number in that range.
 - make it compeny with probbalities and money with employee come in and out.
 
@@ -49,3 +51,12 @@
 - you have array, and have k opration
   - what is mx beutful you can get after uing at most k opration
   - beutful of array is for every i find first j such i X[i] < X[j] add j - i.
+
+- bird-tree-hard (polygon)
+
+- given array of n and q queries l, r
+  - for each query find medin of that range.
+
+- max Trapping Rain Water after doing k oppration
+  - each oppratoion is to dig one block down.
+  - https://www.geeksforgeeks.org/problems/trapping-rain-water-1587115621/1

@@ -22,6 +22,7 @@
         "xutility": "cpp",
         "random": "cpp",
         "utility": "cpp",
-        "ostream": "cpp"
+        "ostream": "cpp",
+        "cstdlib": "cpp"
     }
 }

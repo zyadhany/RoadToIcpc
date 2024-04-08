@@ -58,6 +58,7 @@ void solve(int tc) {
             cout << '\n';
         }
     }
+    
 }
 
 int main()
