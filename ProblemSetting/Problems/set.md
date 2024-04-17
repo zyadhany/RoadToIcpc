@@ -66,3 +66,4 @@
 - 2d array with '.' and '#':
   '#' is door you can come out from,
   you need to finded shortestpath from anydoor to X[l][r] then back to different door.
+
