@@ -23,70 +23,76 @@ const int MODE = 1e9 + 7;
 
 using namespace std;
 
-vi dx = {1, 0, -1, 0};
-vi dy = {0, -1, 0, 1};
 
-pl BFS(ll l, ll r)
-{
-    ll k, a, b, mx;
-    pl res;
+class Graph {
+public:
+    int size;
+    vi vis;
+    vii adj;
 
-    cin >> k;
-
-    mx = 0;
-    vii vis(l + 1, vi (r + 1, 0));
-    queue<pl> que;
-
-    for (int i = 0; i < k; i++)
-    {
-        cin >> a >> b;
-        que.push({a, b});
-        vis[a][b] = 1;
+    void addEdge(int u, int v) {
+        adj[u].push_back(v);
     }
-    
 
-    while (!que.empty())
+    void BFS(int s)
     {
-        pl m = que.front();
-        que.pop();
-        if (vis[m.first][m.second] > mx) {
-            mx = vis[m.first][m.second];
-            res = m;
-        }
-
-        for (int i = 0; i < dx.size(); i++)
+        queue<pl> que;
+        que.push({s, 0});
+        ll summ = 0;
+        while (!que.empty())
         {
-            pl re = m;
-            re.first += dx[i];
-            re.second += dy[i];
-            if (re.first > l || re.second > r|| re.first <= 0 || re.second <= 0) continue;
-            if (!vis[re.first][re.second]){
-                vis[re.first][re.second] = vis[m.first][m.second] + 1;
-                que.push(re);
+            pl m = que.front();
+            que.pop();
+            if (vis[m.first]) continue;
+            vis[m.first] = 1;
+            
+            for (auto a : adj[m.first]) {
+                if (!vis[a]) que.push({a, m.first});
             }
         }
-        
     }
 
-    return (res);
-}
 
+    Graph(ll n) {
+        size = n;
+        vis.assign(n + 1, 0);
+        adj.resize(n + 1);
+    }
+};
 
 
 void solve(int tc) {
-    ll n, m;
+    ll n, m, mx, re, l, r, at, summ;
 
     cin >> n >> m;
-    pl res = BFS(n, m);
-    cout << res.first << ' ' << res.second << '\n';
+
+    Graph gr(n);
+
+    for (int i = 1; i <= m; i++)
+    {  
+        cin >>  l >> r; 
+        gr.addEdge(l, r);
+        gr.addEdge(r, l);
+    }
+
+    gr.BFS(1);
+    for (int i = 1; i <= n; i++)
+    {
+        if (!gr.vis[i]) {
+            cout << "NO\n";
+            return;
+        }
+    }
+    if (n != m) cout << "NO\n";
+    else cout << "FHTAGN!\n";
 }
 
 int main()
 {
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;
-    freopen("input.txt", "r", stdin);
-    freopen("output.txt", "w", stdout);
+    // freopen("mex.in", "r", stdi  n);
+    //freopen("output.txt", "w", stdout);
 
     //cin >> size;
     for (int i = 1; i <= size; i++) {

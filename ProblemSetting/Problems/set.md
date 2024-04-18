@@ -66,3 +66,14 @@
 - 2d array with '.' and '#':
   '#' is door you can come out from,
   you need to finded shortestpath from anydoor to X[l][r] then back to different door. ttt
+
+- you are playing game with n stage (topologicalOrder with priorty qeue)
+  - each stage have requered a[i] point, and score bounce of b[i].
+    - to be able to enter stage i you mush have at least a[i] points.
+    - and when you end it you earn b[i] points.
+  - got m roles each role have l, r
+    - that to open stage r you need to end stage l first.
+  - you can use magic cure to increase your points by one.
+
+  - ouput minumum number of magical cure you need to use to end game
+  - then n represent any valid order of stage you enter.
