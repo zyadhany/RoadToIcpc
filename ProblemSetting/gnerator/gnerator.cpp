@@ -20,19 +20,19 @@
 
 using namespace std;
 
+int M;
 
 void writeTest(int test) {
 
     int n, k, m;	
-    int maxx = opt<int>("maxx");
-    n = rnd.next(1, 100'000);
-    k = rnd.next(1, 1000'000'000);
+    n = rnd.next(1, 1000'000);
+    m = M;
     
-    cout << n << ' ' << k << endl;
+    cout << n << ' ' << m << endl;
 
-    for (int i = 1; i <= n; i++)
+    for (int i = 1; i <= m; i++)
     {
-        m = rnd.next(1, 1000'000'000);
+        m = rnd.wnext(1, n, -5);
         cout << m;
         if (i != n) cout << ' ';
     }
@@ -45,13 +45,18 @@ int main(int argc, char *argv[]) {
 
     int TEST = 1;
     //TEST = rnd.next(1, 10'000);cout << TEST << endl;
+    M = opt<int>("m");
+
+    TEST = min(100, 1000 / M);
+
+    cout << TEST << '\n';
 
     for (int i = 1; i <= TEST; i++)
         writeTest(i);
 }
 
 /*
-<#list 1..40 as i >
-     igen --minn 1 --maxx 1000000 ${i} > $ 
+<#list 1..10 as i >
+     igen --m 10 ${i} > $ 
 </#list>
 */

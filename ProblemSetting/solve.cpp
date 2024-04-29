@@ -1,5 +1,6 @@
 #include <bits/stdc++.h>
 #include <unordered_map>
+#include "testlib.h"
 
 #define ll long long
 #define ld long double
@@ -19,52 +20,43 @@
 
 using namespace std;
 
-void solve(int tc) {
-    ll n, m, q, k;
+int M;
 
-    cin >> n >> m >> q;
+void writeTest(int test) {
 
-    char X[100][100];
-
-    for (int i = 0; i < n; i++)
-        for (int j = 0; j < m; j++)
-            cin >> X[i][j];
+    int n, k, m;	
+    n = rnd.next(1, 1000'000);
+    m = M;
     
-    while (q--)
+    cout << n << ' ' << m << endl;
+
+    for (int i = 1; i <= m; i++)
     {
-        cin >> k;
-
-
-        for (int i = 0; i < k - 1; i++){
-            char Y[100];
-            for (int j = 0; j < n; j++)
-                Y[(i + m - 1) % m] = X[j][i];
-            for (int j = 0; j < n; j++)
-                X[j][i] = Y[j];
-        }
-
-        for (int i = k; i < m; i++){
-            char Y[100];
-            for (int j = 0; j < n; j++)
-                Y[(i + n + 1) % n] = X[j][i];
-            for (int j = 0; j < n; j++)
-                X[j][i] = Y[j];
-        }
+        m = rnd.wnext(1, n, -5);
+        cout << m;
+        if (i != n) cout << ' ';
     }
-    
-    for (int i = 0; i < n; i++){
-        for (int j = 0; j < m; j++)
-            cout << X[i][j] << ' ';
-        cout << '\n';
-    }
+
+    cout << endl;
 }
 
-int main()
-{
-    ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
-    int size = 1;
+int main(int argc, char *argv[]) {
+    registerGen(argc, argv, 1);
 
-    //cin >> size;
-    for (int i = 1; i <= size; i++)
-        solve(i);
+    int TEST = 1;
+    //TEST = rnd.next(1, 10'000);cout << TEST << endl;
+    M = opt<int>("m");
+
+    TEST = min(100, 1000 / M);
+
+    cout << TEST << '\n';
+
+    for (int i = 1; i <= TEST; i++)
+        writeTest(i);
 }
+
+/*
+<#list 1..10 as i >
+     igen --m 10 ${i} > $ 
+</#list>
+*/

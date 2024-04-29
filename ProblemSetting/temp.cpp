@@ -20,42 +20,24 @@
 
 using namespace std;
 
-
-
+int M;
 
 void writeTest(int test) {
 
-    int n, m, q, l, r, k, L, R;	
+    int n, a, m;	
+    n = rnd.next(1, 1000'000);
+    m = M;
+    
+    cout << n << ' ' << m << endl;
 
-    n = q = 100'000;
-
-    L = 1, R = 1000'000'000;
-
-    cout << n << endl;
-
-    for (int i = 1; i <= n / 2; i++)
+    for (int i = 1; i <= m; i++)
     {
-        cout << R;
+        a = rnd.next(1, 1000'000);
+        cout << a;
         if (i != n) cout << ' ';
     }
-    for (int i = n / 2 + 1; i <= n; i++)
-    {
-        cout << R - 1;
-        if (i != n) cout << ' ';
-    }
+
     cout << endl;
-
-    cout << q << endl;
-    q--;
-    cout << 1 << ' ' << n << ' ' << R << endl;
-    while (q--)
-    {
-        l = rnd.next(1, n);
-        r = rnd.next(l, n);
-        k = R;
-
-        cout << l << ' ' << r << ' ' << k << endl;
-    }
 }
 
 int main(int argc, char *argv[]) {
@@ -63,13 +45,18 @@ int main(int argc, char *argv[]) {
 
     int TEST = 1;
     //TEST = rnd.next(1, 10'000);cout << TEST << endl;
+    M = opt<int>("m");
+
+    TEST = min(100, 1000 / M);
+
+    cout << TEST << '\n';
 
     for (int i = 1; i <= TEST; i++)
         writeTest(i);
 }
 
 /*
-<#list 1..40 as i >
-     igen --minn 1 --maxx 1000000 ${i} > $ 
+<#list 1..10 as i >
+     igen --m 10 ${i} > $ 
 </#list>
 */

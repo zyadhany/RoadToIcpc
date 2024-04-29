@@ -20,21 +20,40 @@
 
 using namespace std;
 
+ll M = 0;
+
+void solve(int tc){
+    setTestCase(tc);
+
+    ll n, m;
+
+    n = inf.readInt(1, 1000'000, "n");
+    inf.readSpace();
+    m = inf.readInt(1, 1000, "m");
+    inf.readEoln();
+    M += m;
+
+    ensuref(M <= 1000, "summ of m exeeds 1000");
+
+    for (int i = 0; i < m; i++)
+    {
+        inf.readInt(1, 1000'000);
+        if (i != m - 1) inf.readSpace();
+    }
+
+    inf.readEoln();
+}
+
 int main(int argc, char* argv[]) {
     registerValidation(argc, argv);
-    
-    int n, k, a;
-    n = inf.readInt(1, 100'000, "n");
-    inf.readSpace();
-    k = inf.readInt(1, 1000'000'000, "k");
+    int Test;
+
+    Test = inf.readInt(1, 100, "t");
     inf.readEoln();
     
-    for (int i = 1; i <= n; i++)
-    {
-        a = inf.readInt(1, 1000'000'000, "a");
-        if (i != n) inf.readSpace();
+    for (int i = 1; i <= Test; i++) {
+        solve(i);
     }
-    
-    inf.readEoln();
+
     inf.readEof();
 }
