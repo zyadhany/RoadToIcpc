@@ -2,7 +2,7 @@
 #include <bits/stdc++.h>
 #include <unordered_map>
 
-#define ll long long
+#define ll int
 #define ld long double
 #define pl pair<ll, ll>
 #define vi vector<ll>
@@ -11,10 +11,7 @@
 #define vc vector<char>
 #define vcc vector<vc>
 #define vp vector<pl>
-#define vpp vector<vp>
-#define vppp vector<vpp>
 #define mi map<ll,ll>
-#define unmi unordered_map<ll, ll>
 #define mc map<char,int>
 #define sortx(X) sort(X.begin(),X.end());
 #define all(X) X.begin(),X.end()
@@ -27,38 +24,21 @@ const int MODE = 1e9 + 7;
 
 using namespace std;
 
-ll req(ll a, ll b, ll n) {
-    ll summ = 0;
-    for (int i = a; i < n; i+=a)
-        if ((n - i) % b == 0) summ ++;
-    return (summ);
-}
+ 
 
 void solve(int tc) {
-    ll n, m, summ, re;
+    ll n;
 
-    cin >> n >> m;
+    cin >> n;
 
-    summ = 0;
-    vi X(m);
-    pl k;    
-
-    for (int i = 0; i < m; i++)
-        cin >> X[i];
-    sortx(X);
-
-    for (int i = 0; i < m; i++)
+    cout << n - 1 << ' ';
+    for (int i = 1; i < n; i++)
     {
-        if (n % X[i] == 0) summ++;
-        for (int j = i + 1; j < m; j++)
-        {
-            re = req(X[i], X[j], n);
-            summ += re;
-        }
+        cout << "0 ";
     }
-    
-    cout << summ << '\n';    
+    cout << '\n';
 }
+
 
 int main()
 {
@@ -67,7 +47,7 @@ int main()
     //freopen("mex.in", "r", stdin);
     //freopen("output.txt", "w", stdout);
 
-    cin >> size;
+    // cin >> size;
     for (int i = 1; i <= size; i++)
         solve(i);
 }

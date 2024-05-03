@@ -1,62 +1,37 @@
 #include <bits/stdc++.h>
-#include <unordered_map>
-#include "testlib.h"
-
-#define ll long long
-#define ld long double
-#define pl pair<ll, ll>
-#define vi vector<ll>
-#define vii vector<vi>
-#define vc vector<char>
-#define vcc vector<vc>
-#define vp vector<pl>
-#define mi map<ll,ll>
-#define mc map<char,int>
-#define sortx(X) sort(X.begin(),X.end());
-#define all(X) X.begin(),X.end()
-#define ln '\n'
-#define YES {cout << "YES\n"; return;}
-#define NO {cout << "NO\n"; return;}
 
 using namespace std;
 
-int M;
-
-void writeTest(int test) {
-
-    int n, k, m;	
-    n = rnd.next(1, 1000'000);
-    m = M;
-    
-    cout << n << ' ' << m << endl;
-
-    for (int i = 1; i <= m; i++)
-    {
-        m = rnd.wnext(1, n, -5);
-        cout << m;
-        if (i != n) cout << ' ';
+long long gcdExtended(long long a, long long b, long long* x, long long* y)
+{
+    if (a == 0) {
+        *x = 0, * y = 1;
+        return b;
     }
-
-    cout << endl;
+    long long x1, y1;
+    long long gcd = gcdExtended(b % a, a, &x1, &y1);
+    *x = y1 - (b / a) * x1;
+    *y = x1;
+    return gcd;
 }
 
-int main(int argc, char *argv[]) {
-    registerGen(argc, argv, 1);
+void solve(int tc) {
+    long long n, m, summ, re;
 
-    int TEST = 1;
-    //TEST = rnd.next(1, 10'000);cout << TEST << endl;
-    M = opt<int>("m");
+    cin >> n >> m;
 
-    TEST = min(100, 1000 / M);
+    summ = 0;
 
-    cout << TEST << '\n';
-
-    for (int i = 1; i <= TEST; i++)
-        writeTest(i);
+    cout << summ << '\n';    
 }
 
-/*
-<#list 1..10 as i >
-     igen --m 10 ${i} > $ 
-</#list>
-*/
+
+int main()
+{
+    ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
+    int size = 1;
+
+    cin >> size;
+    for (int i = 1; i <= size; i++)
+        solve(i);
+}
