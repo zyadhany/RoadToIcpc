@@ -29,6 +29,7 @@
         "unordered_set": "cpp",
         "string_view": "cpp",
         "*.tcc": "cpp",
-        "bitset": "cpp"
+        "bitset": "cpp",
+        "cmath": "cpp"
     }
 }
