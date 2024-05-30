@@ -82,12 +82,51 @@ void req(vii &Z, mi &Y, ll a, ll b){
 }
 
 void solve(int tc) {
+<<<<<<< HEAD
     ll n, q;
+=======
+    ll n, mn;
+    string s;
+>>>>>>> 9e4143b8634f4fabb3d6049a61eba0c5f9335767
 
-    cin >> n;
+    cin >> s;
 
+<<<<<<< HEAD
     vi X(n);
     mi Y;
+=======
+    n = s.size();
+
+    vii X(n + 1, vi(n + 1, INT32_MAX));
+
+    X[0][n - 1] = 0;
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = n - 1; j > i; j--)
+        {
+            if (s[i] == s[j]) X[i + 1][j - 1] = min(X[i + 1][j - 1], X[i][j]);
+            else
+            {
+                X[i + 1][j] = min(X[i + 1][j], X[i][j] + 1);
+                X[i][j - 1] = min(X[i][j - 1], X[i][j] + 1);
+            }
+            
+        }
+    }
+    
+    mn = INT32_MAX;
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = 0; j < n; j++)
+        {
+            if (i >= j) mn = min(mn, X[i][j]);
+        }
+        
+    }
+    
+    cout << mn << '\n';
+}
+>>>>>>> 9e4143b8634f4fabb3d6049a61eba0c5f9335767
 
     for (int i = 0; i < n; i++)
         cin >> X[i];
@@ -110,9 +149,13 @@ int main()
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;
 
+<<<<<<< HEAD
     //freopen("input.txt", "r", stdin   );
     //freopen("output.txt", "w", stdout);
     //cin >> size;
+=======
+    cin >> size;
+>>>>>>> 9e4143b8634f4fabb3d6049a61eba0c5f9335767
     for (int i = 1; i <= size; i++)
         solve(i);
 }
