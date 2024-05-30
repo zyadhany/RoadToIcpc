@@ -30,6 +30,7 @@
         "string_view": "cpp",
         "*.tcc": "cpp",
         "bitset": "cpp",
-        "cmath": "cpp"
+        "cmath": "cpp",
+        "limits": "cpp"
     }
 }
