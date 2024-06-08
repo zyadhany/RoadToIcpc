@@ -1,8 +1,7 @@
-#define _CRT_SECURE_NO_WARNINGS
 #include <bits/stdc++.h>
 #include <unordered_map>
 
-#define ll int
+#define ll long long
 #define ld long double
 #define pl pair<ll, ll>
 #define vi vector<ll>
@@ -11,125 +10,120 @@
 #define vcc vector<vc>
 #define vp vector<pl>
 #define mi map<ll,ll>
-#define mc map<char,int>
+#define mc map<char, ll>
 #define sortx(X) sort(X.begin(),X.end());
 #define all(X) X.begin(),X.end()
 #define ln '\n'
 #define YES {cout << "YES\n"; return;}
 #define NO {cout << "NO\n"; return;}
 
-const int MODE = 1e9 + 7;
-
 using namespace std;
 
+const int MODE = 1e9 + 7;
 
-class Graph {
+/**
+ * Search for int in it's binary represenaion.
+ * it search for last digit.
+ * you can change SIZE higher or lower range.vector<string>* 
+*/
+
+
+class Trie
+{
 public:
-    typedef ll item;
-    
-    int size;
-    vi vis, lvl;
-    vector<vector<pair<ll, item>>> adj, SPT;
+    map<string, int> Y;
+    struct trie_node
+    {
+        string val;
+        int oc;
+        vector<int> next;
 
-    item SPTMarge(item &a, item &b){
-        return min(a, b);
-    }
-
-    void BuildSparse(ll node, ll parent, ll w){
-        lvl[node] = lvl[parent] + 1;
-        SPT[node][0] = {parent, w};
-        for (int i = 1; i < SPT[node].size(); i++){
-            int tmp = SPT[node][i - 1].first;
-            SPT[node][i].first = SPT[tmp][i - 1].first;
-            SPT[node][i].second = max(SPT[node][i - 1].second, SPT[tmp][i - 1].second);
+        trie_node() {
+            val = "-1";
+            oc = 0;
+            next.resize(26, -1);
         }
-        for (auto neg : adj[node])
-            if (neg.first != parent) BuildSparse(neg.first, node, neg.second);
+    };
+
+    string get(string &s) {
+        return (get(0, s, 0));
     }
 
-    pair<ll, item> getKth(ll u, ll k){
-        item res = 0;
-        for (int i = 0; i < SPT[u].size(); i++)
-            if ((1 << i) & k) {
-                res = max(res, SPT[u][i].second);
-                u = SPT[u][i].first;
-            }
-        return {u, res};
+    void add(string &s) {
+        Y[s]++;
+        add(0, s, 0, Y[s]);
     }
 
-    ll LCA(ll u, ll v) {
-        if (lvl[u] > lvl[v]) swap(u, v);
-        v = getKth(v, lvl[v] - lvl[u]).first;
-        if (u == v) return (u);
-        for (int i = SPT[u].size() - 1; i >= 0; i--)
-        {
-            if (SPT[u][i].first != SPT[v][i].first){
-                u = SPT[u][i].first, v = SPT[v][i].first;
-            }
+    Trie() {
+        tree.resize(1, trie_node());
+    }
+
+private:
+    vector<trie_node> tree;
+
+    string get(ll at, string &s, ll k) {
+        if (!s[k]) return (tree[at].val);
+        int nxt = s[k] - 'a';
+        if (tree[at].next[nxt] == -1) return (trie_node().val);
+        return get(tree[at].next[nxt], s, k + 1);
+    }
+
+    void add(ll at, string &s, ll k, ll oc) {
+        //cout << k << "|" << endl;
+        int re = tree[at].oc;
+        
+        if (re < oc) tree[at].val = s, tree[at].oc = oc;
+        else if (re == oc && s < tree[at].val) tree[at].val = s, tree[at].oc = oc;
+
+        if (!s[k]) {
+            return;
         }
-        return (SPT[u][0].first);
-    }
+        int nxt     = s[k] - 'a';
 
-    ll dist(ll u, ll v) {
-        ll p = LCA(u , v);
-        return (lvl[u] + lvl[v] - 2 * lvl[p]);
-    }
+        if (tree[at].next[nxt] == -1) {
+            tree[at].next[nxt] = tree.size();
+            tree.push_back(trie_node());
+        }
 
-    void addEdge(int u, int v, item w) {
-        adj[u].push_back({v, w});
-    }
-
-    Graph(ll n) {
-        size = n;
-        vis.assign(n + 1, 0);
-        lvl.assign(n + 1, 0);
-        adj.resize(n + 1);
-        SPT.resize(n + 1, vector<pair<ll, item>>(ceil(log2(n + 1)) + 1));
+        add(tree[at].next[nxt], s, k + 1, oc);
     }
 };
 
 
-void solve(ll n, ll m, ll q) {
-    ll u, v, w;
+void solve(ll tc) {
+    ll n, q;
+    string s;
+    Trie tr;
 
-    Graph gr(n);
+    cin >> n;
 
-    for (int i = 0; i < m; i++)
+    for (int i = 0; i < n; i++)
     {
-        cin >> u >> v >> w;
-        gr.addEdge(u, v, w);
-        gr.addEdge(v, u, w);
+        cin >> s;
+        tr.add(s);
     }
-
-    gr.BuildSparse(1, 1, 0);
-    ll q;
+    
     cin >> q;
     while (q--)
     {
-        cin >> u >> v;
-        w = gr.LCA(u, v);
-        ll a, b;
-        a = gr.getKth(u, gr.lvl[u] - gr.lvl[w]).second;
-        b = gr.getKth(v, gr.lvl[v] - gr.lvl[w]).second;
-        cout << min(a, b) << '\n';
+        cin >> s;
+        string t = tr.get(s);
+        if (t != "-1") cout << t << ' ' << tr.Y[t] << '\n';
+        else cout << "-1\n";
     }
     
 }
+
 
 int main()
 {
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;
-
     //freopen("input.txt", "r", stdin   );
     //freopen("output.txt", "w", stdout);
     //cin >> size;
-    for (int i = 1; i <= size; i++) {
-        ll n, m, q;
-        while (cin >> n >> m >> q)
-        {
-            solve(n, m, q);
-        }
-        
+    for (int tc = 1; tc <= size; tc++){
+        solve(tc);
+       // if (tc != size) cout << '\n';
     }
 }

@@ -20,11 +20,11 @@ class Trie
 {
 public:
     ll get(ll n) {
-        return (get(0, n, SIZE));
+        return (get(0, n, SIZE - 1));
     }
 
     void add(ll n) {
-        add(0, n, SIZE);
+        add(0, n, SIZE - 1);
     }
 
     Trie() {

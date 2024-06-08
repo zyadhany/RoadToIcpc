@@ -1,4 +1,3 @@
-
 class Graph {
 public:
     typedef ll item;
@@ -8,7 +7,7 @@ public:
     vector<vector<pair<ll, item>>> adj, SPT;
 
     item SPTMarge(item &a, item &b){
-        return max(a, b);
+        return min(a, b);
     }
 
     void BuildSparse(ll node, ll parent, ll w){
@@ -24,7 +23,7 @@ public:
     }
 
     pair<ll, item> getKth(ll u, ll k){
-        item res = 0;
+        item res = INT32_MAX;
         for (int i = 0; i < SPT[u].size(); i++)
             if ((1 << i) & k) {
                 res = SPTMarge(res, SPT[u][i].second);
@@ -48,7 +47,11 @@ public:
 
     ll dist(ll u, ll v) {
         ll p = LCA(u , v);
-        return (lvl[u] + lvl[v] - 2 * lvl[p]);
+        ll a, b;
+        a = getKth(u, lvl[u] - lvl[p]).second;
+        b = getKth(v, lvl[v] - lvl[p]).second;
+ 
+        return (SPTMarge(a, b));
     }
 
     void addEdge(int u, int v, item w) {
