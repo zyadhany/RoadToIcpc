@@ -10,3 +10,28 @@ ll summk(ll n, ll k) {
     ll sum = (numTerms * (k + lastTerm)) / 2;
     return (sum);
 }
+
+// summ i^2 to n^2 .. 1^2 + 2^2 + 3^2 .. + n^2
+    // n(n + 1)(2n + 1) / 6
+ll SummSquir(ll n) {
+    return n * (n + 1) * (2 * n + 1) / 6;
+}
+
+/**
+ * arithmetic: summ where the difference between any
+ *    two consecutive numbers is constant 3, 7, 11, 15
+ *  n(a + b) / 2 
+ *  a:first numb, b:second, n:number of element.
+*/ 
+ll SummArithmetic (ll n, ll a, ll b){
+    return n * (a + b) / 2;
+}
+
+
+/**
+ * geometric progression: a + ak + a k^2 + a k^2 + ... + b
+ * (bk - a) / (k - 1);
+*/
+ll GeometricProgression (ll a, ll b, ll k) {
+    return (b * k - a) / (k - 1);
+}
