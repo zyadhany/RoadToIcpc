@@ -9,7 +9,7 @@ void floydWarshall(vii &dist)
 {
     for (int k = 1; k < dist.size(); k++)
         for (int i = 1; i < dist.size(); i++)
-            for (int j = 1; j < dist.size(); j++)
+            for (int j = 1; j < dist.size(); j++) 
                 if (dist[i][j] > dist[i][k] + dist[k][j])
                     dist[i][j] = dist[i][k] + dist[k][j];
 }
