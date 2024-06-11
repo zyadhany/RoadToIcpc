@@ -24,15 +24,23 @@ const int MODE = 1e9 + 7;
 
 
 void solve(ll tc) {
-    ll n;
+    ll x, y, opp, l, r;
 
-    cin >> n;
+    cin >> x >> y;
 
-    for (int i = 1; i <= n; i++)
-    {
-        
+    opp = 0;
+
+    if (x < y) {
+        swap(x, y);
+        opp ++;
     }
-    
+    opp = (opp + x) % 2;
+
+    l = (x - 1) * (x - 1);
+    r = x * x;
+
+    if (opp) cout << l + y << '\n';
+    else cout << r - y + 1 << '\n';
 }
 
 

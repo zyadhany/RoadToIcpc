@@ -24,15 +24,24 @@ const int MODE = 1e9 + 7;
 
 
 void solve(ll tc) {
-    ll n;
+    ll n, summ;
 
     cin >> n;
 
-    for (int i = 1; i <= n; i++)
-    {
-        
+    summ = 0;
+    vi X(n);
+
+    for (int i = 0; i < n; i++)
+        cin >> X[i];
+
+    for (int i = 1; i < n; i++) {
+        if (X[i] < X[i - 1]) {
+            summ += X[i - 1] - X[i];
+            X[i] = X[i - 1];
+        }
     }
-    
+        
+    cout << summ << '\n';
 }
 
 
@@ -42,7 +51,7 @@ int main()
     int size = 1;
     //freopen("input.txt", "r", stdin   );
     //freopen("output.txt", "w", stdout);
-    cin >> size;
+    //cin >> size;
     for (int tc = 1; tc <= size; tc++){
         solve(tc);
        // if (tc != size) cout << '\n';

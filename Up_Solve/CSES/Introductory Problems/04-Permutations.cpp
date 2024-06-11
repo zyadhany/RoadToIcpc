@@ -28,11 +28,16 @@ void solve(ll tc) {
 
     cin >> n;
 
-    for (int i = 1; i <= n; i++)
-    {
-        
+    if (n == 2 || n == 3) {
+        cout << "NO SOLUTION\n";
+        return;
     }
-    
+
+
+    for (int i = 2; i <= n; i+=2)
+        cout << i << ' ';
+    for (int i = 1; i <= n; i+=2)
+        cout << i << ' ';    
 }
 
 
@@ -42,7 +47,7 @@ int main()
     int size = 1;
     //freopen("input.txt", "r", stdin   );
     //freopen("output.txt", "w", stdout);
-    cin >> size;
+    //cin >> size;
     for (int tc = 1; tc <= size; tc++){
         solve(tc);
        // if (tc != size) cout << '\n';

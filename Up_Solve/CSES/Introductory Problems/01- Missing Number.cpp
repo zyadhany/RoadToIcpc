@@ -1,6 +1,6 @@
 #include <bits/stdc++.h>
 #include <unordered_map>
-
+ 
 #define ll long long
 #define ld long double
 #define pl pair<ll, ll>
@@ -16,33 +16,39 @@
 #define ln '\n'
 #define YES {cout << "YES\n"; return;}
 #define NO {cout << "NO\n"; return;}
-
+ 
 using namespace std;
-
+ 
 const int MODE = 1e9 + 7;
-
-
-
+ 
+ 
+ 
 void solve(ll tc) {
     ll n;
-
+ 
     cin >> n;
-
-    for (int i = 1; i <= n; i++)
+ 
+    vi X(n + 1);
+ 
+    for (int i = 0; i < n - 1; i++)
     {
-        
+        ll a;
+        cin >> a;
+        X[a] = 1;
     }
     
+    for (int i = 1; i <= n; i++)
+        if (!X[i]) cout << i << '\n';
 }
-
-
+ 
+ 
 int main()
 {
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;
     //freopen("input.txt", "r", stdin   );
     //freopen("output.txt", "w", stdout);
-    cin >> size;
+    //cin >> size;
     for (int tc = 1; tc <= size; tc++){
         solve(tc);
        // if (tc != size) cout << '\n';

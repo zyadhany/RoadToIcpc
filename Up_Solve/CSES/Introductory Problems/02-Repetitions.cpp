@@ -24,15 +24,21 @@ const int MODE = 1e9 + 7;
 
 
 void solve(ll tc) {
-    ll n;
+    string s;
 
-    cin >> n;
+    cin >> s;
 
-    for (int i = 1; i <= n; i++)
+    ll mx, at;
+    mx = at = 1;
+
+    for (int i = 1; i < s.size(); i++)
     {
-        
+        if (s[i] != s[i - 1]) at = 0;
+        at++;
+        mx = max(mx, at);
     }
-    
+
+    cout << mx << '\n';
 }
 
 
@@ -42,7 +48,7 @@ int main()
     int size = 1;
     //freopen("input.txt", "r", stdin   );
     //freopen("output.txt", "w", stdout);
-    cin >> size;
+    //cin >> size;
     for (int tc = 1; tc <= size; tc++){
         solve(tc);
        // if (tc != size) cout << '\n';
