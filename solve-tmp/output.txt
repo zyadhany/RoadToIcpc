@@ -1,8 +1,8 @@
-banana 2
-bangalore 1
-applet 2
-orange 2
-oriental 2
-applet 2
--1
--1
+4
+4
+1
+16
+1
+2
+3
+1

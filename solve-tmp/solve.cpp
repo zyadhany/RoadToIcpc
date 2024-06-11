@@ -19,99 +19,106 @@
 
 using namespace std;
 
-const int MODE = 1e9 + 7;
+const int MODE = 998244353;
 
-/**
- * Search for int in it's binary represenaion.
- * it search for last digit.
- * you can change SIZE higher or lower range.vector<string>* 
-*/
+ll req(string &s, vp &Y, ll k) {
+    ll n = s.size();
+    ll lf = 0;
+    mc M;
+    string t = "";
 
+    for (int i = 0; i < Y.size(); i++){
+        if (Y[i].first % k) return 0;
+        M[Y[i].second] = Y[i].first / k;
+        lf += Y[i].first / k;
+    }
 
-class Trie
-{
-public:
-    map<string, int> Y;
-    struct trie_node
+    for (int i = 0; i < n && lf; i++)
     {
-        string val;
-        int oc;
-        vector<int> next;
-
-        trie_node() {
-            val = "-1";
-            oc = 0;
-            next.resize(26, -1);
-        }
-    };
-
-    string get(string &s) {
-        return (get(0, s, 0));
+        if (s[i] == 'a' && t == "") continue;
+        t += s[i];
+        if (s[i] == 'a') continue;
+        if (!M[s[i]]) return(0);
+        M[s[i]]--;
+        lf--;
     }
+    ll  m;
+    ll at = 0;
+    vp Z;
 
-    void add(string &s) {
-        Y[s]++;
-        add(0, s, 0, Y[s]);
-    }
-
-    Trie() {
-        tree.resize(1, trie_node());
-    }
-
-private:
-    vector<trie_node> tree;
-
-    string get(ll at, string &s, ll k) {
-        if (!s[k]) return (tree[at].val);
-        int nxt = s[k] - 'a';
-        if (tree[at].next[nxt] == -1) return (trie_node().val);
-        return get(tree[at].next[nxt], s, k + 1);
-    }
-
-    void add(ll at, string &s, ll k, ll oc) {
-        //cout << k << "|" << endl;
-        int re = tree[at].oc;
-        
-        if (re < oc) tree[at].val = s, tree[at].oc = oc;
-        else if (re == oc && s < tree[at].val) tree[at].val = s, tree[at].oc = oc;
-
-        if (!s[k]) {
-            return;
-        }
-        int nxt     = s[k] - 'a';
-
-        if (tree[at].next[nxt] == -1) {
-            tree[at].next[nxt] = tree.size();
-            tree.push_back(trie_node());
-        }
-
-        add(tree[at].next[nxt], s, k + 1, oc);
-    }
-};
-
-
-void solve(ll tc) {
-    ll n, q;
-    string s;
-    Trie tr;
-
-    cin >> n;
+    m = t.size();
 
     for (int i = 0; i < n; i++)
     {
-        cin >> s;
-        tr.add(s);
+        if (s[i] == 'a' && !at) continue;
+        if (s[i] != t[at]) return(0);
+        at++;
+        if (at == m) {
+            Z.push_back({i-m+1, i});
+            at = 0;
+        }
     }
-    
-    cin >> q;
-    while (q--)
+    if (at) return (0);
+    ll l, r;
+    ll mn = INT32_MAX;
+    ll mnl = INT32_MAX;
+    ll mnr = INT32_MAX;
+    if (Z.size() == 1) {
+        l = Z[0].first + 1;
+        r = n - Z[0].second;
+        //cout << l << ' ' << r << "|\n";
+        return (l * r);
+    }
+
+    mnl = Z[0].first;
+    mnr = n - Z.back().second - 1;
+    for (int i = 0; i < Z.size() - 1; i++)
     {
-        cin >> s;
-        string t = tr.get(s);
-        if (t != "-1") cout << t << ' ' << tr.Y[t] << '\n';
-        else cout << "-1\n";
+        l = Z[i + 1].first -  Z[i].second - 1;
+        mnl = min(mnl, l);
+        mnr = min(mnr, l);
     }
+
+    ll summ = 0;
+    for (int i = 0; i <= mnl; i++)
+    {
+        summ += max(mnr - i + 1, 0ll);
+    }
+    //cout << t << ' ' << mnl << ' ' << mnr << ' ' << "|\n";
     
+    return (summ);
+}
+
+void solve(ll tc) {
+    ll n;
+    string s;
+
+    cin >> s;
+
+    n = s.size();
+    mc freq;
+
+    for (auto a : s) freq[a]++;
+
+    if (freq['a'] == n) {
+        cout << n - 1 << '\n';
+        return;
+    }
+
+    vp CH;
+    for (char i = 'b'; i <= 'z'; i++)
+        if (freq[i]) CH.push_back({freq[i], i});
+    
+    int mn = min_element(all(CH))->first;
+    ll summ = 0;
+
+    for (int i = 1; i * i <= mn; i++) {
+        if (mn % i) continue;
+        summ += req(s, CH, i);
+        if (i * i != n)
+        summ += req(s, CH, mn / i);
+    }
+    cout << summ << '\n';
 }
 
 
@@ -121,7 +128,7 @@ int main()
     int size = 1;
     //freopen("input.txt", "r", stdin   );
     //freopen("output.txt", "w", stdout);
-    //cin >> size;
+    cin >> size;
     for (int tc = 1; tc <= size; tc++){
         solve(tc);
        // if (tc != size) cout << '\n';
