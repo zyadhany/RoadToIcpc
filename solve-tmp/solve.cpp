@@ -21,48 +21,46 @@ using namespace std;
 
 const int MODE = 1e9 + 7;
 
-ll req(vii &vis, string &s, ll at, ll l, ll r) {
-    if (vis[l][r]) return (0);
-    if (l == 7 && r == 1) return (at == 48);
-    if (vis[l - 1][r] && vis[l + 1][r] && !vis[l][r - 1] && !vis[l][r + 1]) return (0);
-    if (!vis[l - 1][r] && !vis[l + 1][r] && vis[l][r - 1] && vis[l][r + 1]) return (0);
-    if (vis[l - 1][r + 1] && !vis[l - 1][r] && !vis[l][r + 1]) return (0);
-    if (vis[l + 1][r + 1] && !vis[l + 1][r] && !vis[l][r + 1]) return (0);
-    if (vis[l + 1][r - 1] && !vis[l + 1][r] && !vis[l][r - 1]) return (0);
-    if (vis[l - 1][r - 1] && !vis[l - 1][r] && !vis[l][r - 1]) return (0);
-    vis[l][r] = 1;
-
-    ll summ = 0;
-
-    if (s[at] == '?') {
-        summ += req(vis, s, at + 1, l + 1, r);
-        summ += req(vis, s, at + 1, l - 1, r);
-        summ += req(vis, s, at + 1, l, r + 1);
-        summ += req(vis, s, at + 1, l, r - 1);
-    }else if (s[at] == 'U') {
-        summ += req(vis, s, at + 1, l - 1, r);
-    } else if (s[at] == 'D') {
-        summ += req(vis, s, at + 1, l + 1, r);
-    } else if (s[at] == 'R') {
-        summ += req(vis, s, at + 1, l, r + 1);
-    } else if (s[at] == 'L'){
-        summ += req(vis, s, at + 1, l, r - 1);
-    }
-
-    vis[l][r] = 0;
-    return (summ);
-}
 
 void solve(ll tc) {
-    string s;
+    ll n, summ, q, l, r;
 
-    cin >> s;
+    cin >> n >> q;
 
-    vii vis(10, vi(10));
-    for (int i = 0; i <= 8; i++)
-        vis[0][i] = vis[8][i] = vis[i][0] = vis[i][8] = 1;
+    summ = 1;
+    vi X(n + 1);
+    vi Y(n + 10);
+    Y[n + 1] = n;
+    Y[0] = 0;
+
+    for (int i = 1; i <= n; i++)
+    {
+        cin >> X[i];
+        Y[X[i]] = i;
+    }
     
-    cout << req(vis, s, 0, 1, 1) << '\n';
+    for (int i = 1; i < n; i++)
+        if (Y[i] > Y[i + 1]) summ++;
+        
+
+    while (q--)
+    {
+        cin >> l >> r;
+        swap(X[l], X[r]);
+        l = X[r], l = X[l];
+        
+        summ -= Y[l] > Y[l + 1];
+        summ -= Y[l] < Y[l - 1];
+        summ -= Y[r] > Y[r + 1];
+        summ -= Y[r] < Y[r - 1];
+        swap(Y[l], Y[r]);
+        summ += Y[l] < Y[l - 1];
+        summ += Y[r] < Y[r - 1];
+        summ += Y[l] > Y[l + 1];
+        summ += Y[r] > Y[r + 1];
+        
+        cout << summ << '\n';
+    }
 }
 
 int main()
