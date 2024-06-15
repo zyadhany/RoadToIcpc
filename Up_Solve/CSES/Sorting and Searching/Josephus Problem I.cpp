@@ -1,6 +1,7 @@
 #include <bits/stdc++.h>
 #include <unordered_map>
-
+#include <unordered_set>
+ 
 #define ll long long
 #define ld long double
 #define pl pair<ll, ll>
@@ -16,50 +17,37 @@
 #define ln '\n'
 #define YES {cout << "YES\n"; return;}
 #define NO {cout << "NO\n"; return;}
-
+ 
 using namespace std;
-
+ 
 const int MODE = 1e9 + 7;
-
-vi MonomaticStack(vi& X)
-{
-    ll n = X.size();
-    stack<pair<ll, ll>> s;
-    vi Z(n, -1);
-
-    for (int i = n - 1; i >= 0; i--) {
-        while (!s.empty() && s.top().first > X[i]) {
-            Z[s.top().second] = i;
-            s.pop();
-        }
-        s.push({ X[i] , i });
-    }
-
-    return (Z);
-}
-
+ 
+ 
 void solve(ll tc) {
-    ll n;
-
+    ll n, at;
+ 
     cin >> n;
-
-    vi X(n + 1);
-
-    for (int i = 1; i <= n; i++)
-        cin >> X[i];    
+ 
+    at = 0;
+    queue<int> que;
     
-    vi Z = MonomaticStack(X);
-
     for (int i = 1; i <= n; i++)
-        cout << Z[i] << ' ';
-    cout << '\n';
+        que.push(i);
+    
+    while (!que.empty())
+    {
+        if (at % 2) cout << que.front() << ' ';
+        else que.push(que.front());
+        que.pop();
+        at++;
+    }
+    
 }
-
+ 
 int main()
 {
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;
-
     //freopen("input.txt", "r", stdin   );
     //freopen("output.txt", "w", stdout);
     //cin >> size;

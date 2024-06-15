@@ -21,37 +21,45 @@ using namespace std;
 
 const int MODE = 1e9 + 7;
 
-vi MonomaticStack(vi& X)
-{
-    ll n = X.size();
-    stack<pair<ll, ll>> s;
-    vi Z(n, -1);
-
-    for (int i = n - 1; i >= 0; i--) {
-        while (!s.empty() && s.top().first > X[i]) {
-            Z[s.top().second] = i;
-            s.pop();
-        }
-        s.push({ X[i] , i });
-    }
-
-    return (Z);
-}
-
 void solve(ll tc) {
     ll n;
 
     cin >> n;
 
-    vi X(n + 1);
+    vector<pair<pl, ll>> X(n);
+    vi res(n);
+    set<int> st;
+    priority_queue<pl, vp, greater<pl>> pq;
 
-    for (int i = 1; i <= n; i++)
-        cin >> X[i];    
+    for (int i = 0; i < n; i++)
+    {
+        cin >> X[i].first.first >> X[i].first.second;
+        X[i].second = i; 
+        st.insert(i + 1);
+    }
+    sortx(X);
     
-    vi Z = MonomaticStack(X);
+    for (int i = 0; i < n; i++)
+    {
+        pl re = X[i].first;
+        int ind = X[i].second;
 
-    for (int i = 1; i <= n; i++)
-        cout << Z[i] << ' ';
+        while (!pq.empty() && pq.top().first < re.first)
+        {
+            st.insert(pq.top().second);
+            pq.pop();
+        }
+
+        int k = *st.begin();
+        res[ind] = *st.begin();
+        st.erase(st.begin());
+        pq.push({re.second, k});
+    }
+    
+
+    cout << *max_element(all(res)) << '\n';
+    for (int i = 0; i < n; i++)
+        cout << res[i] << ' ';
     cout << '\n';
 }
 

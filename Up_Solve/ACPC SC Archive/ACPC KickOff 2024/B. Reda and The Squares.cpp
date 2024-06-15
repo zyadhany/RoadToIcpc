@@ -1,6 +1,7 @@
 #include <bits/stdc++.h>
 #include <unordered_map>
-
+#include <unordered_set>
+ 
 #define ll long long
 #define ld long double
 #define pl pair<ll, ll>
@@ -16,53 +17,43 @@
 #define ln '\n'
 #define YES {cout << "YES\n"; return;}
 #define NO {cout << "NO\n"; return;}
-
+ 
 using namespace std;
-
+ 
 const int MODE = 1e9 + 7;
+const int MAX = (1 << 30) - 1;
 
-vi MonomaticStack(vi& X)
-{
-    ll n = X.size();
-    stack<pair<ll, ll>> s;
-    vi Z(n, -1);
-
-    for (int i = n - 1; i >= 0; i--) {
-        while (!s.empty() && s.top().first > X[i]) {
-            Z[s.top().second] = i;
-            s.pop();
-        }
-        s.push({ X[i] , i });
-    }
-
-    return (Z);
-}
+ll SQ[1000001];
 
 void solve(ll tc) {
-    ll n;
+    ll n, l, r, mn;
 
-    cin >> n;
+    cin >> n; 
 
-    vi X(n + 1);
-
-    for (int i = 1; i <= n; i++)
-        cin >> X[i];    
-    
-    vi Z = MonomaticStack(X);
-
-    for (int i = 1; i <= n; i++)
-        cout << Z[i] << ' ';
-    cout << '\n';
+    mn = INT64_MAX;
+    l = 0, r = sqrtl(n) + 1;
+    while (l <= r)
+    {
+        ll re = SQ[l] + SQ[r];
+        mn = min(mn, abs(re - n));
+        if (re > n) r--;
+        else l++;
+    }
+     
+    cout << mn << '\n';
 }
-
+ 
 int main()
 {
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;
 
+    for (ll i = 0; i <= 1e6; i++)
+        SQ[i] = i * i;
+
     //freopen("input.txt", "r", stdin   );
     //freopen("output.txt", "w", stdout);
-    //cin >> size;
+    cin >> size;
     for (int tc = 1; tc <= size; tc++){
         solve(tc);
        // if (tc != size) cout << '\n';

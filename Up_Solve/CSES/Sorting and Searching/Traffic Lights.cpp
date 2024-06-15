@@ -1,5 +1,6 @@
 #include <bits/stdc++.h>
 #include <unordered_map>
+#include <unordered_set>
 
 #define ll long long
 #define ld long double
@@ -21,45 +22,43 @@ using namespace std;
 
 const int MODE = 1e9 + 7;
 
-vi MonomaticStack(vi& X)
-{
-    ll n = X.size();
-    stack<pair<ll, ll>> s;
-    vi Z(n, -1);
-
-    for (int i = n - 1; i >= 0; i--) {
-        while (!s.empty() && s.top().first > X[i]) {
-            Z[s.top().second] = i;
-            s.pop();
-        }
-        s.push({ X[i] , i });
-    }
-
-    return (Z);
-}
 
 void solve(ll tc) {
-    ll n;
+    ll n, q;
 
-    cin >> n;
+    cin >> n >> q;
 
-    vi X(n + 1);
-
-    for (int i = 1; i <= n; i++)
-        cin >> X[i];    
+    set<int> interval;
+    multiset<int> len;
     
-    vi Z = MonomaticStack(X);
+    interval.insert(0);
+    interval.insert(n);
+    len.insert(n);
+    
+    while (q--)
+    {
+        int a; cin >> a;
+        int l, r;
 
-    for (int i = 1; i <= n; i++)
-        cout << Z[i] << ' ';
-    cout << '\n';
+        auto it = interval.upper_bound(a);
+        
+        r = *it;
+        it--; l = *it;
+        interval.insert(a);
+
+        len.erase(len.find(r - l));
+        len.insert(a - l);
+        len.insert(r - a);
+
+        auto tt = len.end(); tt--;
+        cout << *tt << ' ';
+    } 
 }
 
 int main()
 {
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;
-
     //freopen("input.txt", "r", stdin   );
     //freopen("output.txt", "w", stdout);
     //cin >> size;

@@ -1,6 +1,7 @@
 #include <bits/stdc++.h>
 #include <unordered_map>
-
+#include <unordered_set>
+ 
 #define ll long long
 #define ld long double
 #define pl pair<ll, ll>
@@ -16,50 +17,46 @@
 #define ln '\n'
 #define YES {cout << "YES\n"; return;}
 #define NO {cout << "NO\n"; return;}
-
+ 
 using namespace std;
-
+ 
 const int MODE = 1e9 + 7;
-
-vi MonomaticStack(vi& X)
-{
-    ll n = X.size();
-    stack<pair<ll, ll>> s;
-    vi Z(n, -1);
-
-    for (int i = n - 1; i >= 0; i--) {
-        while (!s.empty() && s.top().first > X[i]) {
-            Z[s.top().second] = i;
-            s.pop();
-        }
-        s.push({ X[i] , i });
-    }
-
-    return (Z);
-}
-
+ 
+#include <ext/pb_ds/assoc_container.hpp> 
+#include <ext/pb_ds/tree_policy.hpp> 
+using namespace __gnu_pbds; 
+ 
+// macros to define set 
+#define ordered_set tree<int, null_type,less<int>, rb_tree_tag,tree_order_statistics_node_update> 
+ 
+ 
 void solve(ll tc) {
-    ll n;
-
-    cin >> n;
-
-    vi X(n + 1);
-
+    ll n, k, at;
+ 
+    cin >> n >> k;
+ 
+    at = 0;
+    ordered_set ord;
+ 
     for (int i = 1; i <= n; i++)
-        cin >> X[i];    
-    
-    vi Z = MonomaticStack(X);
-
-    for (int i = 1; i <= n; i++)
-        cout << Z[i] << ' ';
-    cout << '\n';
+        ord.insert(i );   
+ 
+    while (!ord.empty())
+    {
+        at += k;
+        at %= ord.size();
+        
+        auto it = ord.find_by_order(at);
+ 
+        cout << *it << ' ';
+        ord.erase(it);
+    }   
 }
-
+ 
 int main()
 {
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;
-
     //freopen("input.txt", "r", stdin   );
     //freopen("output.txt", "w", stdout);
     //cin >> size;

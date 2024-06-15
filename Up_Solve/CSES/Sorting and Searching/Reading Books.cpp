@@ -21,38 +21,22 @@ using namespace std;
 
 const int MODE = 1e9 + 7;
 
-vi MonomaticStack(vi& X)
-{
-    ll n = X.size();
-    stack<pair<ll, ll>> s;
-    vi Z(n, -1);
-
-    for (int i = n - 1; i >= 0; i--) {
-        while (!s.empty() && s.top().first > X[i]) {
-            Z[s.top().second] = i;
-            s.pop();
-        }
-        s.push({ X[i] , i });
-    }
-
-    return (Z);
-}
-
 void solve(ll tc) {
-    ll n;
+    ll n, summ, mx;
 
     cin >> n;
 
-    vi X(n + 1);
+    summ = mx = 0;
+    vi X(n);
 
-    for (int i = 1; i <= n; i++)
-        cin >> X[i];    
+    for (int i = 0; i < n; i++)
+    {
+        cin >> X[i];
+        summ += X[i];
+        mx = max(mx, X[i]);
+    }
     
-    vi Z = MonomaticStack(X);
-
-    for (int i = 1; i <= n; i++)
-        cout << Z[i] << ' ';
-    cout << '\n';
+    cout << max(summ, mx * 2) << '\n';
 }
 
 int main()

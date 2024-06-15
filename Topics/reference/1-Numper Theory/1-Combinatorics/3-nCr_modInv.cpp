@@ -8,7 +8,7 @@
 
 const int SIZE = 1e6 + 1;
 const int MODE = 998244353;
-vi fac(SIZE, 1);
+vi fac(SIZE, 1), facinv(SIZE, 1);
 
 ll gcdExtended(ll a, ll b, ll* x, ll* y)
 {
@@ -22,6 +22,7 @@ ll gcdExtended(ll a, ll b, ll* x, ll* y)
     *y = x1;
     return gcd;
 }
+
 ll modeenv(ll n) {
     ll x, y;
     gcdExtended(n, MODE, &x, &y);
@@ -31,18 +32,19 @@ ll modeenv(ll n) {
 // nCr = fac(n)/fac(r)*fac(n-r)
 ll nCr(ll n, ll r) {
     ll res = fac[n];
-    res *= modeenv((fac[r] * fac[n - r]) % MODE);
+    res *= (facinv[r] * facinv[n - r]) % MODE;
     return (res) % MODE;
 }
 
 // nPr = fac(n) / fac(n - r)
 ll nPr(ll n, ll r) {
-    ll res = fac[n];
-    res *= modeenv(fac[n - r]);
-    return (res) % MODE;
+    ll res = (fac[n] * facinv[n - r]) % MODE;
+    return (res);
 }
 
 void INIT() {
-    for (int i = 2; i < SIZE; i++)
+    for (int i = 2; i < SIZE; i++) {
         fac[i] = (i * fac[i - 1]) % MODE;
+        facinv[i] = modeenv(fac[i]);
+    }
 }

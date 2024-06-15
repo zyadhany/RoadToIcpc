@@ -32,5 +32,5 @@ long long query(vii &table, int L, int R)
 long long query(vii &table, int L, int R) 
 { 
     int j = (int)log2(R - L + 1); 
-    return min (table[L][j], tablep[R - (1 << j) + 1][j]);
+    return min (table[L][j], table[R - (1 << j) + 1][j]);
 }
