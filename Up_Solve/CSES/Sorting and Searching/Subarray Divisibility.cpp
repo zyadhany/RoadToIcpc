@@ -17,58 +17,34 @@
 #define YES {cout << "YES\n"; return;}
 #define NO {cout << "NO\n"; return;}
 
-
 using namespace std;
 
 const int MODE = 1e9 + 7;
 
-vii buildSparseTable(vi &X)
-{
-    ll n, m;
-    n = X.size(); m = ceil(log2(n));
-    vii table(n, vi(m + 1));
-    for (int i = 0; i < n; i++)
-        table[i][0] = X[i];
- 
-    for (int j = 1; j <= m; j++)
-        for (int i = 0; i <= n - (1 << j); i++)
-            table[i][j] = max(table[i][j - 1],
-               table[i + (1 << (j - 1))][j - 1]);
 
-    return (table);
-}
-
-// optmization to get in O(1)
-long long query(vii &table, int L, int R) 
-{ 
-    int j = (int)log2(R - L + 1); 
-    return max(table[L][j], table[R - (1 << j) + 1][j]);
-}
 
 void solve(ll tc) {
-    ll n, a, b, l, r, summ, mx;
+    ll n, x, summ;
 
-    cin >> n >> a >> b;
+    cin >> n;
 
-    mx = INT64_MIN;
+    summ = 0;
     vi X(n + 1);
+    mi Y;
+    Y[0]++;
 
     for (int i = 1; i <= n; i++)
     {
         cin >> X[i];
         X[i] += X[i - 1];
+        
+        X[i] = (X[i] % n + n) % n;
+        summ += Y[X[i]];
+        
+        Y[X[i]]++;
     }
     
-    auto Z = buildSparseTable(X);
-
-    for (int i = 1; i <= n - a + 1; i++)
-    {
-        ll re = query(Z, i + a - 1, min(n, i + b - 1));
-        re -= X[i - 1];
-        mx = max(mx, re);
-    }
-    
-    cout << mx << '\n';
+    cout << summ << '\n';    
 }
 
 int main()
