@@ -1,6 +1,7 @@
-#include <bits/stdc++.h>
-#include <unordered_map>
+#include <vector>
+#include <iostream>
 
+ 
 #define ll long long
 #define ld long double
 #define pl pair<ll, ll>
@@ -16,62 +17,60 @@
 #define ln '\n'
 #define YES {cout << "YES\n"; return;}
 #define NO {cout << "NO\n"; return;}
-
+ 
 using namespace std;
-
+ 
 const int MODE = 1e9 + 7;
 
+vi prime(1e6 + 10, 0);
+vi primes;
 
-void solve(ll tc) {
-    ll n, summ, q, l, r;
-
-    cin >> n >> q;
-
-    summ = 1;
-    vi X(n + 1);
-    vi Y(n + 10);
-    Y[n + 1] = n;
-    Y[0] = 0;
-
-    for (int i = 1; i <= n; i++)
-    {
-        cin >> X[i];
-        Y[X[i]] = i;
-    }
-    
-    for (int i = 1; i < n; i++)
-        if (Y[i] > Y[i + 1]) summ++;
-        
-
-    while (q--)
-    {
-        cin >> l >> r;
-        swap(X[l], X[r]);
-        l = X[r], l = X[l];
-        
-        summ -= Y[l] > Y[l + 1];
-        summ -= Y[l] < Y[l - 1];
-        summ -= Y[r] > Y[r + 1];
-        summ -= Y[r] < Y[r - 1];
-        swap(Y[l], Y[r]);
-        summ += Y[l] < Y[l - 1];
-        summ += Y[r] < Y[r - 1];
-        summ += Y[l] > Y[l + 1];
-        summ += Y[r] > Y[r + 1];
-        
-        cout << summ << '\n';
-    }
+void INIT() {
+    for (int i = 0; i < prime.size(); i++) prime[i] = i;
+    for (int i = 2; i * i <= 1e6; ++i) if (prime[i] == i)
+        for (int j = i; j <= 1e6; j += i) prime[j] = i;
+    for (int i = 2; i <= 1e6; i++) if(prime[i] == i) primes.push_back(i);
 }
 
+ll BigMODE(string &s, ll k) {
+    ll summ = 0;
+    for (int i = 0; i < s.size(); i++)
+        summ = ((summ * 10) + s[i] - '0') % k;    
+    return (summ);
+}
+
+void solve(string s, ll n) {
+    for (int i = 0; i < primes.size() && primes[i] < n; i++)
+    {
+        if (BigMODE(s, primes[i]) == 0) {
+            cout << "BAD " << primes[i] << '\n';
+            return;
+        }
+    }
+    
+    cout << "GOOD\n";
+}
+ 
 int main()
 {
-    ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
+    ios_base::sync_with_stdio(false), cin.tie(NULL), cout.tie(NULL);
     int size = 1;
+
+    INIT();
+
     //freopen("input.txt", "r", stdin   );
     //freopen("output.txt", "w", stdout);
     //cin >> size;
     for (int tc = 1; tc <= size; tc++){
-        solve(tc);
+        string s; ll n;
+        while (cin >> s >> n)
+        {
+            if (s == "0" && !n) break;
+            solve(s, n);
+        }
+        
+        //solve(tc);
        // if (tc != size) cout << '\n';
     }
+    return (0);
 }
