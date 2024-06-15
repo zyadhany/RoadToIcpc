@@ -21,27 +21,48 @@ using namespace std;
 
 const int MODE = 1e9 + 7;
 const int MAXX = (1 << 30) - 1;
-vi Z;
+
+pl getmx(pl a, pl b){
+    if (a.first > b.first) return (a);
+    if (b.first > a.first) return (b);
+    if (a.second < b.second) return (a);
+    return b;
+}
 
 void solve(ll tc) {
-    ll n, mn;
+    ll n;
 
     cin >> n;
-    mn = INT32_MAX;
-    
-    ll l, r;
-    l = 0;
-    r = sqrtl(n) + 1;
 
-    while (l < r)
+    vii X(n, vi(3));
+    priority_queue<vi, vii, greater<vi>> L;
+    pl mx = {0, 0};
+
+    for (int i = 0; i < n; i++)
+        for (int j = 0; j < 3; j++)
+            cin >> X[i][j];
+    sortx(X);
+
+    for (int i = 0; i < n; i++)
     {
-        ll re = Z[l] + Z[r];
-        mn = min(mn, abs(re - n));
-        if (re > n) r--;
-        else l ++;
+        while (!L.empty() && L.top()[0] < X[i][0])
+        {
+            mx = getmx(mx, {L.top()[1], L.top()[2]});
+            L.pop();
+        }
+        pl re = mx;
+        re.first++;
+        re.second = max(re.second, X[i][2]);
+        L.push({X[i][1], re.first, re.second});
     }
     
-    cout << mn << '\n';
+    while (!L.empty())
+    {
+        mx = getmx(mx, {L.top()[1], L.top()[2]});
+        L.pop();
+    }
+
+    cout << mx.first << ' ' << mx.second << '\n';
 }
 
 int main()
@@ -50,9 +71,6 @@ int main()
     int size = 1;
     //freopen("input.txt", "r", stdin   );
     //freopen("output.txt", "w", stdout);
-    for (ll i = 0; i <= 1e6; i++)
-        Z.push_back(i * i);
-    
     cin >> size;
     for (int tc = 1; tc <= size; tc++){
         solve(tc);

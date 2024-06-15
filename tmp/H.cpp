@@ -20,28 +20,18 @@
 using namespace std;
 
 const int MODE = 1e9 + 7;
-const int MAXX = (1 << 30) - 1;
-vi Z;
+
 
 void solve(ll tc) {
-    ll n, mn;
+    ll n, k;
 
-    cin >> n;
-    mn = INT32_MAX;
-    
-    ll l, r;
-    l = 0;
-    r = sqrtl(n) + 1;
+    cin >> n >> k;
 
-    while (l < r)
-    {
-        ll re = Z[l] + Z[r];
-        mn = min(mn, abs(re - n));
-        if (re > n) r--;
-        else l ++;
-    }
-    
-    cout << mn << '\n';
+    n /= k;
+
+    if (n >= 150) cout << "VERY HAPPY\n";
+    else if (n >= 100) cout << "HAPPY\n";
+    else cout << "SAD\n";
 }
 
 int main()
@@ -50,10 +40,7 @@ int main()
     int size = 1;
     //freopen("input.txt", "r", stdin   );
     //freopen("output.txt", "w", stdout);
-    for (ll i = 0; i <= 1e6; i++)
-        Z.push_back(i * i);
-    
-    cin >> size;
+    //cin >> size;
     for (int tc = 1; tc <= size; tc++){
         solve(tc);
        // if (tc != size) cout << '\n';
