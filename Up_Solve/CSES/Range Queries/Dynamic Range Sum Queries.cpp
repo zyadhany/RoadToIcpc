@@ -88,7 +88,7 @@ private:
     vector<long long> lazy;
 
     item merge(item a, item b) {
-        item res = (a ^ b);
+        item res = a + b;
         return (res);
     }
 
@@ -188,9 +188,10 @@ void solve(ll tc) {
 
     while (q--)
     {
-        ll l, r;
-        cin >> l >> r;
-        cout << sg.getrange(l, r) << '\n';
+        ll opp, l, r;
+        cin >> opp >> l >> r;
+        if (opp == 1) sg.set(l, r);
+        else cout << sg.getrange(l, r) << '\n';
     }
 }
  

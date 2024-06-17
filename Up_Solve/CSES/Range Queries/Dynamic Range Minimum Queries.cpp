@@ -88,7 +88,7 @@ private:
     vector<long long> lazy;
 
     item merge(item a, item b) {
-        item res = (a ^ b);
+        item res = min(a, b);
         return (res);
     }
 
@@ -145,7 +145,7 @@ private:
 
     item getrange(int m, int lx, int rx, int l, int r) {
         checkLazy(m, lx, rx);
-        if (rx < l || r < lx) return (0);
+        if (rx < l || r < lx) return (INT32_MAX);
         if (l <= lx && rx <= r) return (tree[m]);
 
         int mid = (lx + rx) / 2;
@@ -188,9 +188,10 @@ void solve(ll tc) {
 
     while (q--)
     {
-        ll l, r;
-        cin >> l >> r;
-        cout << sg.getrange(l, r) << '\n';
+        ll opp, l, r;
+        cin >> opp >> l >> r;
+        if (opp == 1) sg.set(l, r);
+        else cout << sg.getrange(l, r) << '\n';
     }
 }
  

@@ -5,8 +5,8 @@
  * x & ~(1 << k): x[k] = 0.
  * x ^ (1 << k): invert x[k].
  * x & (x−1): set last one in x to zero.
- * x & (x−1): make all one in x to zero expect the last.
- * x | (x−1): invert all bit agter last one bit.
+ * x & (-x): make all one in x to zero expect the last.
+ * x | (x−1): invert all bit after last one bit.
  * if (x & (x−1) == 0): x in power of 2.
  */
 
@@ -23,3 +23,23 @@ cout << __builtin_ctz(x) << "\n"; // 4
 cout << __builtin_popcount(x) << "\n"; // 5
 cout << __builtin_parity(x) << "\n"; // 1
 
+
+/* Interval */
+
+// itrate over all subset from 1 to n-1.
+for (int b = 0; b < (1<<n); b++) {
+    // process subset b
+}
+
+// itrate over all subset of lenght k.
+for (int b = 0; b < (1<<n); b++) {
+    if (__builtin_popcount(b) == k) {
+        // process subset b
+    }
+}
+
+// itrate over all subset of x
+int b = 0;
+do {
+    // process subset b
+} while (b=(b-x)&x);
