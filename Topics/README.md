@@ -1,0 +1,6 @@
+- suffix array funcion optmization
+- tirner search
+- 2d prefix array
+- the number of inversions in array.
+- 2d prefix array
+- Index compression
