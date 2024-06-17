@@ -1,4 +1,4 @@
-ll Longest_Increasing_SubSeq(vi X) {
+ll Longest_Increasing_SubSeq(vi &X) {
     vi Z;
     for (int i = 0; i < X.size(); i++) {
         ll re = upper_bound(Z.begin(), Z.end(), X[i]) - Z.begin();

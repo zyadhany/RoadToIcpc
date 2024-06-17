@@ -20,42 +20,35 @@
 using namespace std;
  
 const int MODE = 1e9 + 7;
-
-void gnrateMask(vi &X, ll n, ll at, ll curmask, ll newmask) {
-    if (at == n) {
-        X.push_back(newmask);
-        return;
-    }
-
-    if (at < n - 1 && !(curmask & (1 << at)) && !(curmask & (1 << (at + 1)))) {
-        gnrateMask(X, n, at + 2, curmask, newmask);
-    }
-
-    if (curmask & (1 << at)) gnrateMask(X, n, at + 1, curmask, newmask);
-    else gnrateMask(X, n, at + 1, curmask, newmask | (1 << at));
-}
-
-ll req(vii &Z, ll n, ll k) {
-    if (n == Z.size()) return (k == 0);
-    ll &res = Z[n][k];
-    if (~res) return (res);
-    res = 0;
-    vi X;
-    gnrateMask(X, log2(Z[0].size()), 0, k, 0);
-
-    for (auto m : X)
-        res = (res + req(Z, n + 1, m)) % MODE;
-
-    return (res); 
-}
-
+ 
 void solve(ll tc) {
-    ll n, m;
+    ll n, mx;
 
-    cin >> n >> m;
+    cin >> n;
 
-    vii Z(m, vi(1 << n, -1));
-    cout << req(Z, 0, 0);
+    mx = 0;
+    vi X(n);
+
+    for (int i = 0; i < n; i++)
+    {
+        cin >> X[i];
+        mx += X[i];
+    }
+    
+    vi Z(mx + 1, 0);
+    Z[0] = 1;
+
+    for (int i = 0; i < n; i++)
+        for (int j = Z.size() - 1 - X[i]; j >= 0; j--)
+            Z[j + X[i]] |= Z[j];
+
+    ll res = 0;
+    for (int i = 1; i < Z.size(); i++)
+        res += Z[i];
+    cout << res << '\n';
+    for (int i = 1; i < Z.size(); i++)
+        if (Z[i]) cout << i << ' ';
+    cout << '\n';
 }
  
 int main()

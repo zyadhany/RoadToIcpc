@@ -21,41 +21,39 @@ using namespace std;
  
 const int MODE = 1e9 + 7;
 
-void gnrateMask(vi &X, ll n, ll at, ll curmask, ll newmask) {
-    if (at == n) {
-        X.push_back(newmask);
-        return;
-    }
-
-    if (at < n - 1 && !(curmask & (1 << at)) && !(curmask & (1 << (at + 1)))) {
-        gnrateMask(X, n, at + 2, curmask, newmask);
-    }
-
-    if (curmask & (1 << at)) gnrateMask(X, n, at + 1, curmask, newmask);
-    else gnrateMask(X, n, at + 1, curmask, newmask | (1 << at));
-}
-
-ll req(vii &Z, ll n, ll k) {
-    if (n == Z.size()) return (k == 0);
-    ll &res = Z[n][k];
-    if (~res) return (res);
-    res = 0;
-    vi X;
-    gnrateMask(X, log2(Z[0].size()), 0, k, 0);
-
-    for (auto m : X)
-        res = (res + req(Z, n + 1, m)) % MODE;
-
-    return (res); 
-}
 
 void solve(ll tc) {
-    ll n, m;
+    ll n, mx;
 
-    cin >> n >> m;
+    cin >> n;
 
-    vii Z(m, vi(1 << n, -1));
-    cout << req(Z, 0, 0);
+    mx = 0;
+    vii X(n, vi(3));
+    priority_queue<pl, vp, greater<pl>> pq;
+
+    for (int i = 0; i < n; i++)
+        for (int j = 0; j < 3; j++)
+            cin >> X[i][j];
+    sortx(X);    
+
+    for (int i = 0; i < n; i++)
+    {
+        while (!pq.empty() && pq.top().first < X[i][0])
+        {
+            mx = max(mx, pq.top().second);
+            pq.pop();
+        }
+        
+        pq.push({X[i][1], mx + X[i][2]});
+    }
+    
+    while (!pq.empty())
+    {
+        mx = max(mx, pq.top().second);
+        pq.pop();
+    }
+
+    cout << mx << '\n';
 }
  
 int main()
