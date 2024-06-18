@@ -75,7 +75,7 @@ private:
         if (lazy[m] == pl({0, 0})) return;
         ll k = rx - lx + 1;
         tree[m] += summtionN(k) * lazy[m].first + k * lazy[m].second;
-        cout << lazy[m].first << ' ' << lazy[m].second << ' ' << lx << ' ' << rx << '\n';
+
         if (lx != rx) {
             lazy[2 * m + 1].first += lazy[m].first;
             lazy[2 * m + 2].first += lazy[m].first;
@@ -91,7 +91,7 @@ private:
         if (rx < l || r < lx) return;
         if (l <= lx && rx <= r)
         {
-            lazy[m] = {1, val};
+            lazy[m] = {1, lx - l};
             checkLazy(m, lx, rx);
             return;
         }
@@ -100,7 +100,7 @@ private:
         item s1, s2;
 
         set(m * 2 + 1, lx, mid, l, r, val);
-        set(m * 2 + 2, mid + 1, rx, l, r, val + mid - l + 1);
+        set(m * 2 + 2, mid + 1, rx, l, r, max(0ll, mid + 1ll - l));
         s1 = tree[m * 2 + 1], s2 = tree[m * 2 + 2];
 
         tree[m] = merge(s1, s2);
