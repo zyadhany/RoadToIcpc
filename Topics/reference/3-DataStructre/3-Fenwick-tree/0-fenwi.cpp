@@ -1,0 +1,43 @@
+ll rangequery(const vi& Z, ll l, ll r) {
+	ll summ = 0;
+
+	for (int i = r; i > 0; i -= i & -i)
+		summ += Z[i];
+
+	for (int i = l - 1; i > 0; i -= i & -i)
+		summ -= Z[i];
+
+	return summ;
+}
+
+void updatepoint(vi& Z, ll n, ll at) {
+	ll summ = 0;
+	//sum = rangequery(Z, at, at)
+
+	for (int i = at; i < Z.size(); i += i & -i)
+		Z[i] += n - summ;
+}
+
+
+// To fenwik of 2d array we nested loop it to get summ of squir
+for (int x; x > 0; x -= x & -x)
+		for (int yy = y; yy > 0; yy -= yy & -yy)
+			sum += BIT[x][yy];
+
+
+// I can use it to make sorted dynamic array 
+// to insert update(x,+1) delete update(x,-1)
+for ( ; i < BIT.size(); i+= i & -i)
+		BIT[i]++;
+
+
+// To get the value of index O(log(n)^2) we use lower pound
+while (l < r) {
+    at = (l + r) / 2;
+    if (k <= sum(at, BIT)) r = at;
+    else l = at + 1;
+}
+
+// to get all element greater than k in range l , r -> take quary in array and sort in
+// I can make fenwick of XoR
+// I can binary search for prefix value on it

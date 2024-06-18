@@ -13,17 +13,37 @@ void fillPrefixSum(int arr[], int n, int prefixSum[])
  * 2-D Array
  * summ({a-b},{c,d})=pref[a][b]+pref[c-1][d-1]-pref[a][d-1]-pref[b-1][b]
  */
-void prefixSum(int arr[3][3], int n) { 
-    //vertical prefixsum 
-    for (int j = 0; j < n; j++) { 
-        for (int i = 1; i < n; i++) { 
-            arr[i][j] += arr[i-1][j]; 
-        } 
-    } 
-    //horizontal prefixsum 
-    for (int i = 0; i < n; i++) { 
-        for (int j = 1; j < n; j++) { 
-            arr[i][j] += arr[i][j-1]; 
-        } 
-    } 
-} 
+void solve(ll tc) {
+    ll n, q;
+
+    cin >> n >> q;
+
+    vcc X(n + 1, vc(n + 1));
+    vii Z(n + 1, vi(n + 1));
+
+    for (int i = 1; i <= n; i++)
+        for (int j = 1; j <= n; j++)
+            cin >> X[i][j];
+    
+    for (int i = 1; i <= n; i++)
+    {
+        for (int j = 1; j <= n; j++)
+        {
+            Z[i][j] = (X[i][j] == '*');
+            Z[i][j] += Z[i - 1][j] + Z[i][j - 1];
+            Z[i][j] -= Z[i - 1][j - 1];            
+        }
+    }
+    
+    while (q--)
+    {
+        ll lx, ly, rx, ry;
+        cin >> lx >> ly >> rx >> ry;
+        if (lx > rx) swap(lx, rx);
+        if (ly > ry) swap(ly, ry);
+
+        cout << Z[rx][ry] - Z[rx][ly - 1]
+                -Z[lx - 1][ry] + Z[lx - 1][ly - 1] << '\n';
+    }
+    
+}

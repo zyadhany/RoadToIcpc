@@ -1,3 +1,26 @@
+#include <bits/stdc++.h>
+#include <unordered_map>
+ 
+#define ll long long
+#define ld long double
+#define pl pair<ll, ll>
+#define vi vector<ll>
+#define vii vector<vi>
+#define vc vector<char>
+#define vcc vector<vc>
+#define vp vector<pl>
+#define mi map<ll,ll>
+#define mc map<char, ll>
+#define sortx(X) sort(X.begin(),X.end());
+#define all(X) X.begin(),X.end()
+#define ln '\n'
+#define YES {cout << "YES\n"; return;}
+#define NO {cout << "NO\n"; return;}
+ 
+using namespace std;
+ 
+const int MODE = 1e9 + 7;
+
 
 /**
  * usage:-
@@ -65,7 +88,7 @@ private:
     vector<long long> lazy;
 
     item merge(item a, item b) {
-        item res;
+        item res = a + b;
         return (res);
     }
 
@@ -86,7 +109,7 @@ private:
         if (pos < lx || rx < pos) return;
         if (lx == rx && lx == pos)
         {
-            tree[m] = val;
+            tree[m] += val;
             return;
         }
 
@@ -150,3 +173,60 @@ private:
         tree[m] = merge(s1, s2);
     }
 };
+
+void solve(ll tc) {
+    ll n, q;
+
+    cin >> n >> q;
+
+    vi X(n + 1);
+    vii Q(q + 1, vi(3));
+    vi res(q + 1);
+    mi Y;
+    set<pl> st;
+    SegmentTree sg;
+    sg.build(n + 1);
+
+    for (int i = 1; i <= n; i++)
+        cin >> X[i];
+    
+
+    for (int i = 1; i <= q; i++) {
+        cin >> Q[i][0] >> Q[i][1];
+        Q[i][2] = i;
+        st.insert({Q[i][0], -i});
+        st.insert({Q[i][1], i});
+    }
+    ll at = 1;    
+
+    for (auto m : st) {
+        while (m.first >= at)
+        {
+            ll re = X[at];
+            if (Y[re])  sg.set(Y[re], -1);
+            Y[re] = at;
+            sg.set(at, 1);
+            at++;
+        }
+        int ind = m.second;
+        if (ind > 0) res[ind] = sg.getrange(Q[ind][0], m.first);
+    }
+
+
+    for (int i = 1; i <= q; i++)
+        cout << res[i] << '\n';
+}
+ 
+int main()
+{
+    ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
+    int size = 1;
+ 
+    //freopen("input.txt", "r", stdin   );
+    //freopen("output.txt", "w", stdout);
+    //cin >> size;
+    for (int tc = 1; tc <= size; tc++){
+        solve(tc);
+       // if (tc != size) cout << '\n';
+    }
+}

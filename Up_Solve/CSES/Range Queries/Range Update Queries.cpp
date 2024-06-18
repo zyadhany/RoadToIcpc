@@ -1,3 +1,26 @@
+#include <bits/stdc++.h>
+#include <unordered_map>
+ 
+#define ll long long
+#define ld long double
+#define pl pair<ll, ll>
+#define vi vector<ll>
+#define vii vector<vi>
+#define vc vector<char>
+#define vcc vector<vc>
+#define vp vector<pl>
+#define mi map<ll,ll>
+#define mc map<char, ll>
+#define sortx(X) sort(X.begin(),X.end());
+#define all(X) X.begin(),X.end()
+#define ln '\n'
+#define YES {cout << "YES\n"; return;}
+#define NO {cout << "NO\n"; return;}
+ 
+using namespace std;
+ 
+const int MODE = 1e9 + 7;
+
 
 /**
  * usage:-
@@ -65,13 +88,13 @@ private:
     vector<long long> lazy;
 
     item merge(item a, item b) {
-        item res;
+        item res = (a + b);
         return (res);
     }
 
     void checkLazy(int m, int lx, int rx) {
         if (!lazy[m]) return;
-        tree[m] += lazy[m];
+        tree[m] += lazy[m] * (rx - lx + 1);
         
         if (lx != rx) {
             lazy[2 * m + 1] += lazy[m];
@@ -150,3 +173,46 @@ private:
         tree[m] = merge(s1, s2);
     }
 };
+
+void solve(ll tc) {
+    ll n, q;
+
+    cin >> n >> q;
+
+    vi X(n + 1);
+    SegmentTree sg;
+
+    for (int i = 1; i <= n; i++)
+        cin >> X[i];
+    sg.build(X);
+
+    while (q--)
+    {
+        ll opp;
+        ll l, r;
+        cin >> opp;
+        if (opp == 1) {
+            int v;
+            cin >> l >> r >> v;
+            sg.set(l, r, v);
+        }
+        else {
+            cin >> l;
+            cout << sg.getrange(l, l) << '\n';
+        }
+    }
+}
+ 
+int main()
+{
+    ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
+    int size = 1;
+ 
+    //freopen("input.txt", "r", stdin   );
+    //freopen("output.txt", "w", stdout);
+    //cin >> size;
+    for (int tc = 1; tc <= size; tc++){
+        solve(tc);
+       // if (tc != size) cout << '\n';
+    }
+}
