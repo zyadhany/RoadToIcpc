@@ -1,4 +1,4 @@
-This repo made by O(1) to prepare to Icpc cpontest.
+    This repo made by O(1) to prepare to Icpc cpontest.
 
 Team meamber:
 -Zyad Hany

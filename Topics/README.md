@@ -2,3 +2,8 @@
 - tirner search
 - the number of inversions in array.
 - SegmentTree: summ less that K, add iteam struct
+- 1-IsConnected.cpp
+- SPAF
+- tree Traverse.
+- dp on tree.
+- dp on tree: All longest paths.
