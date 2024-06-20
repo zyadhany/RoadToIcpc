@@ -8,3 +8,5 @@
 - dp on tree.
 - dp on tree: All longest paths.
 - MST, Prim's Alog
+- directed graph dp: Counting the number of paths
+- directed graph dp: Counting the number of shortest paths
