@@ -7,3 +7,4 @@
 - tree Traverse.
 - dp on tree.
 - dp on tree: All longest paths.
+- MST, Prim's Alog
