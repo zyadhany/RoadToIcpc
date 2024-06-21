@@ -25,45 +25,46 @@ using namespace std;
 class Graph {
 public:
     int size;
-    vi vis;
-    vii adj, radj;
-
+    vi vis, colorArr;
+    vii adj;
+ 
     void addEdge(int u, int v) {
         adj[u].push_back(v);
-        radj[v].push_back(u);
     }
 
-    void dfs(vii &adjlist, vi &visited, vi &X, ll n) {
-        if (visited[n]) return;
-        visited[n] = 1;
-        for (auto neg : adjlist[n]) dfs(adjlist, visited, X, neg);
-        X.push_back(n);
-    }
-
-    vii stronglyConnectedComponents () {
-        vii res;
-        vi nodeOrder, visited(size + 1);
-        for (int i = 1; i <= size; i++) dfs(adj, visited, nodeOrder, i);
+    bool isBipartite(int src)
+    {   
+        int m;
+        stack<int> st;
+        st.push(src);
         
-        visited.assign(size + 1, 0);
-        for (int i = nodeOrder.size() - 1; i >= 0; i--)
+        if (colorArr[src] != -1) return(true);
+        colorArr[src] = 0;
+
+        while (!st.empty())
         {
-            int ind = nodeOrder[i];
-            if (visited[ind]) continue;
-            vi Y;
-            dfs(radj, visited, Y, ind);
-            res.push_back(Y);
+            m = st.top();
+            st.pop(); 
+    
+            for (auto neg : adj[m])
+            {
+                if (colorArr[neg] == colorArr[m]) return (false);
+                if (colorArr[neg] == -1)
+                {
+                    colorArr[neg] = (1 ^ colorArr[m]);
+                    st.push(neg);
+                }
+            }
         }
-        
-        for (int i = 1; i <= size; i++) dfs(adj, visited, nodeOrder, i);        
-        return (res);
-    }
 
+        return (true);
+    }
+    
     Graph(ll n) {
         size = n;
         vis.assign(n + 1, 0);
+        colorArr.assign(size + 1, -1);
         adj.resize(n + 1);
-        radj.resize(n + 1);
     }
 };
 
@@ -75,20 +76,23 @@ void solve(int tc) {
 
     Graph gr(n);
 
-
     for (int i = 0; i < m; i++)
     {
         ll a, b;
         cin >> a >> b;
         gr.addEdge(a, b);
+        gr.addEdge(b, a);
     }
-
-    auto X = gr.stronglyConnectedComponents();
-    for (int i = 0; i < X.size(); i++) {
-        for (int j = 0; j < X[i].size(); j++)
-            cout << X[i][j] << ' ';        
-        cout << '\n';
-    }   
+    
+    
+    for (int i = 1; i <= n; i++)
+        if (!gr.isBipartite(i)) {
+            cout << "IMPOSSIBLE\n";
+            return;
+        }
+    for (int i = 1; i <= n; i++)
+        cout << gr.colorArr[i] + 1 << ' ';
+    cout << '\n';
 }
 
 int main()

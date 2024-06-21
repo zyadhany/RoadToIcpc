@@ -3,10 +3,12 @@
 - the number of inversions in array.
 - SegmentTree: summ less that K, add iteam struct
 - 1-IsConnected.cpp
-- SPAF
+- SPFA
 - tree Traverse.
 - dp on tree.
 - dp on tree: All longest paths.
 - MST, Prim's Alog
 - directed graph dp: Counting the number of paths
 - directed graph dp: Counting the number of shortest paths
+- stronglyConnectedComponents
+- 2SAT

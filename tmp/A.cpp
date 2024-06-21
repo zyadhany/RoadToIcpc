@@ -1,3 +1,4 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include <bits/stdc++.h>
 #include <unordered_map>
 
@@ -10,212 +11,114 @@
 #define vcc vector<vc>
 #define vp vector<pl>
 #define mi map<ll,ll>
-#define mc map<char, ll>
+#define mc map<char,int>
 #define sortx(X) sort(X.begin(),X.end());
 #define all(X) X.begin(),X.end()
 #define ln '\n'
 #define YES {cout << "YES\n"; return;}
 #define NO {cout << "NO\n"; return;}
 
+const int MODE = 1e9 + 7;
+
 using namespace std;
 
-const int MODE = 1e9 + 7;
-const int MAXX = (1 << 30) - 1;
-
-
-/**
- * usage:-
- * creat tree element.
- * SegmentTree sg;
- * 
- * Functions you can use:
- * @set: set index or range to value.
- * @geteange: get value of given range.
- * @build: build tree with given vector or size.
- * 
- * make sure to look at item typedef.
- * you can change merge function to change it's oppration.
- * it you want to make change to segment work in checkLazy().
-*/
-
-typedef long long item;
-/*
-struct item
-{
-    int val;
-
-    item(){
-        val = 0;
-    }
-};
-*/
-
-class SegmentTree
-{
+class Graph {
 public:
-
-    void set(int index, int value) {
-        set(0, 0, size - 1, index, value);
-    }
-    void set(int l, int r, int value) {
-        set(0, 0, size - 1, l, r, value);
-    }
-
-    item getrange(int l, int r) {
-        return (getrange(0, 0, size - 1, l, r));
-    }
-
-    void build(int n) {
-        size = 1;
-        while (size < n)
-            size *= 2;
-        tree.assign(size * 2, item());
-        lazy.assign(size * 2, 0);
-    }
-
-    void build(vector<item>& X) {
-        size = 1;
-        while (size < X.size())
-            size *= 2;
-        tree.assign(size * 2, item());
-        lazy.assign(size * 2, 0);
-
-        build(X, 0, 0, size - 1);
-    }
-
-private:
     int size;
-    vector<item> tree;
-    vector<long long> lazy;
+    vi vis, colorArr;
+    vii adj;
+ 
+    void addEdge(int u, int v) {
+        adj[u].push_back(v);
+    }
 
-    item merge(item a, item b) {
-        item res = (a & b);
+    vi findCircule() {
+        vi res;
+
+        for (int i = 1; i <= size && res.empty(); i++)
+        {
+            if (vis[i]) continue;
+            stack<pl> st;
+            stack<int> pros;
+            st.push({i, 0});
+
+            while (!st.empty())
+            {
+                auto m = st.top();
+                st.pop();
+                if (m.second == -1) {
+                    pros.pop();
+                    continue;
+                }
+                if (vis[m.first]) {
+                    res.push_back(m.first);
+                    while (pros.top() != m.first)
+                    {
+                        res.push_back(pros.top());
+                        pros.pop();
+                    }
+                    res.push_back(m.first);  
+                    break;                  
+                }
+                vis[m.first] = 1;
+                pros.push(m.first);
+                for (auto a : adj[m.first]) {
+                    if (a != m.second) {
+                        st.push({a, m.first});
+                    }
+                }
+                st.push({m.first, -1});
+            }
+        }
+
         return (res);
     }
-
-    void checkLazy(int m, int lx, int rx) {
-        if (!lazy[m]) return;
-        tree[m] += lazy[m];
-        
-        if (lx != rx) {
-            lazy[2 * m + 1] += lazy[m];
-            lazy[2 * m + 2] += lazy[m];
-        }
-
-        lazy[m] = 0;
-    }
-
-    void set(int m, int lx, int rx, int pos, int val) {
-        checkLazy(m, lx, rx);
-        if (pos < lx || rx < pos) return;
-        if (lx == rx && lx == pos)
-        {
-            tree[m] = val;
-            return;
-        }
-
-        int mid = (lx + rx) / 2;
-        item s1, s2;
-
-        set(m * 2 + 1, lx, mid, pos, val);
-        set(m * 2 + 2, mid + 1, rx, pos, val);
-        s1 = tree[m * 2 + 1], s2 = tree[m * 2 + 2];
-
-        tree[m] = merge(s1, s2);
-    }
-
-    void set(int m, int lx, int rx, int l, int r, int val) {
-        checkLazy(m, lx, rx);
-        if (rx < l || r < lx) return;
-        if (l <= lx && rx <= r)
-        {
-            lazy[m] = val;
-            checkLazy(m, lx, rx);
-            return;
-        }
-
-        int mid = (lx + rx) / 2;
-        item s1, s2;
-
-        set(m * 2 + 1, lx, mid, l, r, val);
-        set(m * 2 + 2, mid + 1, rx, l, r, val);
-        s1 = tree[m * 2 + 1], s2 = tree[m * 2 + 2];
-
-        tree[m] = merge(s1, s2);
-    }
-
-    item getrange(int m, int lx, int rx, int l, int r) {
-        checkLazy(m, lx, rx);
-        if (rx < l || r < lx) return (MAXX);
-        if (l <= lx && rx <= r) return (tree[m]);
-
-        int mid = (lx + rx) / 2;
-        item s1, s2;
-
-        s1 = getrange(m * 2 + 1, lx, mid, l, r);
-        s2 = getrange(m * 2 + 2, mid + 1, rx, l, r);
-
-        return merge(s1, s2);
-    }
-
-    void build(vector<item>& X, int m, int lx, int rx) {
-        if (lx == rx) {
-            if (lx < X.size()) tree[m] = X[lx];
-            return;
-        }
-
-        int mid = (lx + rx) / 2;
-        item s1, s2;
-
-        build(X, m * 2 + 1, lx, mid);
-        build(X, m * 2 + 2, mid + 1, rx);
-        s1 = tree[m * 2 + 1], s2 = tree[m * 2 + 2];
-
-        tree[m] = merge(s1, s2);
+    
+    Graph(ll n) {
+        size = n;
+        vis.assign(n + 1, 0);
+        colorArr.assign(size + 1, -1);
+        adj.resize(n + 1);
     }
 };
 
 
-void solve(ll tc) {
-    ll n, q, l, r, a, b, c;
+void solve(int tc) {
+    ll n, m;
 
-    cin >> n;
+    cin >> n >> m;
 
-    vi X(n);
-    SegmentTree sg;
+    Graph gr(n);
 
-    for (int i = 0; i < n; i++)
-        cin >> X[i];    
 
-    sg.build(X);
-
-    cin >> q;
-
-    while (q--)
+    for (int i = 0; i < m; i++)
     {
-        cin >> l >> r;
-        l--, r--;
-        ll re = sg.getrange(l, r);
-        a = b = MAXX;
-        if (l) a = sg.getrange(0, l - 1);
-        if (r < n - 1) b = sg.getrange(r + 1, n - 1);
-        a &= b;
-        if (a == MAXX) a = 0;
-        if (a == re) cout << "YES\n";
-        else cout << "NO\n";
+        ll a, b;
+        cin >> a >> b;
+        gr.addEdge(a, b);
+        gr.addEdge(b, a);
     }
-    
+
+    auto X = gr.findCircule();    
+    if (X.empty()) {
+        cout << "IMPOSSIBLE\n";
+        return;
+    }
+    cout << X.size() << '\n';
+    for (int i = 0; i < X.size(); i++)
+        cout << X[i] << ' ';
+    cout << '\n';
 }
 
 int main()
 {
-    ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
-    int size = 1;
-    //freopen("input.txt", "r", stdin   );
-    //freopen("output.txt", "w", stdout);
-    //cin >> size;
-    for (int tc = 1; tc <= size; tc++){
-        solve(tc);
-       // if (tc != size) cout << '\n';
-    }
+		ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
+		int size = 1;
+
+		//freopen("input.txt", "r", stdin);
+		//freopen("output.txt", "w", stdout);
+
+		//cin >> size;
+		for (int i = 1; i <= size; i++)
+				solve(i);
 }

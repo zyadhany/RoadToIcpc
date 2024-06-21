@@ -22,48 +22,54 @@ const int MODE = 1e9 + 7;
 
 using namespace std;
 
+
 class Graph {
 public:
     int size;
     vi vis;
-    vii adj, radj;
+    vii adj;
+
+    vi BFSgetRoad(int s, int e)
+    {
+        queue<int> que;
+        vi prev(size + 1, -1);
+        vi res;
+        que.push(s);
+        vis[s] = 1;
+
+        while (!que.empty())
+        {
+            int m = que.front();
+            que.pop();
+            
+            for (auto a : adj[m]) {
+                if (!vis[a]) {
+                    vis[a] = 1;
+                    que.push(a);
+                    prev[a] = m;
+                }
+            }
+        }
+
+        if (prev[e] != -1) res.push_back(e);
+        while (prev[e] != -1)
+        {
+            res.push_back(prev[e]);
+            e = prev[e];
+        }
+
+        reverse(all(res));
+        return (res);
+    }
 
     void addEdge(int u, int v) {
         adj[u].push_back(v);
-        radj[v].push_back(u);
-    }
-
-    void dfs(vii &adjlist, vi &visited, vi &X, ll n) {
-        if (visited[n]) return;
-        visited[n] = 1;
-        for (auto neg : adjlist[n]) dfs(adjlist, visited, X, neg);
-        X.push_back(n);
-    }
-
-    vii stronglyConnectedComponents () {
-        vii res;
-        vi nodeOrder, visited(size + 1);
-        for (int i = 1; i <= size; i++) dfs(adj, visited, nodeOrder, i);
-        
-        visited.assign(size + 1, 0);
-        for (int i = nodeOrder.size() - 1; i >= 0; i--)
-        {
-            int ind = nodeOrder[i];
-            if (visited[ind]) continue;
-            vi Y;
-            dfs(radj, visited, Y, ind);
-            res.push_back(Y);
-        }
-        
-        for (int i = 1; i <= size; i++) dfs(adj, visited, nodeOrder, i);        
-        return (res);
     }
 
     Graph(ll n) {
         size = n;
         vis.assign(n + 1, 0);
         adj.resize(n + 1);
-        radj.resize(n + 1);
     }
 };
 
@@ -75,20 +81,23 @@ void solve(int tc) {
 
     Graph gr(n);
 
-
     for (int i = 0; i < m; i++)
     {
         ll a, b;
         cin >> a >> b;
         gr.addEdge(a, b);
+        gr.addEdge(b, a);
     }
-
-    auto X = gr.stronglyConnectedComponents();
-    for (int i = 0; i < X.size(); i++) {
-        for (int j = 0; j < X[i].size(); j++)
-            cout << X[i][j] << ' ';        
-        cout << '\n';
-    }   
+    
+    auto X =gr.BFSgetRoad(1, n);
+    if (X.empty()) {
+        cout << "IMPOSSIBLE\n";
+        return;
+    }
+    cout << X.size() << '\n';
+    for (int i = 0; i < X.size(); i++)
+        cout << X[i] << ' ';
+    cout << '\n';    
 }
 
 int main()
