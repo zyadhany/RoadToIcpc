@@ -32,3 +32,43 @@ vp Longest_Increasing_SubSeq(vi &X) {
     reverse(all(res));
     return res;
 }
+
+// get longest increasing subsequince if segment(l, r).
+// each value start at postion and end else where.
+ll LISQSegment(vi &X) {
+    ll n, res;
+
+    n = X.size();
+    unordered_map<int, int> ST, EN;
+    ST.reserve(n); EN.reserve(n);
+    set<ll> st;
+    vi dp(n + 10, INT32_MAX);
+
+    for (int i = 0; i < n; i++)
+    {
+        if (!ST.count(X[i])) ST[X[i]] = i;
+        EN[X[i]] = i;
+        st.insert(X[i]);
+    }
+    
+    dp[0] = -1, res = 0;
+    for (auto a : st) {
+        ll st = ST[a], en = EN[a];
+        ll l, r, at;
+        
+        l = 0, r = res + 1;
+        while (l < r)
+        {
+            at = (l + r) / 2;
+            if (dp[at] < en) l = at + 1;
+            else r = at;
+        }
+        
+        if (dp[l - 1] <= st) {
+            dp[l] = en;
+            res = max(res, l);
+        }
+    }
+
+    return (res);
+}

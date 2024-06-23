@@ -22,6 +22,7 @@ const int MODE = 998244353;
 
 using namespace std;
 
+
 vp Longest_Increasing_SubSeq(vi &X) {
     vp res;
     vp Z(1, {INT32_MIN, -1});
@@ -80,13 +81,13 @@ void solve(int tc) {
 
 int main()
 {
-		ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
-		int size = 1;
+    ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
+    int size = 1;
 
-		//freopen("input.txt", "r", stdin);
-		//freopen("output.txt", "w", stdout);
+    //freopen("input.txt", "r", stdin);
+    //freopen("output.txt", "w", stdout);
 
-		//cin >> size;
-		for (int i = 1; i <= size; i++)
-				solve(i);
+    cin >> size;
+    for (int i = 1; i <= size; i++)
+            solve(i);
 }
