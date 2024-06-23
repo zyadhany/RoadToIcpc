@@ -22,41 +22,60 @@ const int MODE = 998244353;
 
 using namespace std;
 
-void solve(int tc) {
-    ll n, l, r, summ, re;
-    string s;
+vp Longest_Increasing_SubSeq(vi &X) {
+    vp res;
+    vp Z(1, {INT32_MIN, -1});
+    vi prev(X.size());
 
-    cin >> s;
+    for (int i = 0; i < X.size(); i++) {
+        pl k = {X[i], 0};
+        ll re = lower_bound(Z.begin(), Z.end(), k) - Z.begin();
+        prev[i] = Z[re - 1].second;
+        if (re == Z.size()) Z.push_back({X[i], i});
+        else Z[re] = {X[i], i};
+    }
 
-    n = s.size();
-    summ = 0;
-    deque<ll> L, R;
+    int at = Z.back().second;
 
-    l = r = 0;
-    while (l < n && r < n)
+    while (at != -1)
     {
-        r = max(r, l);
-        if (s[l] != 'C') l++;
-        else if (s[r] != 'A') r++;
-        else swap(s[l], s[r]);
+        res.push_back({X[at], at});
+        at = prev[at];
+    }
+    res.push_back({0, -1});
+    reverse(all(res));
+    res.push_back({INT32_MAX, INT32_MAX});
+    return res;
+}
+
+void solve(int tc) {
+    ll n;
+
+    cin >> n;
+
+    vi X(n);
+    set<int> st;
+
+    for (int i = 0; i < n; i++)
+        cin >> X[i];
+    vp Z = Longest_Increasing_SubSeq(X);
+
+    for (int i = 0; i < Z[0].second; i++)
+        st.insert(X[i]);
+
+    for (int i = 1; i < Z.size() - 1; i++)
+        cout << Z[i].first << ' ' << Z[i].second << '\n';
+    
+
+    ll at = 0;
+    for (int i = 0; i < n; i++)
+    {
+        while (i >= Z[at].second)
+            at++;
+        if (X[i] < Z[at - 1].first || X[i] > Z[at].first) st.insert(X[i]);
     }
     
-    for (int i = 0; i < n; i++)
-        if (s[i] == 'C') R.push_back(i);
-
-    re = 0;
-    for (int i = 0; i < n && !R.empty(); i++)
-    {
-        if (i == R.front()) R.pop_front();
-        else if (s[i] == 'A') re++;
-        else if (s[i] == 'B' && re) {
-            re--;
-            summ++;
-            R.pop_front();
-        }
-    }
-
-    cout << summ << '\n';
+    cout << st.size() << '\n';
 }
 
 int main()
