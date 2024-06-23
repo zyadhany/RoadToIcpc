@@ -22,52 +22,35 @@ const int MODE = 998244353;
 
 using namespace std;
 
+
 void solve(int tc) {
-    ll n, l, r, summ, re;
-    string s;
+    ll n, k, at = 1;
 
-    cin >> s;
+    cin >> n >> k;
 
-    n = s.size();
-    summ = 0;
-    deque<ll> L, R;
-
-    l = r = 0;
-    while (l < n && r < n)
-    {
-        r = max(r, l);
-        if (s[l] != 'C') l++;
-        else if (s[r] != 'A') r++;
-        else swap(s[l], s[r]);
-    }
-    
+    vi X(n);
     for (int i = 0; i < n; i++)
-        if (s[i] == 'C') R.push_back(i);
+        cin >> X[i];
 
-    re = 0;
-    for (int i = 0; i < n && !R.empty(); i++)
+    for (int i = 0; i < n - 1; i++)
     {
-        if (i == R.front()) R.pop_front();
-        else if (s[i] == 'A') re++;
-        else if (s[i] == 'B' && re) {
-            re--;
-            summ++;
-            R.pop_front();
-        }
+        if (X[i] > 1) break;
+        at ^= 1;
     }
-
-    cout << summ << '\n';
+        
+    if (at) cout << "Alice\n";
+    else cout << "Bob\n";
 }
 
 int main()
 {
-		ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
-		int size = 1;
+    ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
+    int size = 1;
 
-		//freopen("input.txt", "r", stdin);
-		//freopen("output.txt", "w", stdout);
+    //freopen("input.txt", "r", stdin);
+    //freopen("output.txt", "w", stdout);
 
-		//cin >> size;
-		for (int i = 1; i <= size; i++)
-				solve(i);
+    cin >> size;
+    for (int i = 1; i <= size; i++)
+            solve(i);
 }
