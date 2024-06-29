@@ -23,28 +23,12 @@ const int MODE = 998244353;
 using namespace std;
 
 void solve(int tc) {
-    ll n, odd, mx;
+    ll n, a, b;
 
-    cin >> n;
+    cin >> n >> a >> b;
 
-    odd = 0;
-    mx = INT32_MAX;
-
-    for (int i = 0; i < n; i++)
-    {
-        ll a; cin >> a;
-        ll re = 0, k = a % 2;
-        odd += k;
-        while (a % 2 != k ^ 1)
-        {
-            re++;
-            a /= 2;
-        }
-        mx = min(mx, re);
-    }
-    
-    if (odd % 2) cout << mx << '\n';
-    else cout << 0 << '\n';
+    if (a > b) cout << 1 << '\n';
+    else cout << (a + n - 1) / a << '\n';
 }
 
 int main()

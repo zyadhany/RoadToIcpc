@@ -23,28 +23,23 @@ const int MODE = 998244353;
 using namespace std;
 
 void solve(int tc) {
-    ll n, odd, mx;
+    ll n;
 
     cin >> n;
 
-    odd = 0;
-    mx = INT32_MAX;
+    vi X(n);
 
     for (int i = 0; i < n; i++)
+        cin >> X[i];
+    sort(X.begin() + 1, X.end());
+
+    for (int i = 1; i < n; i++)
     {
-        ll a; cin >> a;
-        ll re = 0, k = a % 2;
-        odd += k;
-        while (a % 2 != k ^ 1)
-        {
-            re++;
-            a /= 2;
-        }
-        mx = min(mx, re);
-    }
-    
-    if (odd % 2) cout << mx << '\n';
-    else cout << 0 << '\n';
+        if (X[i] <= X[0]) continue;
+        X[0] += (X[i] - X[0] + 1) / 2;
+    }   
+
+    cout << X[0] << '\n';    
 }
 
 int main()
@@ -53,6 +48,7 @@ int main()
     int size = 1;
 
     //freopen("input.txt", "r", stdin);
+    //freopen("output.txt", "w", stdout);
 
     cin >> size;
     for (int i = 1; i <= size; i++)

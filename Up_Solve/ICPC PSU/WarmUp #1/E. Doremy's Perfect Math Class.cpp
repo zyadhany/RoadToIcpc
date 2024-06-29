@@ -22,29 +22,26 @@ const int MODE = 998244353;
 
 using namespace std;
 
+ll gcd(ll a, ll b)
+{
+    if (b == 0) return (a);
+    return (gcd(b, a % b));
+}
+
 void solve(int tc) {
-    ll n, odd, mx;
+    ll n, g, mx;
 
-    cin >> n;
+    cin >> n >> g;
+    mx = g;
 
-    odd = 0;
-    mx = INT32_MAX;
-
-    for (int i = 0; i < n; i++)
+    for (int i = 0; i < n - 1; i++)
     {
         ll a; cin >> a;
-        ll re = 0, k = a % 2;
-        odd += k;
-        while (a % 2 != k ^ 1)
-        {
-            re++;
-            a /= 2;
-        }
-        mx = min(mx, re);
+        g = gcd(g, a);
+        mx = max(mx, a);
     }
     
-    if (odd % 2) cout << mx << '\n';
-    else cout << 0 << '\n';
+    cout << mx / g << '\n';
 }
 
 int main()
