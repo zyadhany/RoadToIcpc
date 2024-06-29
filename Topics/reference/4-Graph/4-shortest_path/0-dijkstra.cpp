@@ -9,7 +9,7 @@ public:
     }
 
 	vi dijkstra(ll v) {
-		vi Z(size + 1, INT32_MAX);
+		vi Z(size + 1, INT64_MAX);
 
 		priority_queue<pl, vp, greater<pl>> L;
 		L.push({0, v});

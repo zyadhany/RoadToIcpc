@@ -8,12 +8,7 @@ public:
         adj[u].push_back(v);
     }
 
-    void DFS(vi &X, ll n) {
-        if (vis[n]) return;
-        vis[n] = 1;
-        for (auto neg : adj[n]) DFS(X, neg);
-        X.push_back(n);
-    }
+    ص
 
     vi TopologicalSort() {
         vi X;
