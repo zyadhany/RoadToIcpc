@@ -3,7 +3,7 @@
 #include <unordered_map>
 #include <random>
 
-#define ll long long
+#define ll int
 #define ld long double
 #define pl pair<ll, ll>
 #define vi vector<ll>
@@ -25,16 +25,31 @@ using namespace std;
 
 void solve(int tc) {
     ll n;
-    string s;
 
-    cin >> n >> s;
+    cin >> n;
 
-    ll summ = 0;
-    for (int i = 0; i < n - 1; i++)
-        if (s[i] != '0') summ += s[i] - '0' + 1;    
-    summ += s.back() - '0';
+    vi X(n);
 
-    cout << summ << '\n';
+    for (int i = 0; i < n; i++)
+    {
+        cin >> X[i];
+        while (X[i] > n)
+            X[i] /= 2;
+    }
+    sortx(X);
+
+    vi Z(n + 1);
+
+    for (int i = 0; i < n; i++)
+    {
+        while (X[i] && Z[X[i]])
+            X[i] /= 2;
+        Z[X[i]] = 1;
+    }
+        
+    for (int i = 1; i <= n; i++)
+        if (!Z[i]) NO;
+    YES;
 }
 
 int main()

@@ -3,7 +3,7 @@
 #include <unordered_map>
 #include <random>
 
-#define ll long long
+#define ll int
 #define ld long double
 #define pl pair<ll, ll>
 #define vi vector<ll>
@@ -24,17 +24,33 @@ const int MODE = 998244353;
 using namespace std;
 
 void solve(int tc) {
-    ll n;
+    ll n, q, summ;
     string s;
 
-    cin >> n >> s;
+    cin >> n >> q;
+    cin >> s;
 
-    ll summ = 0;
-    for (int i = 0; i < n - 1; i++)
-        if (s[i] != '0') summ += s[i] - '0' + 1;    
-    summ += s.back() - '0';
+    summ = 0;
+    for (int i = 0; i < n - 2; i++)
+        if (s.substr(i, 3) == "abc") summ++;
+    
+    while (q--)
+    {
+        ll pos;
+        char c;
 
-    cout << summ << '\n';
+        cin >> pos >> c;
+
+        pos--;
+        ll at = pos - (c == 'b') - 2 * (c == 'c');
+
+        for (int i = pos - 2; i <= pos; i++)
+            if (i >= 0 && i < n - 2 && s.substr(i, 3) == "abc") summ--;
+        s[pos] = c;
+        if (at >= 0 && at < n - 2 && s.substr(at, 3) == "abc") summ++;
+
+        cout << summ << '\n';
+    }
 }
 
 int main()
@@ -43,6 +59,6 @@ int main()
     int size = 1;
 
     //freopen("input.txt", "r", stdin);
-    cin >> size;
+    //cin >> size;
     for (int i = 1; i <= size; i++) solve(i);
 }

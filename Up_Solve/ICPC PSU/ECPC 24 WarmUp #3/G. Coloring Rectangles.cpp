@@ -24,17 +24,18 @@ const int MODE = 998244353;
 using namespace std;
 
 void solve(int tc) {
-    ll n;
-    string s;
+    ll n, m;
 
-    cin >> n >> s;
+    cin >> n >> m;
 
-    ll summ = 0;
-    for (int i = 0; i < n - 1; i++)
-        if (s[i] != '0') summ += s[i] - '0' + 1;    
-    summ += s.back() - '0';
+    ll l, r;
 
-    cout << summ << '\n';
+    l = r = INT32_MAX;
+
+    l = n / 3 * m + (n % 3) * (m + 2) / 3;
+    r = m / 3 * n + (m % 3) * (n + 2) / 3;
+    
+    cout << min(l, r) << '\n';
 }
 
 int main()

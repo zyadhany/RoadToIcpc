@@ -24,17 +24,31 @@ const int MODE = 998244353;
 using namespace std;
 
 void solve(int tc) {
-    ll n;
-    string s;
+    ll n, summ;
 
-    cin >> n >> s;
+    cin >> n;
 
-    ll summ = 0;
-    for (int i = 0; i < n - 1; i++)
-        if (s[i] != '0') summ += s[i] - '0' + 1;    
-    summ += s.back() - '0';
-
-    cout << summ << '\n';
+    summ = 0;
+    vi X(n);
+    
+    for (int i = 0; i < n; i++)
+    {
+        cin >> X[i];
+        summ += X[i];
+    }
+    
+    ll res = 0;
+    ld mean = summ * 1.0 / n;
+    map<ld, int> Y;
+    
+    for (int i = 0; i < n; i++)
+    {
+        ld re = mean - X[i];
+        res += Y[-re];
+        Y[re]++;
+    }
+    
+    cout << res << '\n';
 }
 
 int main()
