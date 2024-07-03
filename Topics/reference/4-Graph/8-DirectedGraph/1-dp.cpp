@@ -51,3 +51,47 @@ vp ShortestPathAndCount(ll v) {
     return (Z);
 }
 
+
+/**
+ * Longest Path From n to all others node.
+ * definde vector(size + 1, INT32_MIN).
+ * if val = -1 : it can't reach.
+ */
+class Graph 
+{
+public:
+    int size;
+    vi vis, val;
+    vector<vp> adj;
+    vector<vp> adjr;
+    ll sol = 0;
+
+    ll dfs(vi &X, ll dist, ll n, vector<vp> &add) 
+    {
+    	if (n == dist) X[n] = 0;
+        if (X[n] != INT32_MIN) return X[n];
+        X[n] = -1;
+        for (auto neg : add[n]) 
+        {
+            dfs(X, dist, neg.second, add);
+        	if(X[neg.second]!=-1)
+            X[n] = max(X[n], neg.first + X[neg.second]);
+        }
+        return X[n];
+    }
+
+    void addEdge(int u, int v, ll k) 
+    {
+        adj[u].push_back({k, v});
+        adjr[v].push_back({k, u});
+    }
+
+    Graph(ll n) 
+    {
+        size = n;
+        vis.assign(n + 1, 0);   
+        val.assign(n + 1, 0);
+        adj.resize(n + 1);
+        adjr.resize(n + 1);
+    }
+};
