@@ -19,38 +19,14 @@
 #define YES {cout << "YES\n"; return;}
 #define NO {cout << "NO\n"; return;}
 
-
 const int MODE = 998244353;
 
 using namespace std;
 
 void solve(int tc) {
-    ll n;
-
-    cin >> n;
-
-    vi X(2e7 + 1);
-    vi prev(2e7 + 1);
-    pl sol = {-1, -1};
-
-    for (int i = 1; i <= n; i++)
-    {
-        ll a; cin >> a;
-        if (X[a]) sol = {X[a], i};
-        X[a] = i;
-    }
-    
-    if (sol.first != -1) {
-        cout << "1 " << sol.first << '\n';
-        cout << "1 " << sol.second << '\n';
-        return;
-    }
-
-    for (int i = 0; i < X.size(); i++)
-    {
-        
-    }
-    
+    ll n, m;
+    cin >> n >> m;
+    cout << max(n, m) << '\n';
 }
 
 int main()

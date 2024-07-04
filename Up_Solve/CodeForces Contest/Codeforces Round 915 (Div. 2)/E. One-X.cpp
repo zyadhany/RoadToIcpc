@@ -24,33 +24,41 @@ const int MODE = 998244353;
 
 using namespace std;
 
+ll fpowr(ll b, ll exp)
+{
+    ll ret = 1;
+
+    while (exp > 0) {
+        if ((exp & 1) > 0)
+            ret = (ret * b) % MODE;
+        b = (b * b) % MODE;
+        exp >>= 1;
+    }
+
+    return (ret % MODE);
+}
+
+map<ll, pl> dp;
+pl req(ll n) {
+    if (n == 0) return {0, 0};
+    if (n == 1) return {1, 0};
+    if (dp.count(n)) return dp[n];
+    pl &res = dp[n];
+
+    ll m = (n + 1) / 2;
+    pl l = req(m);
+    pl r = req(n - m);
+    ll re = ((fpowr(2, m) - 1 + MODE) % MODE * (fpowr(2, n - m) - 1 + MODE) % MODE) % MODE;
+    res.first = (re + 2 * l.first + 2 * r.first) % MODE;
+    res.second = (l.second + r.first + r.second) % MODE;
+    return (res);
+}
+
 void solve(int tc) {
     ll n;
-
     cin >> n;
-
-    vi X(2e7 + 1);
-    vi prev(2e7 + 1);
-    pl sol = {-1, -1};
-
-    for (int i = 1; i <= n; i++)
-    {
-        ll a; cin >> a;
-        if (X[a]) sol = {X[a], i};
-        X[a] = i;
-    }
-    
-    if (sol.first != -1) {
-        cout << "1 " << sol.first << '\n';
-        cout << "1 " << sol.second << '\n';
-        return;
-    }
-
-    for (int i = 0; i < X.size(); i++)
-    {
-        
-    }
-    
+    auto re = req(n);
+    cout << (re.first + re.second) % MODE << '\n';
 }
 
 int main()

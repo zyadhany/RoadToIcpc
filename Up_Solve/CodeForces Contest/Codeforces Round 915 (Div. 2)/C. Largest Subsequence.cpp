@@ -24,33 +24,39 @@ const int MODE = 998244353;
 
 using namespace std;
 
+// get lexicographically Largest subseq
+vp lexicographicallyLargestSubSeq(string &s) {
+    vp res;
+    for (int i = 0; i < s.size(); i++)
+    {
+        while (!res.empty() && res.back().first < s[i])
+            res.pop_back();
+        res.push_back({s[i], i});
+    }
+    return (res);
+}
+
 void solve(int tc) {
-    ll n;
+    ll n, res;
+    string s;
 
-    cin >> n;
+    cin >> n >> s;
 
-    vi X(2e7 + 1);
-    vi prev(2e7 + 1);
-    pl sol = {-1, -1};
+    auto Z = lexicographicallyLargestSubSeq(s);    
+    res = Z.size();
 
-    for (int i = 1; i <= n; i++)
+    for (int i = Z.size() - 1; i >= 0; i--)
     {
-        ll a; cin >> a;
-        if (X[a]) sol = {X[a], i};
-        X[a] = i;
+        res -= (Z[i].first == Z[0].first);
+        s[Z[Z.size() - 1 - i].second] = Z[i].first;
     }
     
-    if (sol.first != -1) {
-        cout << "1 " << sol.first << '\n';
-        cout << "1 " << sol.second << '\n';
-        return;
-    }
-
-    for (int i = 0; i < X.size(); i++)
-    {
-        
-    }
-    
+    for (int i = 1; i < n; i++)
+        if (s[i] < s[i - 1]) {
+            cout << "-1\n";
+            return;
+        }
+    cout << res << '\n';
 }
 
 int main()

@@ -25,32 +25,23 @@ const int MODE = 998244353;
 using namespace std;
 
 void solve(int tc) {
-    ll n;
+    ll n, res;
 
     cin >> n;
+    vi X(n + 1);
 
-    vi X(2e7 + 1);
-    vi prev(2e7 + 1);
-    pl sol = {-1, -1};
-
+    for (int i = 0; i < n - 1; i++)
+    {
+        ll u, v;
+        cin >> u >> v;
+        X[u]++; X[v]++;
+    }
+    
+    res = 0;
     for (int i = 1; i <= n; i++)
-    {
-        ll a; cin >> a;
-        if (X[a]) sol = {X[a], i};
-        X[a] = i;
-    }
+        res += (X[i] == 1);
     
-    if (sol.first != -1) {
-        cout << "1 " << sol.first << '\n';
-        cout << "1 " << sol.second << '\n';
-        return;
-    }
-
-    for (int i = 0; i < X.size(); i++)
-    {
-        
-    }
-    
+    cout << (res + 1) / 2 << '\n';
 }
 
 int main()
