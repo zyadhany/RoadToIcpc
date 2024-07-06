@@ -25,21 +25,16 @@ const int MODE = 998244353;
 using namespace std;
 
 void solve(int tc) {
-    ll n, summ, at;
+    vi X(3);
 
-    cin >> n;
+    cin >> X[0] >> X[1] >> X[2];
+    sortx(X);
 
-    summ = at = 0;
-
-    for (int i = 0; i < n; i++)
-    {
-        ll a; cin >> a;
-
-        summ += abs(at - a);
-        at = a;
-    }
-    
-    cout << summ << '\n';
+    if (X[0] + X[1] == X[2]) YES;
+    if (X[0] == X[1] && X[2] % 2 == 0) YES;
+    if (X[1] == X[2] && X[0] % 2 == 0) YES;
+    if (X[0] == X[2] && X[1] % 2 == 0) YES;
+    NO;
 }
 
 int main()
@@ -49,7 +44,7 @@ int main()
     //freopen("mex.in", "r", stdin);
     //freopen("output.txt", "w", stdout);
 
-    //cin >> size;
+    cin >> size;
     for (int i = 1; i <= size; i++)
         solve(i);
 }

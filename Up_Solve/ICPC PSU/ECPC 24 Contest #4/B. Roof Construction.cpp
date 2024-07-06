@@ -25,21 +25,22 @@ const int MODE = 998244353;
 using namespace std;
 
 void solve(int tc) {
-    ll n, summ, at;
+    ll n, at;
 
     cin >> n;
 
-    summ = at = 0;
+    vi X(n);
 
     for (int i = 0; i < n; i++)
     {
-        ll a; cin >> a;
-
-        summ += abs(at - a);
-        at = a;
+        X[i] = i;
+        if (__builtin_popcount(i) == 1) at = i;
     }
     
-    cout << summ << '\n';
+    swap(X[0], X[at - 1]);
+    for (int i = 0; i < n; i++)
+        cout << X[i] << ' ';
+    cout << '\n';    
 }
 
 int main()
@@ -49,7 +50,7 @@ int main()
     //freopen("mex.in", "r", stdin);
     //freopen("output.txt", "w", stdout);
 
-    //cin >> size;
+    cin >> size;
     for (int i = 1; i <= size; i++)
         solve(i);
 }

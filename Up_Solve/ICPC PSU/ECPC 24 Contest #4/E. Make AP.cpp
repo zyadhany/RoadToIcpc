@@ -25,21 +25,13 @@ const int MODE = 998244353;
 using namespace std;
 
 void solve(int tc) {
-    ll n, summ, at;
+    ll a, b, c;
 
-    cin >> n;
-
-    summ = at = 0;
-
-    for (int i = 0; i < n; i++)
-    {
-        ll a; cin >> a;
-
-        summ += abs(at - a);
-        at = a;
-    }
-    
-    cout << summ << '\n';
+    cin >> a >> b >> c;
+    if ((2 * b - a) % c == 0 && (2 * b - a) >= c) YES;
+    if ((2 * b - c) % a == 0 && (2 * b - c) >= a) YES;
+    if ((a + (c - a) / 2) % b == 0 && ((c - a) % 2) == 0 && (a + (c - a) / 2) >= b) YES;
+    NO;
 }
 
 int main()
@@ -49,7 +41,7 @@ int main()
     //freopen("mex.in", "r", stdin);
     //freopen("output.txt", "w", stdout);
 
-    //cin >> size;
+    cin >> size;
     for (int i = 1; i <= size; i++)
         solve(i);
 }
