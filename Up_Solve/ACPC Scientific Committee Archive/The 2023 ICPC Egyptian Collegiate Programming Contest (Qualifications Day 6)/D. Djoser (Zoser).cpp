@@ -20,7 +20,7 @@
 #define NO {cout << "NO\n"; return;}
 
 
-const int MODE = 998244353;
+const int MODE = 1e9 + 7;
 
 using namespace std;
 
@@ -28,29 +28,28 @@ void solve(int tc) {
     ll n;
 
     cin >> n;
-
-    vi X(2e7 + 1);
-    vi prev(2e7 + 1);
-    pl sol = {-1, -1};
+    vi X(n + 1);
+    vii Z(2, vi(1024));
 
     for (int i = 1; i <= n; i++)
-    {
-        ll a; cin >> a;
-        if (X[a]) sol = {X[a], i};
-        X[a] = i;
-    }
-    
-    if (sol.first != -1) {
-        cout << "1 " << sol.first << '\n';
-        cout << "1 " << sol.second << '\n';
-        return;
-    }
+        cin >> X[i];
 
-    for (int i = 0; i < X.size(); i++)
+    Z[0].assign(1024, 0);
+    ll l , r;
+    for (int i = 1; i <= n; i++)
     {
-        
+        if (i % 2) l = 0, r = 1;
+        else l = 1, r = 0;
+
+        for (int j = 0; j < 1024; j++)
+        {
+            ll re = __builtin_popcount(j ^ X[i]);
+            Z[l][j] = Z[r][j] + re;
+            if (j) Z[l][j] = min(Z[l][j], Z[l][j - 1]);
+        }
     }
-    
+        
+    cout << Z[l].back();
 }
 
 int main()
@@ -60,7 +59,7 @@ int main()
     //freopen("mex.in", "r", stdin);
     //freopen("output.txt", "w", stdout);
 
-    cin >> size;
+    //cin >> size;
     for (int i = 1; i <= size; i++)
         solve(i);
 }

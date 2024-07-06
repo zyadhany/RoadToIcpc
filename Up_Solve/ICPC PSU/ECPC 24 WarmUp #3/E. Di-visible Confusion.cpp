@@ -1,8 +1,9 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include <bits/stdc++.h>
 #include <unordered_map>
+#include <random>
 
-#define ll long long
+#define ll int
 #define ld long double
 #define pl pair<ll, ll>
 #define vi vector<ll>
@@ -22,36 +23,35 @@ const int MODE = 998244353;
 
 using namespace std;
 
-ll req (ll at, ll n, ll p, ll k, ll x) {
-    if (at == n) return (k == x);
-    ll summ = 0;
-    for (int i = 0; i < p; i++)
-        summ += req(at + 1, n, p, k ^ i, x);
-    return (summ);
-}
-
 void solve(int tc) {
-    ll n, m, k, pw;
-    cout << req(0, 3, 4, 0, 2);
-    return;
+    ll n;
 
-    cin >> n >> k >> m;
-    pw = (1 << k);
+    cin >> n;
 
     vi X(n + 1);
 
+    for (int i = 1; i <= n; i++)
+        cin >> X[i];
 
+    for (int i = 1; i <= n; i++) {
+        bool isit = 0;
+        for (int j = i + 1; j >= 2; j--)
+            if (X[i] % j) {
+                isit = 1;
+                break;
+            }
+        if (!isit) NO;
+    }
+
+    YES;
 }
 
 int main()
 {
-		ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
-		int size = 1;
+    ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
+    int size = 1;
 
-		//freopen("input.txt", "r", stdin);
-		//freopen("output.txt", "w", stdout);
-
-		//cin >> size;
-		for (int i = 1; i <= size; i++)
-				solve(i);
+    //freopen("input.txt", "r", stdin);
+    cin >> size;
+    for (int i = 1; i <= size; i++) solve(i);
 }

@@ -2,7 +2,7 @@
 #include <bits/stdc++.h>
 #include <unordered_map>
 
-#define ll long long
+#define ll int
 #define ld long double
 #define pl pair<ll, ll>
 #define vi vector<ll>
@@ -20,37 +20,29 @@
 #define NO {cout << "NO\n"; return;}
 
 
-const int MODE = 998244353;
+const int MODE = 1e9 + 7;
 
 using namespace std;
 
+ 
+
 void solve(int tc) {
-    ll n;
+    ll n, k, summ;
 
-    cin >> n;
+    summ = 0;
 
-    vi X(2e7 + 1);
-    vi prev(2e7 + 1);
-    pl sol = {-1, -1};
+    cin >> n >> k;
 
-    for (int i = 1; i <= n; i++)
+    ll l, r;
+    for (int i = 1; i * i <= k; i++)
     {
-        ll a; cin >> a;
-        if (X[a]) sol = {X[a], i};
-        X[a] = i;
+        if (k % i) continue;
+        ll re = k / i;
+        if (i > n || re > n) continue;
+        summ += 1 + (re * re != k);
     }
     
-    if (sol.first != -1) {
-        cout << "1 " << sol.first << '\n';
-        cout << "1 " << sol.second << '\n';
-        return;
-    }
-
-    for (int i = 0; i < X.size(); i++)
-    {
-        
-    }
-    
+    cout << summ << '\n';
 }
 
 int main()
@@ -60,7 +52,7 @@ int main()
     //freopen("mex.in", "r", stdin);
     //freopen("output.txt", "w", stdout);
 
-    cin >> size;
+    // cin >> size;
     for (int i = 1; i <= size; i++)
         solve(i);
 }

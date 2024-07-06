@@ -20,37 +20,24 @@
 #define NO {cout << "NO\n"; return;}
 
 
-const int MODE = 998244353;
+const int MODE = 1e9 + 7;
 
 using namespace std;
 
 void solve(int tc) {
-    ll n;
+    ll n, k, summ;
+    
+    cin >> n >> k;
 
-    cin >> n;
-
-    vi X(2e7 + 1);
-    vi prev(2e7 + 1);
-    pl sol = {-1, -1};
-
-    for (int i = 1; i <= n; i++)
+    summ = 0;
+    for (int i = 0; i < n; i++)
     {
         ll a; cin >> a;
-        if (X[a]) sol = {X[a], i};
-        X[a] = i;
+        summ |= a;
     }
     
-    if (sol.first != -1) {
-        cout << "1 " << sol.first << '\n';
-        cout << "1 " << sol.second << '\n';
-        return;
-    }
-
-    for (int i = 0; i < X.size(); i++)
-    {
-        
-    }
-    
+    if ((summ & k) != summ) cout << "-1\n";
+    else cout << (k ^ summ) << '\n';
 }
 
 int main()

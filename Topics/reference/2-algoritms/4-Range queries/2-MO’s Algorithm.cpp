@@ -41,12 +41,6 @@ vi MoQueryResult(vector<Query> Q, vi &X)
     {
         ll L = Q[i].L, R = Q[i].R, ind = Q[i].ind;
  
-        while (currL < L)
-        {
-            MoRemove(currSum, X[currL]);
-            currL++;
-        }
- 
         while (currL > L)
         {
             MoAdd(currSum, X[currL - 1]);
@@ -57,6 +51,12 @@ vi MoQueryResult(vector<Query> Q, vi &X)
         {
             MoAdd(currSum, X[currR]);
             currR++;
+        }
+ 
+        while (currL < L)
+        {
+            MoRemove(currSum, X[currL]);
+            currL++;
         }
  
         while (currR > R+1)

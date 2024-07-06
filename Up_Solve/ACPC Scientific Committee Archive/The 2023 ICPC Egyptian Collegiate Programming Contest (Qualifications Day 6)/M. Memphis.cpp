@@ -20,37 +20,23 @@
 #define NO {cout << "NO\n"; return;}
 
 
-const int MODE = 998244353;
+const int MODE = 1e9 + 7;
 
 using namespace std;
 
+vi fac(1e6 + 1, 1);
+vi sol(1e6 + 1, -1);
+
+ll req(ll n) {
+    ll &res = sol[n];
+    if (~res) return (res);
+    return res = (fac[n - 1] + (n * req(n - 1))) % MODE;
+}
+
 void solve(int tc) {
     ll n;
-
     cin >> n;
-
-    vi X(2e7 + 1);
-    vi prev(2e7 + 1);
-    pl sol = {-1, -1};
-
-    for (int i = 1; i <= n; i++)
-    {
-        ll a; cin >> a;
-        if (X[a]) sol = {X[a], i};
-        X[a] = i;
-    }
-    
-    if (sol.first != -1) {
-        cout << "1 " << sol.first << '\n';
-        cout << "1 " << sol.second << '\n';
-        return;
-    }
-
-    for (int i = 0; i < X.size(); i++)
-    {
-        
-    }
-    
+    cout << req(n) << '\n';
 }
 
 int main()
@@ -59,6 +45,10 @@ int main()
     int size = 1;
     //freopen("mex.in", "r", stdin);
     //freopen("output.txt", "w", stdout);
+
+    for (int i = 1; i < fac.size(); i++)
+        fac[i] = (fac[i - 1] * i) % MODE;
+    sol[1] = 1; sol[2] = 3;
 
     cin >> size;
     for (int i = 1; i <= size; i++)

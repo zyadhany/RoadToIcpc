@@ -2,7 +2,7 @@
 #include <bits/stdc++.h>
 #include <unordered_map>
 
-#define ll long long
+#define ll int
 #define ld long double
 #define pl pair<ll, ll>
 #define vi vector<ll>
@@ -20,37 +20,61 @@
 #define NO {cout << "NO\n"; return;}
 
 
-const int MODE = 998244353;
+const int MODE = 1e9 + 7;
 
 using namespace std;
+
+class Graph {
+public:
+    int size;
+    vi vis, val;
+    vii adj;
+    ll sol = 0;
+
+    void dfs(ll n, ll p) {
+        if (vis[val[n]]) sol--, vis[val[n]] = 0;
+        vis[val[n]]++;
+        sol++;
+        for (auto neg : adj[n]) {
+            if (neg == p) continue;
+            dfs(neg, n);
+        }
+        vis[val[n]] = 0;
+    }
+
+    void addEdge(int u, int v) {
+        adj[u].push_back(v);
+    }
+
+    Graph(ll n) {
+        size = n;
+        vis.assign(n + 1, 0);
+        val.assign(n + 1, 0);
+        adj.resize(n + 1);
+    }
+};
+
 
 void solve(int tc) {
     ll n;
 
     cin >> n;
 
-    vi X(2e7 + 1);
-    vi prev(2e7 + 1);
-    pl sol = {-1, -1};
+    Graph gr(n);
 
     for (int i = 1; i <= n; i++)
-    {
-        ll a; cin >> a;
-        if (X[a]) sol = {X[a], i};
-        X[a] = i;
-    }
-    
-    if (sol.first != -1) {
-        cout << "1 " << sol.first << '\n';
-        cout << "1 " << sol.second << '\n';
-        return;
-    }
+        cin >> gr.val[i];
 
-    for (int i = 0; i < X.size(); i++)
+    for (int i = 0; i < n - 1; i++)
     {
-        
+        ll l, r;
+        cin >> l >> r;
+        gr.addEdge(l, r);
+        gr.addEdge(r, l);
     }
     
+    gr.dfs(1, 0);
+    cout << gr.sol << '\n';
 }
 
 int main()

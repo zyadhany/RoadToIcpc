@@ -24,33 +24,51 @@ const int MODE = 998244353;
 
 using namespace std;
 
+vi MonomaticStack(vi& X)
+{
+    ll n = X.size();
+    stack<pair<ll, ll>> s;
+    vi Z(n, -1);
+
+    for (int i = n - 1; i >= 0; i--) {
+        while (!s.empty() && s.top().first > X[i]) {
+            Z[s.top().second] = i;
+            s.pop();
+        }
+        s.push({ X[i] , i });
+    }
+
+    return (Z);
+}
+
+
 void solve(int tc) {
-    ll n;
+    ll n, at, summ, mx;
 
     cin >> n;
 
-    vi X(2e7 + 1);
-    vi prev(2e7 + 1);
-    pl sol = {-1, -1};
+    vi X(n), Y(n);
 
-    for (int i = 1; i <= n; i++)
+    for (int i = 0; i < n; i++)
     {
-        ll a; cin >> a;
-        if (X[a]) sol = {X[a], i};
-        X[a] = i;
+        cin >> Y[i];
+        if (!Y[i]) at = i;
     }
     
-    if (sol.first != -1) {
-        cout << "1 " << sol.first << '\n';
-        cout << "1 " << sol.second << '\n';
-        return;
-    }
+    for (int i = 0; i < n; i++)
+        X[i] = Y[(i + at) % n];
+    Y = MonomaticStack(X);
 
-    for (int i = 0; i < X.size(); i++)
+    vi Z(n);
+    Z[0] = mx = n;
+    for (int i = 1; i < n; i++)
     {
-        
+        ll re = Y[i];
+        Z[i] = Z[re] + (i - re) * X[i]; 
+        mx = max(mx, Z[i]);
     }
     
+    cout << mx << '\n';
 }
 
 int main()

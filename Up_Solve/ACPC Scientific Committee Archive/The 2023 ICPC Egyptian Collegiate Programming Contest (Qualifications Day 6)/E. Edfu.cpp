@@ -2,7 +2,7 @@
 #include <bits/stdc++.h>
 #include <unordered_map>
 
-#define ll long long
+#define ll int
 #define ld long double
 #define pl pair<ll, ll>
 #define vi vector<ll>
@@ -20,37 +20,44 @@
 #define NO {cout << "NO\n"; return;}
 
 
-const int MODE = 998244353;
+const int MODE = 1e9 + 7;
 
 using namespace std;
 
+ 
+
 void solve(int tc) {
-    ll n;
+    ll n, k;
 
-    cin >> n;
+    cin >> n >> k;
 
-    vi X(2e7 + 1);
-    vi prev(2e7 + 1);
-    pl sol = {-1, -1};
+    vi Z(n + 10);
 
+    for (int i = 0; i < k; i++)
+    {
+        ll l, r;
+        cin >> l >> r;
+        Z[l]++;
+        Z[r + 1]--;
+    }
+    
+    ll mx = 0;
+    ll at = 0;
+    ll re = 0;
     for (int i = 1; i <= n; i++)
     {
-        ll a; cin >> a;
-        if (X[a]) sol = {X[a], i};
-        X[a] = i;
-    }
-    
-    if (sol.first != -1) {
-        cout << "1 " << sol.first << '\n';
-        cout << "1 " << sol.second << '\n';
-        return;
+        re += Z[i];
+        Z[i] += Z[i - 1];
+        if (re) at = i;
+        else mx = max(mx, i - at);
     }
 
-    for (int i = 0; i < X.size(); i++)
-    {
-        
-    }
+    ll s = INT32_MAX, e = 0;
+    for (int i = 1; i <= n; i++)
+        if (Z[i]) s = min(s, i), e = max(e, i);
     
+    mx = max(mx,n - e + s - 1);
+    cout << mx << '\n';
 }
 
 int main()
@@ -60,7 +67,7 @@ int main()
     //freopen("mex.in", "r", stdin);
     //freopen("output.txt", "w", stdout);
 
-    cin >> size;
+    // cin >> size;
     for (int i = 1; i <= size; i++)
         solve(i);
 }

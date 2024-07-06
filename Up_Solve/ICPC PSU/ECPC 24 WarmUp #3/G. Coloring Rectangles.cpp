@@ -1,13 +1,13 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include <bits/stdc++.h>
 #include <unordered_map>
+#include <random>
 
 #define ll long long
 #define ld long double
 #define pl pair<ll, ll>
 #define vi vector<ll>
 #define vii vector<vi>
-#define viii vector<vii>
 #define vc vector<char>
 #define vcc vector<vc>
 #define vp vector<pl>
@@ -19,48 +19,31 @@
 #define YES {cout << "YES\n"; return;}
 #define NO {cout << "NO\n"; return;}
 
-
 const int MODE = 998244353;
 
 using namespace std;
 
 void solve(int tc) {
-    ll n;
+    ll n, m;
 
-    cin >> n;
+    cin >> n >> m;
 
-    vi X(2e7 + 1);
-    vi prev(2e7 + 1);
-    pl sol = {-1, -1};
+    ll l, r;
 
-    for (int i = 1; i <= n; i++)
-    {
-        ll a; cin >> a;
-        if (X[a]) sol = {X[a], i};
-        X[a] = i;
-    }
+    l = r = INT32_MAX;
+
+    l = n / 3 * m + (n % 3) * (m + 2) / 3;
+    r = m / 3 * n + (m % 3) * (n + 2) / 3;
     
-    if (sol.first != -1) {
-        cout << "1 " << sol.first << '\n';
-        cout << "1 " << sol.second << '\n';
-        return;
-    }
-
-    for (int i = 0; i < X.size(); i++)
-    {
-        
-    }
-    
+    cout << min(l, r) << '\n';
 }
 
 int main()
 {
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;
-    //freopen("mex.in", "r", stdin);
-    //freopen("output.txt", "w", stdout);
 
+    //freopen("input.txt", "r", stdin);
     cin >> size;
-    for (int i = 1; i <= size; i++)
-        solve(i);
+    for (int i = 1; i <= size; i++) solve(i);
 }
