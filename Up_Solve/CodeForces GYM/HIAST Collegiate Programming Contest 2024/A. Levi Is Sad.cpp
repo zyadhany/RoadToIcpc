@@ -24,44 +24,42 @@ const int MODE = 1e9 + 7;
 
 using namespace std;
 
-ll summtion(ll n) {
-    return n * (n - 1) / 2;
-}
-
 void solve(int tc) {
-    ll n, summ, mx;
+    ll n, x, y;
 
-    cin >> n;
+    cin >> n >> x >> y;
 
-    summ = mx = 0;
-    unordered_map<int, int> X;
-    X.reserve(n);
+    vi X(n + 10), dp(n + 10, INT64_MAX);
 
-    for (int i = 0; i < n; i++)
-    {
-        ll a;
-        cin >> a;
-        X[a]++;
-        mx = max(mx, a);
-    }
+    for (int i = 1; i <= n; i++)
+        cin >> X[i];
     
-    for (auto m : X) {
-        ll k = 0;
-
-        for (int i = m.first; ; i+=m.first)
-        {
-            ll re = i / m.first;
-            re *= re * i;
-            if (re > mx) break;
-            if (X.count(re) && re != m.first) k += X[re];
+    dp[0] = 0;
+    
+    for (int i = 1; i <= n; i++)
+    {
+        if (X[i] >= X[i - 1] || X[i] >= X[i + 1]) {
+            dp[i] = dp[i - 1];
+            continue;
         }
 
-        summ += m.second * (m.second - 1) / 2 + m.second * k;
+        dp[i] = dp[i - 1] + (min(X[i - 1], X[i + 1]) - X[i]) * min(x, y);
+        if (i < 4) continue;
+        if (X[i - 1] <= X[i - 2] || X[i - 3] <= X[i - 2]) continue;
+ 
+        ll a, b, c;
+        a = X[i];
+        b = X[i - 2];
+        c = X[i - 1];
+        if (b < a) swap(a, b);
+ 
+        ll re = dp[i - 3] + (c - b) * y + (b - a) * x;
+        re = min(re, dp[i - 3] + (c - a) * y);
+        dp[i] = min(dp[i], re);
     }
-
-    cout << summ << '\n';
+    
+    cout << dp[n] << '\n';
 }
-
 
 int main()
 {

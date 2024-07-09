@@ -53,10 +53,14 @@ void solve(int tc) {
             ll re = i / m.first;
             re *= re * i;
             if (re > mx) break;
-            if (X.count(re) && re != m.first) k += X[re];
+            if (X.count(re)) k += X[re];
         }
 
-        summ += m.second * (m.second - 1) / 2 + m.second * k;
+        for (int i = 0; i < m.second; i++)
+        {
+            k--;
+            summ += k;
+        }
     }
 
     cout << summ << '\n';
