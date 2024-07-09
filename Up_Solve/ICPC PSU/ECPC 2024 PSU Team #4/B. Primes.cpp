@@ -24,26 +24,34 @@ const int MODE = 1e9 + 7;
 
 using namespace std;
 
-ll m, k;
-vector<> Z(1e5 + 1, -1);
+vi prime(1e7 + 10, 0);
+vi primes;
 
-ll req(ll n) {
-    if (n - 1 > k) return (0);
-    ll &res = Z[n];
-    if (~res) return (res);
-
-    return (res);
+void INIT() {
+    for (int i = 0; i < prime.size(); i++) prime[i] = i;
+    for (int i = 2; i * i <= 1e7; ++i) if (prime[i] == i)
+        for (int j = i; j <= 1e7; j += i) prime[j] = i;
+    for (int i = 2; i <= 1e7; i++) if(prime[i] == i) primes.push_back(i);
 }
+
 
 void solve(int tc) {
-    ll n, summ = 0;
-    cin >> n >> k >> m;
-    for (int i = 2; i <= n; i++)
-        summ += req(i);
+    ll n;
+
+    cin >> n;
+
+    for (int i = 2; i < n - 1; i++)
+    {
+        ll re = n - i;
+        if (prime[i] == i && prime[re] == re) {
+            cout << i << ' ' << re << '\n';
+            return;
+        }
+    }
     
-    summ = (summ * 2 * n) % MODE;
-    cout << summ << '\n';
+    cout << "-1\n";
 }
+
 
 int main()
 {
@@ -51,6 +59,7 @@ int main()
     int size = 1;
     //freopen("mex.in", "r", stdin);
     //freopen("output.txt", "w", stdout);
+    INIT();
     //cin >> size;
     for (int i = 1; i <= size; i++)
         solve(i);

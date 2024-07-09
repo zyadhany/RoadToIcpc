@@ -7,7 +7,6 @@
 #define pl pair<ll, ll>
 #define vi vector<ll>
 #define vii vector<vi>
-#define viii vector<vii>
 #define vc vector<char>
 #define vcc vector<vc>
 #define vp vector<pl>
@@ -19,39 +18,38 @@
 #define YES {cout << "YES\n"; return;}
 #define NO {cout << "NO\n"; return;}
 
-
-const int MODE = 1e9 + 7;
+const int MODE = 998244353;
 
 using namespace std;
 
-ll m, k;
-vector<> Z(1e5 + 1, -1);
-
-ll req(ll n) {
-    if (n - 1 > k) return (0);
-    ll &res = Z[n];
-    if (~res) return (res);
-
-    return (res);
-}
 
 void solve(int tc) {
-    ll n, summ = 0;
-    cin >> n >> k >> m;
-    for (int i = 2; i <= n; i++)
-        summ += req(i);
+    ll n, k;
+
+    cin >> n >> k;
+    vi X(n);
+    mi Y;
+
+    for (int i = 0; i < n; i++)
+        cin >> X[i];
     
-    summ = (summ * 2 * n) % MODE;
-    cout << summ << '\n';
+    for (int i = 0; i < n; i++)
+    {
+        if (Y.count(X[i] - k)) YES;
+        if (Y.count(X[i] + k)) YES;
+        Y[X[i]] = 1;
+    }
+    
+    NO;
 }
 
 int main()
 {
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;
-    //freopen("mex.in", "r", stdin);
+    //freopen("input.txt", "r", stdin);
     //freopen("output.txt", "w", stdout);
-    //cin >> size;
+    cin >> size;
     for (int i = 1; i <= size; i++)
-        solve(i);
+            solve(i);
 }

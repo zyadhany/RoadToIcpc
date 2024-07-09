@@ -24,26 +24,12 @@ const int MODE = 1e9 + 7;
 
 using namespace std;
 
-ll m, k;
-vector<> Z(1e5 + 1, -1);
-
-ll req(ll n) {
-    if (n - 1 > k) return (0);
-    ll &res = Z[n];
-    if (~res) return (res);
-
-    return (res);
-}
-
 void solve(int tc) {
-    ll n, summ = 0;
-    cin >> n >> k >> m;
-    for (int i = 2; i <= n; i++)
-        summ += req(i);
-    
-    summ = (summ * 2 * n) % MODE;
-    cout << summ << '\n';
+    ll a, b;
+    cin >> a >> b;
+    cout << (a >= b) << '\n';
 }
+
 
 int main()
 {
@@ -51,6 +37,7 @@ int main()
     int size = 1;
     //freopen("mex.in", "r", stdin);
     //freopen("output.txt", "w", stdout);
+
     //cin >> size;
     for (int i = 1; i <= size; i++)
         solve(i);

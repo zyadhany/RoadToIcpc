@@ -20,29 +20,21 @@
 #define NO {cout << "NO\n"; return;}
 
 
-const int MODE = 1e9 + 7;
+const int MODE = 998244353;
 
 using namespace std;
 
-ll m, k;
-vector<> Z(1e5 + 1, -1);
-
-ll req(ll n) {
-    if (n - 1 > k) return (0);
-    ll &res = Z[n];
-    if (~res) return (res);
-
-    return (res);
-}
-
 void solve(int tc) {
-    ll n, summ = 0;
-    cin >> n >> k >> m;
-    for (int i = 2; i <= n; i++)
-        summ += req(i);
-    
-    summ = (summ * 2 * n) % MODE;
-    cout << summ << '\n';
+    vi X(3);
+
+    cin >> X[0] >> X[1] >> X[2];
+    sortx(X);
+
+    if (X[0] + X[1] == X[2]) YES;
+    if (X[0] == X[1] && X[2] % 2 == 0) YES;
+    if (X[1] == X[2] && X[0] % 2 == 0) YES;
+    if (X[0] == X[2] && X[1] % 2 == 0) YES;
+    NO;
 }
 
 int main()
@@ -51,7 +43,8 @@ int main()
     int size = 1;
     //freopen("mex.in", "r", stdin);
     //freopen("output.txt", "w", stdout);
-    //cin >> size;
+
+    cin >> size;
     for (int i = 1; i <= size; i++)
         solve(i);
 }

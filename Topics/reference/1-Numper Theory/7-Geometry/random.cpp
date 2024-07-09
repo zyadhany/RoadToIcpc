@@ -48,3 +48,9 @@ pl rotate_90(const pl& a, const pl& b) {
 
     return make_pair(k_x, k_y);
 }
+
+
+// get sin on angle
+const double PI = 3.141592653589793;
+sin(angle * PI / 180);
+

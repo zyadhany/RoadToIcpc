@@ -24,25 +24,41 @@ const int MODE = 1e9 + 7;
 
 using namespace std;
 
-ll m, k;
-vector<> Z(1e5 + 1, -1);
-
-ll req(ll n) {
-    if (n - 1 > k) return (0);
-    ll &res = Z[n];
-    if (~res) return (res);
-
-    return (res);
-}
+const double PI = 3.141592653589793;
 
 void solve(int tc) {
-    ll n, summ = 0;
-    cin >> n >> k >> m;
-    for (int i = 2; i <= n; i++)
-        summ += req(i);
-    
-    summ = (summ * 2 * n) % MODE;
-    cout << summ << '\n';
+    ll n;
+    string s;
+    string t;
+
+    cin >> n >> s;
+
+    t = "";
+    vi res(n + 1);
+    stack<int> st;
+
+    for (int i = 0; i < s.size(); i++)
+    {
+        if (s[i] >= '0' && s[i] <= '9') {
+            t += s[i];
+            continue;
+        }
+
+        if (!t.empty()) {
+            st.push(stoi(t));
+            t = "";
+        }
+
+        if (s[i] == ')') {
+            ll re = st.top();
+            st.pop();
+            res[re] = st.top();
+        }
+    }
+
+    for (int i = 1; i <= n; i++)
+        cout << res[i] << ' ';
+    cout << '\n';
 }
 
 int main()

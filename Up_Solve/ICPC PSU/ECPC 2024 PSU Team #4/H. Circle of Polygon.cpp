@@ -24,25 +24,16 @@ const int MODE = 1e9 + 7;
 
 using namespace std;
 
-ll m, k;
-vector<> Z(1e5 + 1, -1);
-
-ll req(ll n) {
-    if (n - 1 > k) return (0);
-    ll &res = Z[n];
-    if (~res) return (res);
-
-    return (res);
-}
+const double PI = 3.141592653589793;
 
 void solve(int tc) {
-    ll n, summ = 0;
-    cin >> n >> k >> m;
-    for (int i = 2; i <= n; i++)
-        summ += req(i);
-    
-    summ = (summ * 2 * n) % MODE;
-    cout << summ << '\n';
+    ll n, l;
+    cin >> n >> l;
+    ld ang = 180.0 / n;
+    ld sn = sin(ang * PI / 180);
+    ld r = l / (2.0 * sn);
+    ld res = PI * r * r;
+    cout << fixed << setprecision(9) << res << '\n';
 }
 
 int main()

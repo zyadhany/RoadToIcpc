@@ -20,29 +20,33 @@
 #define NO {cout << "NO\n"; return;}
 
 
-const int MODE = 1e9 + 7;
+const int MODE = 998244353;
 
 using namespace std;
 
-ll m, k;
-vector<> Z(1e5 + 1, -1);
-
-ll req(ll n) {
-    if (n - 1 > k) return (0);
-    ll &res = Z[n];
-    if (~res) return (res);
-
-    return (res);
-}
-
 void solve(int tc) {
-    ll n, summ = 0;
-    cin >> n >> k >> m;
-    for (int i = 2; i <= n; i++)
-        summ += req(i);
-    
-    summ = (summ * 2 * n) % MODE;
+    ll n, m, summ;
+
+    cin >> n >> m;
+
+    summ = 0;
+    vector<pair<pl, ll>> X(m);
+
+    for (int i = 0; i < m; i++) {
+        cin >> X[i].first.second >> X[i].first.first;
+        X[i].second = i + 1;
+    }
+    sortx(X);
+
+    for (int i = 0; i < n * 2; i++) {
+        summ += X[i].first.first;
+        swap(X[i].first.first, X[i].first.second);
+    }
+    sort(X.begin(), X.begin() + 2 * n);
+
     cout << summ << '\n';
+    for (int i = 0; i < n; i++)
+        cout << X[i].second << ' ' << X[n * 2 - i - 1].second << '\n';    
 }
 
 int main()
@@ -51,7 +55,8 @@ int main()
     int size = 1;
     //freopen("mex.in", "r", stdin);
     //freopen("output.txt", "w", stdout);
-    //cin >> size;
+
+    cin >> size;
     for (int i = 1; i <= size; i++)
         solve(i);
 }

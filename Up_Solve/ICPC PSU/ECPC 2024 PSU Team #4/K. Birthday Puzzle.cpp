@@ -19,31 +19,32 @@
 #define YES {cout << "YES\n"; return;}
 #define NO {cout << "NO\n"; return;}
 
-
 const int MODE = 1e9 + 7;
 
 using namespace std;
 
-ll m, k;
-vector<> Z(1e5 + 1, -1);
-
-ll req(ll n) {
-    if (n - 1 > k) return (0);
-    ll &res = Z[n];
-    if (~res) return (res);
-
-    return (res);
-}
-
 void solve(int tc) {
-    ll n, summ = 0;
-    cin >> n >> k >> m;
-    for (int i = 2; i <= n; i++)
-        summ += req(i);
-    
-    summ = (summ * 2 * n) % MODE;
+    ll n, summ;
+
+    cin >> n;
+
+    summ = 0;
+    vi X(n);
+
+    for (int i = 0; i < n; i++)
+        cin >> X[i];
+
+    for (int i = 0; i < (1 << n); i++)
+    {
+        ll re = 0;
+        for (int j = 0; j < n; j++)
+            if (i & (1 << j)) re |= X[j];
+        summ += re;
+    }
+
     cout << summ << '\n';
 }
+
 
 int main()
 {

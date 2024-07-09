@@ -20,29 +20,42 @@
 #define NO {cout << "NO\n"; return;}
 
 
-const int MODE = 1e9 + 7;
+const int MODE = 998244353;
 
 using namespace std;
 
-ll m, k;
-vector<> Z(1e5 + 1, -1);
-
-ll req(ll n) {
-    if (n - 1 > k) return (0);
-    ll &res = Z[n];
-    if (~res) return (res);
-
-    return (res);
-}
-
 void solve(int tc) {
-    ll n, summ = 0;
-    cin >> n >> k >> m;
-    for (int i = 2; i <= n; i++)
-        summ += req(i);
+    ll n, m;
+
+    cin >> n >> m;
+
+    vcc X(n + 10, vc(m + 10, '0'));
+
+    for (int i = 1; i <= n; i++)
+        for (int j = 1; j <= m; j++)
+            cin >> X[i][j];
     
-    summ = (summ * 2 * n) % MODE;
-    cout << summ << '\n';
+
+    for (int i = 1; i <= n; i++)
+    {
+        ll at = 1;
+        for (int j = 1; j <= m + 1; j++)
+        {
+            if (X[i][j] == '1') continue;
+            ll len = j - at;
+            ll l = 0, r = 0;
+            for (int h = at; h < j; h++)
+                l += (X[i - 1][h] == '1'),
+                r += (X[i + 1][h] == '1');
+            cout << l << ' ' << r  << ' ' << i << ' ' << j << "|\n";
+            if (l && l != len) NO;
+            if (r && r != len) NO;
+
+            at = j + 1;
+        }
+    }
+
+    YES;
 }
 
 int main()
@@ -51,7 +64,8 @@ int main()
     int size = 1;
     //freopen("mex.in", "r", stdin);
     //freopen("output.txt", "w", stdout);
-    //cin >> size;
+
+    cin >> size;
     for (int i = 1; i <= size; i++)
         solve(i);
 }
