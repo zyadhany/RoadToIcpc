@@ -22,37 +22,43 @@
 #define YES {cout << "YES\n"; return;}
 #define NO {cout << "NO\n"; return;}
 
+
 const int MODE = 1e9 + 7;
 
 using namespace std;
+  
+ll req(viii &Z, vii &X, ll at, ll bit) {
+    ll n = X.size();
+    ll l = at / n;
+    ll r = at % n;
+    if (l >= n) return(0);
+    ll &res = Z[l][r][bit];
+    if (~res) return(res);
+    res = 0;
+
+    if (bit & (1 << r)) return (res = req(Z, X, at + 1, bit - (1 << r)));
+    res = req(Z, X, at + 1, bit);
+    
+    int bt = bit | (1 << r);
+    if (r) bt |= (1 << (r - 1));
+    if (r < n - 1) bt |= (1 << (r + 1));
+    res = max(res, req(Z, X, at + 1 + (r != n - 1), bt) + X[l][r]);
+    
+    return (res);
+}
 
 void solve(int tc) {
-    int n, sol;
+    ll n;
 
     cin >> n;
 
-    sol = n;
-    vector<int> X(n), vis(n);
-    vp L, R;
-
+    vii X(n, vi(n));
+    viii Z(n, vii(n, vi(1 << n, -1)));
     for (int i = 0; i < n; i++)
-        cin >> X[i];
+        for (int j = 0; j < n; j++)
+            cin >> X[i][j];    
 
-    for (int i = 0; i < n; i++)
-    {
-        char c; cin >> c;
-        if (c == 'M') L.emplace_back(X[i], i);
-        else R.emplace_back(X[i], i);
-    }   
-    sortx(L);
-    sortx(R);
-    for (auto &l : L) for (auto &r : R) 
-        if (!vis[r.second] && __gcd(l.first, r.first) > 1) {
-            vis[r.second] = 1, sol--;
-            break;
-        }
-
-    cout << sol << '\n';    
+    cout << req(Z, X, 0, 0) << '\n';
 }
 
 int main()
