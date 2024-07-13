@@ -26,14 +26,14 @@ const int MODE = 1e9 + 7;
 
 using namespace std;
 
-
 void solve(int tc) {
-    ll n, m;
+    ll a, b;
 
-    cin >> n >> m;
+    cin >> a >> b;
 
-    if (n == m) cout << "AC\n";
-    else cout << "WA\n";
+    a *= b;
+
+    cout << a << '\n';
 }
 
 int main()
@@ -42,6 +42,7 @@ int main()
     int size = 1;
     //freopen("mex.in", "r", stdin);
     //freopen("output.txt", "w", stdout);
+
     cin >> size;
     for (int i = 1; i <= size; i++) solve(i);
 }

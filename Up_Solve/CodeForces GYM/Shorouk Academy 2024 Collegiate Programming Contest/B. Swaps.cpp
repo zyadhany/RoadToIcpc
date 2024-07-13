@@ -26,14 +26,28 @@ const int MODE = 1e9 + 7;
 
 using namespace std;
 
-
 void solve(int tc) {
-    ll n, m;
+    ll n;
+    string s, t;
 
-    cin >> n >> m;
+    cin >> s >> t;
 
-    if (n == m) cout << "AC\n";
-    else cout << "WA\n";
+    n = s.size();
+    if (s.size() != t.size()) NO;
+
+    vi L(255), R(255), VL(255, -1), VR(255, -1);
+
+    for (int i = 0; i < n; i++)
+        L[s[i]]++;
+    for (int i = 0; i < n; i++)
+        R[t[i]]++;
+
+    for (int i = 0; i < n; i++) {
+        if (VL[s[i]] != VR[t[i]]) NO;
+        VL[s[i]] = VR[t[i]] = i;
+        if (L[s[i]] != R[t[i]]) NO;
+    }
+    YES;
 }
 
 int main()
@@ -42,6 +56,7 @@ int main()
     int size = 1;
     //freopen("mex.in", "r", stdin);
     //freopen("output.txt", "w", stdout);
+
     cin >> size;
     for (int i = 1; i <= size; i++) solve(i);
 }

@@ -13,7 +13,6 @@ ll fpowr(ll b, ll exp, ll mod)
     return (ret % mod);
 }
 
-
 vi HashVal(vii &pref, ll l, ll r) {
     vi ans(HASED);
     for (int hs = 0; hs < HASED; hs++)

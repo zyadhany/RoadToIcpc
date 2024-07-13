@@ -22,18 +22,43 @@
 #define YES {cout << "YES\n"; return;}
 #define NO {cout << "NO\n"; return;}
 
+
 const int MODE = 1e9 + 7;
 
 using namespace std;
+  
+ll req(viii &Z, vii &X, ll at, ll bit) {
+    ll n = X.size();
+    ll l = at / n;
+    ll r = at % n;
+    if (l >= n) return(0);
+    ll &res = Z[l][r][bit];
+    if (~res) return(res);
+    res = 0;
 
+    if (bit & (1 << r)) return (res = req(Z, X, at + 1, bit - (1 << r)));
+    res = req(Z, X, at + 1, bit);
+    
+    int bt = bit | (1 << r);
+    if (r) bt |= (1 << (r - 1));
+    if (r < n - 1) bt |= (1 << (r + 1));
+    res = max(res, req(Z, X, at + 1 + (r != n - 1), bt) + X[l][r]);
+    
+    return (res);
+}
 
 void solve(int tc) {
-    ll n, m;
+    ll n;
 
-    cin >> n >> m;
+    cin >> n;
 
-    if (n == m) cout << "AC\n";
-    else cout << "WA\n";
+    vii X(n, vi(n));
+    viii Z(n, vii(n, vi(1 << n, -1)));
+    for (int i = 0; i < n; i++)
+        for (int j = 0; j < n; j++)
+            cin >> X[i][j];    
+
+    cout << req(Z, X, 0, 0) << '\n';
 }
 
 int main()
@@ -42,6 +67,8 @@ int main()
     int size = 1;
     //freopen("mex.in", "r", stdin);
     //freopen("output.txt", "w", stdout);
+
     cin >> size;
-    for (int i = 1; i <= size; i++) solve(i);
+    for (int i = 1; i <= size; i++)
+        solve(i);
 }

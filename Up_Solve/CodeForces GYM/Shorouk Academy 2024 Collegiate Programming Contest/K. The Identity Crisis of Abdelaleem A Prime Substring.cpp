@@ -28,12 +28,9 @@ using namespace std;
 
 
 void solve(int tc) {
-    ll n, m;
-
-    cin >> n >> m;
-
-    if (n == m) cout << "AC\n";
-    else cout << "WA\n";
+    string s; cin>>s;
+    if(s.find("11")!=string::npos||s.find("10")!=string::npos) YES;
+    NO;
 }
 
 int main()

@@ -28,12 +28,27 @@ using namespace std;
 
 
 void solve(int tc) {
-    ll n, m;
+    ll n, ans;
+    
+    cin>>n;
 
-    cin >> n >> m;
-
-    if (n == m) cout << "AC\n";
-    else cout << "WA\n";
+    ans = 0;
+    string s = to_string(n);
+    ll m = s.size();
+ 
+    ll re = 9;
+    for (int i = 1; i < m; i++)
+    {
+        if (i % 2) ans += re;
+        re *= 10;
+    }
+    
+    if (m % 2) {
+        re = pow(10, m - 1);
+        ans += n - re + 1; 
+    }
+ 
+    cout << ans << '\n';
 }
 
 int main()

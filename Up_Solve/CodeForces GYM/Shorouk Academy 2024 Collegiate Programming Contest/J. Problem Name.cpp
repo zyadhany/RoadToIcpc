@@ -26,14 +26,49 @@ const int MODE = 1e9 + 7;
 
 using namespace std;
 
+ll tkzero(ll n, ll d) {
+    string s = to_string(n);
 
-void solve(int tc) {
-    ll n, m;
+    for (int i = 0; i < s.size(); i++)
+    {
+        if (s[i] == '0' + d) {
+            s[i]++;
+            for (int j = i + 1; j < s.size(); j++)
+                s[j] = '0' + (d == 0);
+            break;
+        }
+    }
 
-    cin >> n >> m;
+    return (stoll(s) - n);
+}
 
-    if (n == m) cout << "AC\n";
-    else cout << "WA\n";
+ll solve(int tc) {
+    ll n, d;
+
+    cin >> n >> d;
+
+    if (d != 9) return tkzero(n, d);
+    
+    string s = to_string(n);
+    ll at = s.size() - 1;
+    while (s.find('9') != string::npos)
+    {
+        ll re = s.find('9');
+        while (at >= re)
+        {
+            s[at] = '0';
+            at--;
+        }
+        
+        if (re) s[re - 1]++;
+        else
+        {
+            s = "1" + s;
+            break;
+        }
+    }
+    
+    return (stoll(s) - n);
 }
 
 int main()
@@ -43,5 +78,5 @@ int main()
     //freopen("mex.in", "r", stdin);
     //freopen("output.txt", "w", stdout);
     cin >> size;
-    for (int i = 1; i <= size; i++) solve(i);
+    for (int i = 1; i <= size; i++) cout << solve(i) << '\n';
 }

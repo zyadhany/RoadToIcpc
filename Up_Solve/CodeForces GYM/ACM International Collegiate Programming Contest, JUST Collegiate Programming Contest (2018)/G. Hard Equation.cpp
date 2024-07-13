@@ -22,18 +22,39 @@
 #define YES {cout << "YES\n"; return;}
 #define NO {cout << "NO\n"; return;}
 
+
 const int MODE = 1e9 + 7;
 
 using namespace std;
 
-
+ll BSGS(ll a,ll b,ll m)
+{
+    a%=m;
+    b%=m;
+    if(b==1)return 0;
+    unordered_map<ll,ll>ma;
+    ll n=sqrt(2*m)+1;
+    ll e=1;
+    for(int i=0;i<n;i++)
+    {
+        if(ma.count(b*e%m)==0)ma[b*e%m]=i;
+        e=e*a%m;
+    }
+    ll t=1;
+    for(int i=1;i<=n+1;i++)
+    {
+        t=t*e%m;
+        if(ma.count(t))return i*n-ma[t];
+    }
+    return -1;
+}
+  
 void solve(int tc) {
-    ll n, m;
+    ll a, b, m;
 
-    cin >> n >> m;
+    cin >> a >> b >> m;
 
-    if (n == m) cout << "AC\n";
-    else cout << "WA\n";
+    cout << BSGS(a, b, m) << '\n';
 }
 
 int main()
@@ -42,6 +63,8 @@ int main()
     int size = 1;
     //freopen("mex.in", "r", stdin);
     //freopen("output.txt", "w", stdout);
+
     cin >> size;
-    for (int i = 1; i <= size; i++) solve(i);
+    for (int i = 1; i <= size; i++)
+        solve(i);
 }

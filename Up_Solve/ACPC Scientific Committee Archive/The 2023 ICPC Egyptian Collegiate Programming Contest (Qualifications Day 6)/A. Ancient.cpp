@@ -87,7 +87,7 @@ ll summKthPower(ll n, ll k) {
  * sol: r * (2^r - 1) - summtion(i*2^i)
  */
 void solve(int tc) {
-    ll n, sol, l, r;
+    ll n, sol, l, r;    
     cin >> n;
 
     l = n * summPower(2, n - 1);
