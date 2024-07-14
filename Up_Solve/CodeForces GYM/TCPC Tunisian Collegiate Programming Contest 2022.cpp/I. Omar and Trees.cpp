@@ -1,46 +1,30 @@
-/**
- * we make traverse array as we have
-  indegree and size and value of edge
- * to get value of subtree we take 
-  we make marge of lange of it's size
- * we can make query of update using segment tree.
- */
+#define _CRT_SECURE_NO_WARNINGS
+#include <bits/stdc++.h>
+#include <unordered_map>
 
-/**
- * we can make path query if we storepath from root to node
- * each node store summ of path from root to it
- * if increase value of node by 5 we increase all values
- * of it subtree by 5.
- */
-class Graph {
-public:
-    int size;
-    vi vis;
-    vii adj;
+#define ll long long
+#define ld long double
+#define pl pair<ll, ll>
+#define vi vector<ll>
+#define vii vector<vi>
+#define viii vector<vii>
+#define vc vector<char>
+#define vcc vector<vc>
+#define vp vector<pl>
+#define vpp vector<vp>
+#define vppp vector<vpp>
+#define mi map<ll,ll>
+#define unmi unordered_map<ll, ll>
+#define mc map<char,int>
+#define sortx(X) sort(X.begin(),X.end());
+#define all(X) X.begin(),X.end()
+#define ln '\n'
+#define YES {cout << "YES\n"; continue;}
+#define NO {cout << "NO\n"; continue;}
 
-    vi Travese, Indeg, SubSize;
+const int MODE = 1e9 + 7;
 
-    ll dfs(int n, int p) {
-        ll summ = 1;
-        Indeg[n] = Travese.size();
-        Travese.push_back(n);
-        for (auto neg : adj[n])
-            if (neg != p) summ += dfs(neg, n);
-        return (SubSize[n] = summ);
-    }
-
-    void addEdge(int u, int v) {
-        adj[u].push_back(v);
-    }
-
-    Graph(ll n) {
-        size = n;
-        Indeg.assign(n + 1, 0);
-        vis.assign(n + 1, 0);
-        SubSize.assign(n + 1, 0);
-        adj.resize(n + 1);
-    }
-};
+using namespace std;
 
 class Graph {
 public:
@@ -78,6 +62,8 @@ typedef long long item;
 class SegmentTree
 {
 public:
+
+
     void set(int l, int r, ll value) {
         set(0, 0, size - 1, l, r, value);
     }
@@ -169,6 +155,17 @@ private:
     }
 };
 
+vi prime(1e7 + 10, 0);
+vi primes;
+
+void INIT() {
+    for (int i = 0; i < prime.size(); i++) prime[i] = i;
+    for (int i = 2; i * i <= 1e7; ++i) if (prime[i] == i)
+        for (int j = i; j <= 1e7; j += i) prime[j] = i;
+    for (int i = 2; i <= 1e7; i++) if(prime[i] == i) primes.push_back(i);
+}
+
+
 void solve(ll test) {
     ll n;
 
@@ -189,6 +186,7 @@ void solve(ll test) {
     gr.dfs(1, 0);
 
     for (auto m : gr.Travese) Z.push_back(X[m]);
+    
     SegmentTree sg;
     sg.build(Z);
 
@@ -198,16 +196,44 @@ void solve(ll test) {
         ll opp; cin >> opp;
 
         if (opp == 1) {
-            ll l, r; cin >> l >> r;
+            ll l, r;
+            cin >> l >> r;
             ll a = gr.Indeg[l];
             ll b = a + gr.SubSize[l] - 1;
-            sg.set(a, b, r);
+            sg.set(a, b, r);            
         } else
         {
             ll l; cin >> l;
             ll a = gr.Indeg[l];
             ll b = a + gr.SubSize[l] - 1;
             ll summ = sg.getrange(a, b);
+
+            if (summ <= 3) NO;
+            if (summ % 2 == 0) YES;
+            bool isit = 1;
+            
+            summ -= 2;
+            for (auto p : primes) {
+                if (p * p > summ) break;
+                if (summ % p == 0) {
+                    isit = 0;
+                    break;
+                }
+            }
+            
+            if (isit) YES;
+            NO;
         }   
     }
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
+    int size = 1;
+    INIT();
+    //freopen("mex.in", "r", stdin);1
+    //freopen("output.txt", "w", stdout);
+    //cin >> size;
+    for (int i = 1; i <= size; i++) solve(i);
 }

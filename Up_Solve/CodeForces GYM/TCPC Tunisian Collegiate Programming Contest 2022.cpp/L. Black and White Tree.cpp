@@ -1,8 +1,8 @@
-// Problem: N. How many rectangles?
+// Problem: L. Black and White Tree
 // Contest: Codeforces - TCPC Tunisian Collegiate Programming Contest 2022
-// URL: https://codeforces.com/gym/105020/problem/N
+// URL: https://codeforces.com/gym/105020/problem/L
 // Memory Limit: 256 MB
-// Time Limit: 2000 ms
+// Time Limit: 1000 ms
 // 
 // Powered by CP Editor (https://cpeditor.org)
 
@@ -41,9 +41,9 @@ typedef tree<int , null_type ,  less_equal<int> , rb_tree_tag , tree_order_stati
 #define cin_2d(vec, n, m) for(int i = 0; i < n; i++) for(int j = 0; j < m && cin >> vec[i][j]; j++);
 #define cins(arr,n) for(long     long i=0; i<n; i++){cin>>arr[i];} sort(all(arr));
 #define cout_map(mp) for(auto& [f, s] : mp) cout << f << "  " << s << "\n";
-#define cout(arr,n) for(long long i=0; i<n; i++){cout<<arr[i]<<el;}
+#define cout(arr,n) for(long long i=0; i<n; i++){cout<<arr[i]<<" ";}
 #define remove2(v)v.erase(unique(v.begin(), v.end()), v.end());
-#define cin(arr,n) for(long long i=0; i<n; i++){cin>>arr[i];}
+#define cin(arr,n) for(long long i=1; i<=n; i++){cin>>arr[i];}
 #define tt int tc; cin>>tc; for(int klm=1; klm<=tc; klm++)
 #define ceill(n,m) (((n)/(m))+((n)%(m)?1:0))
 #define FOR(a,b,c) for(ll a=b ; a<c; a++)
@@ -108,54 +108,64 @@ int const N =2e5 + 10;
 const long long mod = 1e9 + 7;
 const int oo = 0x3f3f3f3f;
 const ld pi=acos(-1);
+ll n,q;  
+class Graph
+{
+public:
+	ll size=0;
+	vector<ll> vis;
+	vector<vector<ll>> g; 
+	vector<ll> v,sol;
+	map<ll,ll> mp;
+	Graph(ll n)
+	{
+		size=n;
+		g.resize(n+1);
+		vis.resize(n+1);
+		v.resize(n+1); 
+		sol.resize(n+1); 
+	}
+	void AddEdge(ll u,ll v)
+	{
+		g[u].pb(v);
+		g[v].pb(u);
+	}
+	void dfs(ll node,ll par,ll co)
+	{
+		ll ans= -mp[co];
+		for(auto a:g[node])
+			if(a!=par)
+			  dfs(a,node,co+v[node]);
+		ans += mp[co];
+		sol[node]= ans;
+        mp[co + v[node]]++;
+	}
+};
 void ITcharDo()
 {
-     ll n; cin>>n;
-     vector<pair<ll,ll>> v(n),v2;
-     map<ll,vector<ll>> mp,mp3;
-     map<pair<ll,ll>,ll> sol;
-     set<ll> st;
-     FOR(i,0,n)
+     cin>>n>>q; Graph dfs(n); 
+     FOR(i,1,n+1)
      {
-     	ll x,y,x2,y2; cin>>x>>y>>x2>>y2;
-     	v[i]={x2,y2};
-     	mp3[x2].pb(y2);
-     	st.insert(x2);
+     	ll x; cin>>x;
+     	dfs.v[i]=x?1:-1;
      }
-     tt
+     n--;
+     while(n--)
      {
-     	 ll x,y; cin>>x>>y;
-     	 v2.pb({x,y});
-     	 mp[x].pb(y);
-     	 st.insert(x);
+     	ll u,v; cin>>u>>v;
+     	dfs.AddEdge(u,v);
      }
-     ordered_multiset os;
-     for(auto a:st)
+     dfs.dfs(1,-1,0);
+     while(q--)
      {
-     	for(auto a2:mp3[a])os.insert(a2);
-     	
-     	for(auto a2:mp[a]) 
-     	sol[{a,a2}]=(os.order_of_key(a2+1));
+     	ll node; cin>>node;
+     	cout<<dfs.sol[node]<<el;
      }
      
-     
-     FOR(i,0,sz(v2)) cout<<sol[{v2[i].fi,v2[i].se}]<<el;
 }
 int main()
 {
     AHMEDHESHAM;
-#ifdef ITCH
-    freopen("input.txt", "r", stdin);
-    freopen("output.txt", "w", stdout);
-#endif
     //tt
     ITcharDo();
 }
-/*
-.------..------..------..------.
-|I.--. ||T.--. ||C.--. ||H.--. |
-| (\/) || :/\: || :/\: || :/\: |
-| :\/: || (__) || :\/: || (__) |
-| '--'I|| '--'T|| '--'C|| '--'H|
-`------'`------'`------'`------'
-*/
