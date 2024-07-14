@@ -2,6 +2,11 @@
 ll summtion(ll n) {
     return n * (n + 1) / 2;
 }
+/*
+    ll summ = (sqrt((8 * k) + 1) + 1) / 2 - 1; 
+    get value of n from summtion lowered down.
+*/
+
  
 // summ of num from 1 to n that divide by k.
 ll summk(ll n, ll k) {
