@@ -1,0 +1,45 @@
+class Graph
+{
+public:
+	ll size=0;
+	vector<ll> vis;
+	vector<vector<ll>> g; 
+	Graph(ll n)
+	{
+		size=n;
+		g.resize(n+1);
+		vis.resize(n+1);
+	}
+	void AddEdge(ll u,ll v)
+	{
+		g[u].pb(v);
+		g[v].pb(u);
+	}
+	void dfs(ll node)
+	{
+		if(!vis[node])
+		{
+			vis[node]=1;
+			for(auto a:g[node])
+				if(!vis[a])
+					dfs(a);
+		}
+	}
+};
+void ITcharDo()
+{
+    ll n,sol=0; cin>>n; vll; cin(v,n);
+    Graph gr(n);
+    FOR(i,0,n)
+    	gr.AddEdge(i+1,v[i]);
+    	
+    FOR(i,1,n+1)
+    {
+        if(!gr.vis[i])
+        {
+            sol++;
+            gr.dfs(i);
+        }
+    }
+    cout<<sol<<el;
+}
