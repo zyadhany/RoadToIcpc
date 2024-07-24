@@ -1,4 +1,3 @@
-//بيمشي للاخر خالص بعدين يرجع
 
 vii node(1e6+10,vi());
 vector<bool> vis(1e6+10,false);

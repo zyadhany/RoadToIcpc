@@ -1,6 +1,5 @@
 // Dp to find the longest increasing subsequence in (n^2)
 
-// بسم الله الرحمن الرحيم
 
 ll n;
 vi v, dp;
