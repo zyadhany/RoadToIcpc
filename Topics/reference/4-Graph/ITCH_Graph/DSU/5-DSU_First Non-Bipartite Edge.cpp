@@ -1,6 +1,5 @@
 code 
 
-عايز اول ايدج مش biparite
 
 ll SZ[N],pr[N],Siz[N];
 pair<ll,ll> find(ll node)

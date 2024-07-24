@@ -1,5 +1,4 @@
 code
-الجراف ثناىيا ولا لا
 
 ll SZ[N],pr[N],Siz[N];
 pair<ll,ll> find(ll node)
