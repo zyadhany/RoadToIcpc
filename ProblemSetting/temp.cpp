@@ -20,43 +20,54 @@
 
 using namespace std;
 
-int M;
+ll M = 0;
+ll N = 0;
 
-void writeTest(int test) {
+//inf.readToken("[a-z]{1,100}", "s");
+string StringToken(string tok = "[a-z]", int len) {
+    string token = tok + to_string(len);
+    return (token);
+}
 
-    int n, a, m;	
-    n = rnd.next(1, 1000'000);
-    m = M;
+void solve(int tc){
+    setTestCase(tc);
+
+    ll n, m;
+
+    n = inf.readInt(1, 200'000, "n");
+    inf.readSpace();
+    m = inf.readInt(1, 200'000, "m");
+    inf.readEoln();
+    N += n;
+    M += m;
+
+    ensuref(N <= 2e5, "summ of n exeeds 2e5");
+    ensuref(M <= 2e5, "summ of m exeeds 2e5");
+
     
-    cout << n << ' ' << m << endl;
 
-    for (int i = 1; i <= m; i++)
+    for (int i = 0; i < m; i++)
     {
-        a = rnd.next(1, 1000'000);
-        cout << a;
-        if (i != n) cout << ' ';
+        inf.readInt(1, 1000'000);
+        if (i != m - 1) inf.readSpace();
     }
 
-    cout << endl;
+    inf.readToken(StringToken("[a-z]", n));
+    inf.readEoln();
+    inf.readToken(StringToken("[a-z]", m));
+    inf.readEoln();
 }
 
-int main(int argc, char *argv[]) {
-    registerGen(argc, argv, 1);
+int main(int argc, char* argv[]) {
+    registerValidation(argc, argv);
+    int Test;
 
-    int TEST = 1;
-    //TEST = rnd.next(1, 10'000);cout << TEST << endl;
-    M = opt<int>("m");
+    Test = inf.readInt(1, 1e4, "t");
+    inf.readEoln();
+    
+    for (int i = 1; i <= Test; i++) {
+        solve(i);
+    }
 
-    TEST = min(100, 1000 / M);
-
-    cout << TEST << '\n';
-
-    for (int i = 1; i <= TEST; i++)
-        writeTest(i);
+    inf.readEof();
 }
-
-/*
-<#list 1..10 as i >
-     igen --m 10 ${i} > $ 
-</#list>
-*/
