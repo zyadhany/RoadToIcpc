@@ -1,4 +1,4 @@
-This repo made by O(1) to prepare to Icpc cpontest at PSU Comm.
+This repo made by O(1) to prepare to Icpc contest at PSU Community.
 
 - Year one #1: O(1)
     - Team meamber:
