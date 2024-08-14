@@ -13,15 +13,15 @@ This repo made by O(1) to prepare to Icpc cpontest at PSU Comm.
         - 71th A
 
 
-- Year two #2, O(1).v2
+- Year two #2, O(1) V2
     - Team meamber:
         - Zyad Hany
         - Ahmed El Gendy
         - Ahmed Hesham
     
     - Standing
-        - Universtey
-        - Qualifications
-        - ECPC
+        - 1st Universtey
+        - 7nd Q
+        - 47th E
         - ACPC
         - ICPC
