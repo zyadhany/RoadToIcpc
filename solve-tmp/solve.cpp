@@ -11,7 +11,7 @@
 #define vcc vector<vc>
 #define vp vector<pl>
 #define mi map<ll,ll>
-#define mc map<char,int>
+#define mc map<char,ll>
 #define sortx(X) sort(X.begin(),X.end());
 #define all(X) X.begin(),X.end()
 #define ln '\n'
@@ -22,94 +22,99 @@ const int MODE = 1e9 + 7;
 
 using namespace std;
 
+const int HASED = 2;
+const vi MODHS = {1000000007, 1000000009};
+const vi P = {31, 37};
+const int N = 1e6;
+vii pw(2, vi(N)), pwinv(2, vi(N));
 
-class SegmentTree
+ll fpowr(ll b, ll exp, ll mod)
 {
-public:
+    if (!exp) return (1);
+    ll ret = fpowr(b, exp >> 1, mod);
+    ret = (ret * ret) % mod;
+    if (exp & 1) ret *= b;
+    return (ret % mod);
+}
 
-    pl getrange(int l, int r, ll k, ll cnt) {
-        return (getrange(0, 0, size - 1, l, r, k, cnt));
+vi HashVal(vii &pref, ll l, ll r) {
+    vi ans(HASED);
+    for (int hs = 0; hs < HASED; hs++)
+    {
+        ans[hs] = pref[hs][r];
+        if (l) ans[hs] = (ans[hs] - pref[hs][l - 1] + MODHS[hs]) % MODHS[hs];
+        ans[hs] = (1ll * ans[hs] * pwinv[hs][l]) % MODHS[hs];
     }
+    
+    return (ans);
+}
 
-    void build(vi& X) {
-        size = 1;
-        while (size < X.size())
-            size *= 2;
-        tree.assign(size * 2, item());
-        build(X, 0, 0, size - 1);
-    }
-
-private:
-    int size;
-    vector<item> tree;
-    vector<long long> lazy;
-
-    pl getitemval(item& a, ll k) {
-        ll l;
-        l = lower_bound(all(a.arr), k) - a.arr.begin();
-        return (a.pref[l]);
-    }
-
-    item merge(item& a, item& b) {
-        item res = a;
-        for (int i = 0; i < b.arr.size(); i++)
-            res.arr.push_back(b.arr[i]);
-        sortx(res.arr);
-
-        res.pref.assign(res.arr.size() + 1, 0);
-
-        for (int i = 1; i <= res.arr.size(); i++)
-            res.pref[i] = res.pref[i - 1] + res.arr[i - 1];
-
-        return (res);
-    }
-
-    pl getrange(int m, int lx, int rx, int l, int r, ll k, ll cnt) {
-        if (rx < l || r < lx) return {0, -1};
-        if (l <= lx && rx <= r) {
-
-            return (getitemval(tree[m], k));
+vii HashPrefix(string &s) {
+    int n = s.size();
+    vii pref(HASED, vi(n));
+    for (int hs = 0; hs < HASED; hs++){
+        pref[hs][0] = (s[0] - 'a' + 1) % MODHS[hs];
+        
+        for (int i = 1; i < n; i++)
+        {
+            ll a = (s[i] - 'a' + 1ll);
+            pref[hs][i] = (pref[hs][i - 1] + a * pw[hs][i]) % MODHS[hs];
         }
-
-        int mid = (lx + rx) / 2;
-        pl s1, s2, res;
-
-        s1 = getrange(m * 2 + 1, lx, mid, l, r, k, cnt);
-
-        if (s1.second == cnt) return (s1);
-        return getrange(m * 2 + 2, mid + 1, rx, l, r, k, cnt - s1.second);
     }
+    return (pref);    
+}
 
-    void build(vi& X, int m, int lx, int rx) {
-        if (lx == rx) {
-            if (lx < X.size())
-                tree[m].arr.push_back(X[lx]), tree[m].pref.push_back(X[lx]);
-            return;
+void INIT(){
+    for (int i = 0; i < HASED; i++)
+        pw[i][0] = pwinv[i][0] = 1;
+    vi minv(HASED); 
+    for (int i = 0; i < HASED; i++)
+        minv[i] = fpowr(P[i], MODHS[i] - 2, MODHS[i]);
+
+    for (int hs = 0; hs < HASED; hs++)
+        for (int i = 1; i < N; i++)
+        {
+            pw[hs][i] = (pw[hs][i - 1] * P[hs]) % MODHS[hs];
+            pwinv[hs][i] = (pwinv[hs][i - 1] * minv[hs]) % MODHS[hs];
         }
+}
 
-        int mid = (lx + rx) / 2;
-        item s1, s2;
-
-        build(X, m * 2 + 1, lx, mid);
-        build(X, m * 2 + 2, mid + 1, rx);
-        s1 = tree[m * 2 + 1], s2 = tree[m * 2 + 2];
-
-        tree[m] = merge(s1, s2);
-    }
-};
 
 void solve(int tc) {
-    ll n;
+    ll n, x;
+    string s;
 
-    cin >> n;
+    cin >> n >> x;
+    cin >> s;
+
+    string t = s;
+    
+    reverse(all(t));
+
+    auto L = HashPrefix(s);
+    auto R = HashPrefix(t);
+    
+    for (int i = 0; i <= n - x; i++)
+    {
+        auto l = HashVal(L, i, i + x - 1);
+        ll at = n - (i + x);
+        auto r = HashVal(R, at, at + x - 1);
+        if (l == r) {
+            cout << "leacary\n";
+            return;
+        }
+    }
+    
+    cout << "dracarys\n";
 }
 
 int main()
 {
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;
-
-    //freopen("input.txt", "r", stdin);
-    cin >> size;
+    INIT();
+    //freopen("balancing.in", "r", stdin);
+    //freopen("balancing.out", "w", stdout);
+    //cin >> size;
     for (int i = 1; i <= size; i++) solve(i);
 }
