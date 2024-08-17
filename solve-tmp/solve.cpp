@@ -115,6 +115,6 @@ int main()
     INIT();
     //freopen("balancing.in", "r", stdin);
     //freopen("balancing.out", "w", stdout);
-    //cin >> size;
+    cin >> size;
     for (int i = 1; i <= size; i++) solve(i);
 }
