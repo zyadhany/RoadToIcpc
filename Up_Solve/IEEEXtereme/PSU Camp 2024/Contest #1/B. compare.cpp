@@ -21,39 +21,30 @@
 #define ln '\n'
 #define YES {cout << "YES\n"; return;}
 #define NO {cout << "NO\n"; return;}
-#define MUN {cout << "-1\n"; return;}
 
 const int MODE = 1e9 + 7;
 
 using namespace std;
 
-
 void solve(int tc) {
-    ll n;
+    string s, t;
 
-    cin >> n;
+    cin >> s >> t;
 
-    vi X(n);
+    vi X(255), Y(255);
 
-    vi Y(n + 1);
-    ll h = 0;
-    Y[0] = 1;
+    for (auto a : s) X[a]++;
+    for (auto a : t) Y[a]++;
 
-    for (int i = 0; i < n; i++)
-        cin >> X[i];
+    if (X != Y) NO;
 
-    for (int i = 1; i < n; i++)
-    {
-        Y[h + 1]++;
-        if (i == n - 1 || X[i] > X[i + 1]) {
-            Y[h]--; 
-            if (Y[h] == 0) h++;
-        }
-    }
+    int cnt = 0;
 
-    if (Y[h + 1]) h++;
-
-    cout << h << '\n';
+    for (int i = 0; i < s.size(); i++)
+        cnt += (s[i] != t[i]);
+    
+    if (cnt <= 2) YES;
+    NO;
 }
 
 int main()
@@ -62,6 +53,6 @@ int main()
     int size = 1;
     //freopen("mex.in", "r", stdin);1
     //freopen("output.txt", "w", stdout);
-    cin >> size;
+    //cin >> size;
     for (int i = 1; i <= size; i++) solve(i);
 }

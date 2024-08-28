@@ -21,39 +21,30 @@
 #define ln '\n'
 #define YES {cout << "YES\n"; return;}
 #define NO {cout << "NO\n"; return;}
-#define MUN {cout << "-1\n"; return;}
 
 const int MODE = 1e9 + 7;
 
 using namespace std;
-
 
 void solve(int tc) {
     ll n;
 
     cin >> n;
 
-    vi X(n);
+    vi X;
 
-    vi Y(n + 1);
-    ll h = 0;
-    Y[0] = 1;
+    for (ll i = 0; i < 63; i++)
+        if (n & (1ll << i)) X.push_back(1ll << i);
 
-    for (int i = 0; i < n; i++)
-        cin >> X[i];
-
-    for (int i = 1; i < n; i++)
-    {
-        Y[h + 1]++;
-        if (i == n - 1 || X[i] > X[i + 1]) {
-            Y[h]--; 
-            if (Y[h] == 0) h++;
-        }
+    if (X.size() == 1) {
+        cout << 1 << '\n' << n << '\n';
+        return;
     }
 
-    if (Y[h + 1]) h++;
-
-    cout << h << '\n';
+    cout << X.size() + 1 << '\n';
+    for (int i = X.size() - 1; i >= 0; i--)
+        cout << n - X[i] << ' ';
+    cout << n << '\n';
 }
 
 int main()

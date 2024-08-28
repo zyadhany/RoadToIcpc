@@ -27,33 +27,39 @@ const int MODE = 1e9 + 7;
 
 using namespace std;
 
-
 void solve(int tc) {
-    ll n;
+    ll a, b, c;
 
-    cin >> n;
+    cin >> a >> b >> c;
 
-    vi X(n);
-
-    vi Y(n + 1);
     ll h = 0;
-    Y[0] = 1;
 
-    for (int i = 0; i < n; i++)
-        cin >> X[i];
-
-    for (int i = 1; i < n; i++)
-    {
-        Y[h + 1]++;
-        if (i == n - 1 || X[i] > X[i + 1]) {
-            Y[h]--; 
-            if (Y[h] == 0) h++;
-        }
+    if (c != a + 1) {
+        cout << "-1\n";
+        return;
     }
 
-    if (Y[h + 1]) h++;
+    if (a) {
+        h = log2(a) + 1;
+        ll pw = pow(2, h);
+        ll cnt = pw - 1 - a;
 
-    cout << h << '\n';
+        if (b >= cnt) {
+            b -= cnt;
+            h += (b + a) / (a + 1);
+            cnt = b % (a + 1);
+        }
+        else cnt -= b;
+
+        if (c > cnt) {
+            c -= cnt;
+            h += (c + a) / (a + 1);
+            cnt = c % (a + 1);
+        }
+
+    } else h = b + c;
+
+    cout << h - 1 << '\n';  
 }
 
 int main()

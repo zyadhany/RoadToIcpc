@@ -27,33 +27,44 @@ const int MODE = 1e9 + 7;
 
 using namespace std;
 
+ll cnt = 0;
+
+pl req(vii &Y, string &s, ll n) {
+    pl cl  {0, 0};
+
+    if (s[n - 1] == 'B') cl.first++;
+    else cl.second++;
+
+    for (auto neg : Y[n]) {
+        pl tmp = req(Y, s, neg);
+        cl.first += tmp.first;
+        cl.second += tmp.second;
+    }
+
+    cnt += (cl.first == cl.second);
+    return cl;
+}
 
 void solve(int tc) {
     ll n;
+    string s;
 
     cin >> n;
 
-    vi X(n);
-
-    vi Y(n + 1);
-    ll h = 0;
-    Y[0] = 1;
-
-    for (int i = 0; i < n; i++)
-        cin >> X[i];
-
-    for (int i = 1; i < n; i++)
+    cnt = 0;
+    vii Y(n + 1);
+    
+    for (int i = 2; i <= n; i++)
     {
-        Y[h + 1]++;
-        if (i == n - 1 || X[i] > X[i + 1]) {
-            Y[h]--; 
-            if (Y[h] == 0) h++;
-        }
+        ll a; cin >> a;
+        Y[a].push_back(i);
     }
+    
+    cin >> s;
 
-    if (Y[h + 1]) h++;
+    req(Y, s, 1);
 
-    cout << h << '\n';
+    cout << cnt << '\n';
 }
 
 int main()
