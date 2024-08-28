@@ -1,10 +1,11 @@
-void DataCompress(vi &X) {
+vi DataCompress(vi &X) {
     ll at = 0;
     mi Y;
-    vi Z(X);
+    vi Z(X), M(X.size());
     sortx(Z);
     for (int i = 0; i < Z.size(); i++)
         if (!Y.count(Z[i])) Y[Z[i]] = Y.size();
     for (int i = 0; i < X.size(); i++)
-        X[i] = Y[X[i]];
+        M[i] = Y[X[i]];
+    return (M);
 }

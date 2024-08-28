@@ -1,3 +1,13 @@
+struct item
+{
+    vi arr, pref;
+
+    item() {
+        arr.assign(0, 0);
+        pref.assign(1, 0);
+    }
+};
+
 class SegmentTree
 {
 public:
