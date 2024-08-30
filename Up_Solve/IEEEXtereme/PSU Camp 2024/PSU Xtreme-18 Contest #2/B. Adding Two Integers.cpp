@@ -23,44 +23,15 @@ const int MODE = 1e9 + 7;
 
 using namespace std;
 
+vi dx = {0, 0, 1, -1};
+vi dy = {1, -1, 0, 0};
+
 void solve(int tc) {
-    ll n, m;
+    ll a, b;
 
-    cin >> n >> m;
+    cin >> a >> b;
 
-    vi X(n + 1);
-    vii Y(n + 1);
-    
-    for (int i = 1; i <= n; i++)
-        cin >> X[i];
-
-    for (int i = 0; i < m; i++)
-    {
-        ll u, v;
-        cin >> u >> v;
-        Y[u].push_back(v);
-        Y[v].push_back(u);
-    }
-    
-    if (m % 2 == 0) {
-        cout << "0\n";
-        return;
-    }
-    ll mn = INT64_MAX;
-
-    for (int i = 1; i <= n; i++)
-    {
-        if (Y[i].size() % 2) mn = min(mn, X[i]);
-        else
-        {
-            ll re = INT32_MAX;
-            for (auto neg : Y[i])
-                if (Y[neg].size() % 2 == 0) re = min(re, X[neg]);
-            mn = min(mn, X[i] + re);
-        }
-    }
-    
-    cout << mn << '\n';
+    cout << a + b << '\n';
 }
 
 int main()
@@ -69,6 +40,6 @@ int main()
     int size = 1;
     //freopen("mex.in", "r", stdin);1
     //freopen("output.txt", "w", stdout);
-    cin >> size;
+    //cin >> size;
     for (int i = 1; i <= size; i++) solve(i);
 }

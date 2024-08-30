@@ -28,39 +28,21 @@ void solve(int tc) {
 
     cin >> n >> m;
 
-    vi X(n + 1);
-    vii Y(n + 1);
-    
-    for (int i = 1; i <= n; i++)
+    vi X(n);
+    ll summ = 0;
+
+    for (int i = 0; i < n; i++) {
         cin >> X[i];
+        summ += X[i];
+    }
 
-    for (int i = 0; i < m; i++)
-    {
-        ll u, v;
-        cin >> u >> v;
-        Y[u].push_back(v);
-        Y[v].push_back(u);
-    }
-    
-    if (m % 2 == 0) {
-        cout << "0\n";
-        return;
-    }
-    ll mn = INT64_MAX;
+    if (m != n || n <= 2) MUN;
 
-    for (int i = 1; i <= n; i++)
-    {
-        if (Y[i].size() % 2) mn = min(mn, X[i]);
-        else
-        {
-            ll re = INT32_MAX;
-            for (auto neg : Y[i])
-                if (Y[neg].size() % 2 == 0) re = min(re, X[neg]);
-            mn = min(mn, X[i] + re);
-        }
-    }
-    
-    cout << mn << '\n';
+    cout << summ * 2 << '\n';
+
+    for (int i = 1; i < n; i++)
+        cout << i << ' ' << i + 1 << '\n';
+    cout << n << ' ' << 1 << '\n';    
 }
 
 int main()
