@@ -24,56 +24,44 @@ const int MODE = 1e9 + 7;
 using namespace std;
 
 void solve(int tc) {
-    ll n, m;
+    ll n;
 
-    cin >> n >> m;
-    vi X(101);
+    cin >> n;
+
+    vii X(n + 1, vi(2));
 
     for (int i = 0; i < n; i++)
     {
-        ll s, t, c;
-        cin >> s >> t >> c;
-
-        for (int i = s; i <= t; i++)
-            X[i] = max(X[i], c);
+        ll x, y; cin >> x >> y;
+        X[x][y]++;
     }
     
-    vii Z(m, vi(4));
-    for (int i = 0; i < m; i++)
-        for (int j = 0; j < 4; j++)
-            cin >> Z[i][j];
+    ll res = 0;
+    ll cnt = 0;
 
-    ll mn = INT32_MAX;
-
-    for (int i = 0; i < (1 << m); i++)
+    for (int i = 0; i < X.size(); i++)
     {
-        ll cost = 0;
-        vi Y(101);
-
-        for (int j = 0; j < m; j++)
-        {
-            if (i & (1 << j)) {
-                cost += Z[j][3];
-                for (int h = Z[j][0]; h <= Z[j][1]; h++)
-                    Y[h] += Z[j][2];
-            }
-        }
-        
-        bool isgood = 1;
-        for (int i = 0; i < Y.size(); i++)
-            if (X[i] > Y[i]) isgood = 0;
-        if (isgood) mn = min(mn, cost);        
+        if (X[i][0] && X[i][1]) res += cnt;
+        cnt += X[i][0] + X[i][1];
     }
     
-    cout << mn << '\n';    
+    cnt = 0;
+
+    for (int i = X.size() - 1; i >= 0; i--)
+    {
+        if (X[i][0] && X[i][1]) res += cnt;
+        cnt += X[i][0] + X[i][1];     
+    }
+
+    cout << res << '\n';
 }
 
 int main()
 {
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;
-    //freopen("mex.in", "r", stdin);1
-    //freopen("output.txt", "w", stdout);
-    //cin >> size;
+    //freopen("backforth.in", "r", stdin);
+    //freopen("backforth.out", "w", stdout);
+    cin >> size;
     for (int i = 1; i <= size; i++) solve(i);
 }
