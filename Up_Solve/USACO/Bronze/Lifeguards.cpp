@@ -11,7 +11,7 @@
 #define vcc vector<vc>
 #define vp vector<pl>
 #define mi map<ll,ll>
-#define mc map<char,int>
+#define mc map<char,ll>
 #define sortx(X) sort(X.begin(),X.end());
 #define all(X) X.begin(),X.end()
 #define ln '\n'
@@ -22,32 +22,34 @@ const int MODE = 1e9 + 7;
 
 using namespace std;
 
-
-
 void solve(int tc) {
-    string s, t, a, b;
+    ll n;
 
-    cin >> s >> t; 
+    cin >> n;
 
-    a = "";
-    b = "";
+    ll mx = 0;
+    vp X(n);
 
-    for (int i = 0; i < s.size(); i++)
+    for (int i = 0; i < n; i++)
+        cin >> X[i].first >> X[i].second;
+    
+    for (int i = 0; i < n; i++)
     {
-        if (i % 2) b += s[i];
-        else a += s[i];
-    }
-    reverse(all(b));
-    cout << a + b << '\n';
-
-    for (int i = 0; i < t.size(); i++)
-    {
-        if (t[i] != '/') {
-            t[i] = t[i] - 'A' + '0';
+        ll re = 0;
+        vi Z(1001, 1);
+        for (int j = 0; j < n; j++)
+        {
+            if (i == j) continue;
+            for (int h = X[j].first; h < X[j].second; h++)
+            {
+                re += Z[h];
+                Z[h] = 0;
+            }
         }
+        mx = max(mx, re);
     }
     
-    cout << t <<'\n';
+    cout << mx << '\n';
 }
 
 int main()
@@ -55,10 +57,8 @@ int main()
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;
 
-    //freopen("input.txt", "r", stdin);
-    //freopen("output.txt", "w", stdout);
-
+    freopen("lifeguards.in", "r", stdin);
+    freopen("lifeguards.out", "w", stdout);
     //cin >> size;
-    for (int i = 1; i <= size; i++)
-        solve(i);
+    for (int i = 1; i <= size; i++) solve(i);
 }

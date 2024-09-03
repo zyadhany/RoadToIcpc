@@ -11,7 +11,7 @@
 #define vcc vector<vc>
 #define vp vector<pl>
 #define mi map<ll,ll>
-#define mc map<char,int>
+#define mc map<char,ll>
 #define sortx(X) sort(X.begin(),X.end());
 #define all(X) X.begin(),X.end()
 #define ln '\n'
@@ -22,32 +22,25 @@ const int MODE = 1e9 + 7;
 
 using namespace std;
 
-
-
 void solve(int tc) {
-    string s, t, a, b;
+    ll n, k;
 
-    cin >> s >> t; 
+    cin >> n >> k;
 
-    a = "";
-    b = "";
+    ll mx = 0;
+    vi X(n);
 
-    for (int i = 0; i < s.size(); i++)
+    for (int i = 0; i < n; i++)
+        cin >> X[i];
+    sortx(X);
+
+    for (int i = 0; i < n; i++)
     {
-        if (i % 2) b += s[i];
-        else a += s[i];
+        ll re = upper_bound(all(X), X[i] + k) - X.begin();
+        mx = max(mx, re - i);
     }
-    reverse(all(b));
-    cout << a + b << '\n';
 
-    for (int i = 0; i < t.size(); i++)
-    {
-        if (t[i] != '/') {
-            t[i] = t[i] - 'A' + '0';
-        }
-    }
-    
-    cout << t <<'\n';
+    cout << mx << '\n';
 }
 
 int main()
@@ -55,10 +48,8 @@ int main()
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;
 
-    //freopen("input.txt", "r", stdin);
-    //freopen("output.txt", "w", stdout);
-
+    freopen("diamond.in", "r", stdin);
+    freopen("diamond.out", "w", stdout);
     //cin >> size;
-    for (int i = 1; i <= size; i++)
-        solve(i);
+    for (int i = 1; i <= size; i++) solve(i);
 }

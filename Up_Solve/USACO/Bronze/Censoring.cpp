@@ -11,7 +11,7 @@
 #define vcc vector<vc>
 #define vp vector<pl>
 #define mi map<ll,ll>
-#define mc map<char,int>
+#define mc map<char,ll>
 #define sortx(X) sort(X.begin(),X.end());
 #define all(X) X.begin(),X.end()
 #define ln '\n'
@@ -22,32 +22,28 @@ const int MODE = 1e9 + 7;
 
 using namespace std;
 
-
-
 void solve(int tc) {
-    string s, t, a, b;
+    ll n, m;
+    string s, t;
 
-    cin >> s >> t; 
+    cin >> s >> t;
 
-    a = "";
-    b = "";
+    n = s.size(), m = t.size();
 
-    for (int i = 0; i < s.size(); i++)
+    for (int i = 0; i <= n - m; i++)
     {
-        if (i % 2) b += s[i];
-        else a += s[i];
-    }
-    reverse(all(b));
-    cout << a + b << '\n';
-
-    for (int i = 0; i < t.size(); i++)
-    {
-        if (t[i] != '/') {
-            t[i] = t[i] - 'A' + '0';
+        bool isit = 1;
+        for (int j = 0; j < m && isit; j++)
+            if (s[i + j] != t[j]) isit = 0;
+        
+        if (isit) {
+            s.erase(s.begin() + i, s.begin() + i + m);
+            i = max(0ll, i - m - 3);
+            n -= m;
         }
     }
     
-    cout << t <<'\n';
+    cout << s << '\n';
 }
 
 int main()
@@ -55,10 +51,8 @@ int main()
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;
 
-    //freopen("input.txt", "r", stdin);
-    //freopen("output.txt", "w", stdout);
-
+    freopen("censor.in", "r", stdin);
+    freopen("censor.out", "w", stdout);
     //cin >> size;
-    for (int i = 1; i <= size; i++)
-        solve(i);
+    for (int i = 1; i <= size; i++) solve(i);
 }

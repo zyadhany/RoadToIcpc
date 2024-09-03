@@ -44,10 +44,12 @@ int main(int argc, char *argv[]) {
     registerGen(argc, argv, 1);
 
     int TEST = 1;
-    //TEST = rnd.next(1, 10'000);cout << TEST << endl;
+    TEST = rnd.next(1, 10'000);cout << TEST << endl;
     M = opt<int>("m");
 
     TEST = min(100, 1000 / M);
+
+
 
     cout << TEST << '\n';
 

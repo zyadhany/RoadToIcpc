@@ -9,24 +9,13 @@
 */
 
 //Function to find sum of weights of edges of the Minimum Spanning Tree.
-int spanningTree(int V, vector<vector<int>> adj[])
+ll spanningTree(vii X, ll n)
 {
-    int a, b, summ = 0;
-    vector<vector<int>> X;
-
-    //take all edges in array.
-    for (int i = 0; i < V; i++) {
-        for (int j = 0; j < adj[i].size(); j++) {
-            X.push_back(adj[i][j]);
-            reverse(X.back().begin(), X.back().end());
-            X.back().push_back(i);
-        }
-    }
-
+    ll a, b, summ = 0;
     sort(X.begin(), X.end());
 
     DSU ds;
-    ds.build(V);
+    ds.build(n);
 
     for (int i = 0; i < X.size(); i++)
     {

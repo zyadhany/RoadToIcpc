@@ -21,6 +21,7 @@
 using namespace std;
 
 ll M = 0;
+<<<<<<< HEAD
 ll N = 0;
 
 //inf.readToken("[a-z]{1,100}", "s");
@@ -55,6 +56,28 @@ void solve(int tc){
     inf.readToken(StringToken("[a-z]", n));
     inf.readEoln();
     inf.readToken(StringToken("[a-z]", m));
+=======
+
+void solve(int tc){
+    setTestCase(tc);
+
+    ll n, k;
+
+    n = inf.readInt(1, 200'000, "n");
+    inf.readSpace();
+    k = inf.readInt(0, 1000'000'000, "k");
+    inf.readEoln();
+    M += n;
+
+    ensuref(M <= 200'000, "summ of n exeeds 2*10^5");
+
+    for (int i = 0; i < n; i++)
+    {
+        inf.readInt(1, 1000'000'000);
+        if (i != n - 1) inf.readSpace();
+    }
+
+>>>>>>> bcdcd2f53b59a63e88d320e74449ed4844e3ba0e
     inf.readEoln();
 }
 
@@ -62,7 +85,11 @@ int main(int argc, char* argv[]) {
     registerValidation(argc, argv);
     int Test;
 
+<<<<<<< HEAD
     Test = inf.readInt(1, 1e4, "t");
+=======
+    Test = inf.readInt(1, 10'000, "t");
+>>>>>>> bcdcd2f53b59a63e88d320e74449ed4844e3ba0e
     inf.readEoln();
     
     for (int i = 1; i <= Test; i++) {

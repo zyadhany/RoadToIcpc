@@ -11,7 +11,7 @@
 #define vcc vector<vc>
 #define vp vector<pl>
 #define mi map<ll,ll>
-#define mc map<char,int>
+#define mc map<char,ll>
 #define sortx(X) sort(X.begin(),X.end());
 #define all(X) X.begin(),X.end()
 #define ln '\n'
@@ -22,32 +22,33 @@ const int MODE = 1e9 + 7;
 
 using namespace std;
 
-
-
 void solve(int tc) {
-    string s, t, a, b;
+    ll res = 0;
+    string s;
 
-    cin >> s >> t; 
+    cin >> s;
 
-    a = "";
-    b = "";
+    vp X(26, {-1, -1});
 
     for (int i = 0; i < s.size(); i++)
     {
-        if (i % 2) b += s[i];
-        else a += s[i];
+        int ind = s[i] - 'A';
+        if (X[ind].first == -1) X[ind].first = i;
+        else X[ind].second = i;
     }
-    reverse(all(b));
-    cout << a + b << '\n';
-
-    for (int i = 0; i < t.size(); i++)
+    
+    for (int i = 0; i < 26; i++)
     {
-        if (t[i] != '/') {
-            t[i] = t[i] - 'A' + '0';
+        for (int j = i + 1; j < 26; j++)
+        {
+            pl a = X[i];
+            pl b = X[j];
+            if (a > b) swap(a, b);
+            if (b.first < a.second && b.second > a.second) res++;
         }
     }
     
-    cout << t <<'\n';
+    cout << res << '\n';
 }
 
 int main()
@@ -55,10 +56,8 @@ int main()
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;
 
-    //freopen("input.txt", "r", stdin);
-    //freopen("output.txt", "w", stdout);
-
+    //freopen("circlecross.in", "r", stdin);
+    //freopen("circlecross.out", "w", stdout);
     //cin >> size;
-    for (int i = 1; i <= size; i++)
-        solve(i);
+    for (int i = 1; i <= size; i++) solve(i);
 }
