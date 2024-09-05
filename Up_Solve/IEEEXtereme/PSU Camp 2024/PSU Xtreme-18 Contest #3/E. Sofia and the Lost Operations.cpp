@@ -25,43 +25,43 @@ using namespace std;
 
 
 void solve(int tc) {
-    ll n, m;
+    ll n;
 
-    cin >> n >> m;
+    cin >> n;
 
-    vi X(m + 2);
-    ll l, r, cnt; l = r = cnt = 0;
+    vi X(n), Y(n);
 
     for (int i = 0; i < n; i++)
+        cin >> X[i];
+    for (int i = 0; i < n; i++)
+        cin >> Y[i];
+
+    mi need;
+    set<ll> have;
+
+    for (int i = 0; i < n; i++) {
+        if (X[i] != Y[i]) need[Y[i]]++;    
+        have.insert(Y[i]);
+    }
+
+    ll m; cin >> m;
+    bool isit = 0;
+
+    for (int i = 0; i < m; i++)
     {
         ll a; cin >> a;
 
-        if (a == -1) l++;
-        else if (a == -2) r++;
-        else cnt += (X[a] == 0), X[a] = 1;
-    }
-    
-    vp Z(m + 2);
-    X[0] = X[m + 1] = 1;
-    ll mx = 0;
-    
-    ll re= 0;
-    for (int i = 0; i <= m + 1; i++)
-        if (X[i]) Z[i].first = min(re, l);
-        else re++;
-    re = 0;
-    for (int i = m + 1; i >= 0; i--)
-        if (X[i]) Z[i].second = min(re, r);
-        else re++;
+        if (have.count(a)) isit = 1;
+        else isit = 0;
 
-    for (int i = 0; i <= m + 1; i++)
-    {
-        if (!X[i]) continue;
-        ll summ = cnt + Z[i].second + Z[i].first;
-        mx = max(mx, summ);
+        if (need[a]) need[a]--;
     }
-    
-    cout << mx << '\n';
+            
+    for (auto k : need) 
+        if (k.second) isit = 0;
+
+    if (isit) YES;
+    NO;
 }
 
 int main()

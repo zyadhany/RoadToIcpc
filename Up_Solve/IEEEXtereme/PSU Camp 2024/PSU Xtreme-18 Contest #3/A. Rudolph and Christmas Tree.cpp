@@ -25,43 +25,31 @@ using namespace std;
 
 
 void solve(int tc) {
-    ll n, m;
+    ll n, d, h;
 
-    cin >> n >> m;
+    cin >> n >> d >> h;
 
-    vi X(m + 2);
-    ll l, r, cnt; l = r = cnt = 0;
+    vi X(n);
 
     for (int i = 0; i < n; i++)
-    {
-        ll a; cin >> a;
+        cin >> X[i];
+    sort(X.rbegin(), X.rend());
 
-        if (a == -1) l++;
-        else if (a == -2) r++;
-        else cnt += (X[a] == 0), X[a] = 1;
+    ld area = 0.5 * d * h;
+    ld res = area;
+
+    for (int i = 1; i < n; i++)
+    {
+        res += area;
+        ld k = X[i] + h - X[i - 1];
+
+        if (k > 0) {
+            ld base = (k / h) * d;
+            res -= k * base * 0.5;
+        }
     }
     
-    vp Z(m + 2);
-    X[0] = X[m + 1] = 1;
-    ll mx = 0;
-    
-    ll re= 0;
-    for (int i = 0; i <= m + 1; i++)
-        if (X[i]) Z[i].first = min(re, l);
-        else re++;
-    re = 0;
-    for (int i = m + 1; i >= 0; i--)
-        if (X[i]) Z[i].second = min(re, r);
-        else re++;
-
-    for (int i = 0; i <= m + 1; i++)
-    {
-        if (!X[i]) continue;
-        ll summ = cnt + Z[i].second + Z[i].first;
-        mx = max(mx, summ);
-    }
-    
-    cout << mx << '\n';
+    cout << fixed << setprecision(9) << res << '\n';    
 }
 
 int main()

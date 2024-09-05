@@ -25,43 +25,44 @@ using namespace std;
 
 
 void solve(int tc) {
-    ll n, m;
+    ll n;
 
-    cin >> n >> m;
-
-    vi X(m + 2);
-    ll l, r, cnt; l = r = cnt = 0;
+    cin >> n;
+    
+    vi X(n);
 
     for (int i = 0; i < n; i++)
-    {
-        ll a; cin >> a;
+        cin >> X[i];
 
-        if (a == -1) l++;
-        else if (a == -2) r++;
-        else cnt += (X[a] == 0), X[a] = 1;
-    }
-    
-    vp Z(m + 2);
-    X[0] = X[m + 1] = 1;
-    ll mx = 0;
-    
-    ll re= 0;
-    for (int i = 0; i <= m + 1; i++)
-        if (X[i]) Z[i].first = min(re, l);
-        else re++;
-    re = 0;
-    for (int i = m + 1; i >= 0; i--)
-        if (X[i]) Z[i].second = min(re, r);
-        else re++;
-
-    for (int i = 0; i <= m + 1; i++)
+    stack<pl> st;
+    st.push({X[0] % 2, 1});
+    for (int i = 1; i < n; i++)
     {
-        if (!X[i]) continue;
-        ll summ = cnt + Z[i].second + Z[i].first;
-        mx = max(mx, summ);
+        ll at = X[i] % 2;
+
+        if (at == st.top().first) st.top().second ^= 1;
+        else st.push({at, 1});
+        
+        pl tmp = st.top();
+        st.pop();
+
+        while (!st.empty())
+        {
+            if (st.top().second == 0 || st.top().first == tmp.first) {
+                tmp.first += st.top().second;
+                st.pop();
+            } else if (tmp.second == 0) {
+                tmp.first = st.top().first;
+                tmp.second += st.top().second;
+                st.pop();
+            } else break;
+        }
+
+        st.push(tmp);
     }
-    
-    cout << mx << '\n';
+        
+    if (st.size() == 1) YES;
+    NO;
 }
 
 int main()
@@ -70,6 +71,6 @@ int main()
     int size = 1;
     //freopen("backforth.in", "r", stdin);
     //freopen("backforth.out", "w", stdout);
-    cin >> size;
+    //cin >> size;
     for (int i = 1; i <= size; i++) solve(i);
 }

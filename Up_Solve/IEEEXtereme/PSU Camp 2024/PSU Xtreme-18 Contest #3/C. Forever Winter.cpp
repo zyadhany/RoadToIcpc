@@ -29,39 +29,30 @@ void solve(int tc) {
 
     cin >> n >> m;
 
-    vi X(m + 2);
-    ll l, r, cnt; l = r = cnt = 0;
+    vii Y(n + 1);
 
-    for (int i = 0; i < n; i++)
+    for (int i = 0; i < m; i++)
     {
-        ll a; cin >> a;
-
-        if (a == -1) l++;
-        else if (a == -2) r++;
-        else cnt += (X[a] == 0), X[a] = 1;
+        ll u, v; cin >> u >> v;
+        Y[u].push_back(v);
+        Y[v].push_back(u);
     }
     
-    vp Z(m + 2);
-    X[0] = X[m + 1] = 1;
-    ll mx = 0;
-    
-    ll re= 0;
-    for (int i = 0; i <= m + 1; i++)
-        if (X[i]) Z[i].first = min(re, l);
-        else re++;
-    re = 0;
-    for (int i = m + 1; i >= 0; i--)
-        if (X[i]) Z[i].second = min(re, r);
-        else re++;
+    ll x, y;
 
-    for (int i = 0; i <= m + 1; i++)
-    {
-        if (!X[i]) continue;
-        ll summ = cnt + Z[i].second + Z[i].first;
-        mx = max(mx, summ);
-    }
-    
-    cout << mx << '\n';
+    ll leaf;
+    for (int i = 1; i <= n; i++)
+        if (Y[i].size() == 1) leaf = i;
+
+    ll node = Y[leaf][0];
+    y = Y[node].size() - 1;
+
+    ll center;
+    for (auto neg : Y[node])
+        if (Y[neg].size() != 1) center = neg;
+    x = Y[center].size();
+
+    cout << x << ' ' << y << '\n';
 }
 
 int main()
