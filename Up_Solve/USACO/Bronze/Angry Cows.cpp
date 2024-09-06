@@ -1,7 +1,6 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include <bits/stdc++.h>
 #include <unordered_map>
-#include <unordered_set>
 
 #define ll long long
 #define ld long double
@@ -26,42 +25,51 @@ using namespace std;
 
 
 void solve(int tc) {
-    ll n, q;
+    ll n;
 
-    cin >> n >> q;
+    cin >> n;
 
-    map<ll, vi> Y;
+    vi X(n);
+
+    for (int i = 0; i < n; i++)
+        cin >> X[i];
+    sort(X.begin(), X.end());    
+
+    ll mx = 0;
     for (int i = 0; i < n; i++)
     {
-        ll a; cin >> a;
+        ll l, r, at, ran;
 
-        if (Y.count(a)) Y[a][1] = i, Y[a][2]++;
-        else Y[a] = {i, i, 1};
-    }
-    
-    vii M, X;
-    for (auto &m : Y) M.push_back(m.second);
-    sortx(M);
-
-    for (auto &m : M) {
-        if (X.empty() || m[0] > X.back()[1]) X.push_back(m);
-        else {
-            X.back()[1] = max(X.back()[1], m[1]);
-            X.back()[2] = max(X.back()[2], m[2]);
+        ran = 0;        
+        at = r = i;
+        while (r < n && X[r] - X[at] <= ran)
+        {
+            while (r < n && X[r] - X[at] <= ran)
+                r++;
+            ran++; at = r - 1;
         }
+
+        ran = 0;
+        at = l = i;
+        while (l >= 0 && X[at] - X[l] <= ran)
+        {
+            while (l >= 0 && X[at] - X[l] <= ran)
+                l--;
+            ran++; at = l + 1;
+        }
+
+        mx = max(mx, r - l - 1);
     }
     
-    ll summ = 0;
-    for (auto &m : X) summ += m[1] - m[0] + 1 - m[2];
-    cout << summ << '\n ';
+    cout << mx << '\n';
 }
 
 int main()
 {
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;
-    //freopen("citystate.in", "r", stdin);
-    //freopen("citystate.out", "w", stdout);
+    freopen("angry.in", "r", stdin);
+    freopen("angry.out", "w", stdout);
     //cin >> size;
     for (int i = 1; i <= size; i++) solve(i);
 }

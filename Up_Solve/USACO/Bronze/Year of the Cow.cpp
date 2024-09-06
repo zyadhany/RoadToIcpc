@@ -1,7 +1,6 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include <bits/stdc++.h>
 #include <unordered_map>
-#include <unordered_set>
 
 #define ll long long
 #define ld long double
@@ -26,42 +25,46 @@ using namespace std;
 
 
 void solve(int tc) {
-    ll n, q;
+    vector<string> Month = {"Ox", "Tiger", "Rabbit", "Dragon", "Snake",
+    "Horse", "Goat", "Monkey", "Rooster", "Dog", "Pig", "Rat"};
 
-    cin >> n >> q;
+    map<string, int> mm; 
+    for (int i = 0; i < 12; i++)
+        mm[Month[i]] = i;
 
-    map<ll, vi> Y;
+    map<string, int> X;
+
+    ll n;
+    cin >> n;
+
     for (int i = 0; i < n; i++)
     {
-        ll a; cin >> a;
+        vector<string> Z(8);
+        for (int j = 0; j < 8; j++)
+            cin >> Z[j];
+        string s, t;
+        s = Z[0]; t = Z.back();
 
-        if (Y.count(a)) Y[a][1] = i, Y[a][2]++;
-        else Y[a] = {i, i, 1};
+        ll cur = (X[t] % 12 + 12) % 12;
+        ll gol = mm[Z[4]];
+
+        ll opp = 1;
+        if (Z[3] == "previous") opp = -1;
+
+        gol -= cur;
+        if (gol * opp > 0) X[s] = X[t] + gol;
+        else X[s] = X[t] + opp * (12 - abs(gol));
     }
     
-    vii M, X;
-    for (auto &m : Y) M.push_back(m.second);
-    sortx(M);
-
-    for (auto &m : M) {
-        if (X.empty() || m[0] > X.back()[1]) X.push_back(m);
-        else {
-            X.back()[1] = max(X.back()[1], m[1]);
-            X.back()[2] = max(X.back()[2], m[2]);
-        }
-    }
-    
-    ll summ = 0;
-    for (auto &m : X) summ += m[1] - m[0] + 1 - m[2];
-    cout << summ << '\n ';
+    cout << abs(X["Elsie"]) << '\n';
 }
 
 int main()
 {
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;
-    //freopen("citystate.in", "r", stdin);
-    //freopen("citystate.out", "w", stdout);
+    //freopen("whereami.in", "r", stdin);
+    //freopen("whereami.out", "w", stdout);
     //cin >> size;
     for (int i = 1; i <= size; i++) solve(i);
 }

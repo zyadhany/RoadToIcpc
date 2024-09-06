@@ -1,7 +1,6 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include <bits/stdc++.h>
 #include <unordered_map>
-#include <unordered_set>
 
 #define ll long long
 #define ld long double
@@ -26,42 +25,40 @@ using namespace std;
 
 
 void solve(int tc) {
-    ll n, q;
+    ll n;
+    string s;
 
-    cin >> n >> q;
+    cin >> n >> s;
 
-    map<ll, vi> Y;
-    for (int i = 0; i < n; i++)
+    for (int k = 1; k <= n; k++)
     {
-        ll a; cin >> a;
+        set<string> st;
+        bool isit = 1;
 
-        if (Y.count(a)) Y[a][1] = i, Y[a][2]++;
-        else Y[a] = {i, i, 1};
-    }
-    
-    vii M, X;
-    for (auto &m : Y) M.push_back(m.second);
-    sortx(M);
+        for (int i = 0; i <= n - k; i++)
+        {
+            string t = s.substr(i, k);
+            if (st.count(t)) {
+                isit = 0;
+                break;
+            }
+            st.insert(t);
+        }
 
-    for (auto &m : M) {
-        if (X.empty() || m[0] > X.back()[1]) X.push_back(m);
-        else {
-            X.back()[1] = max(X.back()[1], m[1]);
-            X.back()[2] = max(X.back()[2], m[2]);
+        if (isit) {
+            cout << k << '\n';
+            return;
         }
     }
     
-    ll summ = 0;
-    for (auto &m : X) summ += m[1] - m[0] + 1 - m[2];
-    cout << summ << '\n ';
 }
 
 int main()
 {
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;
-    //freopen("citystate.in", "r", stdin);
-    //freopen("citystate.out", "w", stdout);
+    freopen("whereami.in", "r", stdin);
+    freopen("whereami.out", "w", stdout);
     //cin >> size;
     for (int i = 1; i <= size; i++) solve(i);
 }
