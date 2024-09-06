@@ -24,44 +24,63 @@ const int MODE = 1e9 + 7;
 
 using namespace std;
 
-ll req(ll k, ll x) {
-    ll l = 0;
-    ll r = 0;
-    ll t = 0;
-
-    for (int i = 1; ; i++)
-    {
-        l += i;
-        t++;
-        if (l + r >= k) return t;
-
-        if (i >= x) {
-            r += i;
-            t++;
-            if (l + r >= k) return t;
-        }
-    }
+ll req(string s) {
+    ll n = s.size();
+    ll ans = 0;
+    for (int i = 1; i < n; i++) ans += (s[i] == s[i - 1]);
+    return ans;
 }
 
 void solve(int tc) {
-    ll k, n;
+    ll n;
+    string s;
 
-    cin >> k >> n;
+    cin >> n >> s;
 
-    while (n--)
-    {
-        ll x; cin >> x;
-        cout << req(k, x) << '\n';
+    ll cnt = count(all(s), 'F');
+
+    if (cnt == n) {
+        cout << n << "\n";
+        for (int i = 0; i <= n - 1; i++)
+            cout << i << "\n";
+        return;
     }
+
+    ll re = 0;
+    while (s[re] == 'F') re++;
+    s = s.substr(re, - 1);
+
+    string t = s;
+    for (int i = 1; i < t.size(); i++)
+        if (t[i] == 'F') {
+            if (t[i - 1] == 'B') t[i] = 'E';
+            else t[i] = 'B';
+        }
     
+    ll mn = req(t);
+
+    t = s;
+    for (int i = 1; i < t.size(); i++)
+        if (t[i] == 'F') t[i] = t[i - 1];
+    ll mx = req(t) + re;
+
+    bool isit = 1;
+    if (re || s.back() == 'F') isit = 0;
+
+    set<ll> ans;
+    for (int i = mn; i <= mx; i+= 1 + isit)
+        ans.insert(i);
+    
+    cout << ans.size() << "\n";
+    for (auto x : ans) cout << x << "\n";
 }
 
 int main()
 {
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;
-    freopen("race.in", "r", stdin);
-    freopen("race.out", "w", stdout);
+    //freopen("hoofball.in", "r", stdin);
+    //freopen("hoofball.out", "w", stdout);
     //cin >> size;
     for (int i = 1; i <= size; i++) solve(i);
 }
