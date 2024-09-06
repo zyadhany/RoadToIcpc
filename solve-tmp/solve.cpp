@@ -24,44 +24,44 @@ const int MODE = 1e9 + 7;
 
 using namespace std;
 
+ll req(ll k, ll x) {
+    ll l = 0;
+    ll r = 0;
+    ll t = 0;
 
-void solve(int tc) {
-    ll n, q;
-
-    cin >> n >> q;
-
-    map<ll, vi> Y;
-    for (int i = 0; i < n; i++)
+    for (int i = 1; ; i++)
     {
-        ll a; cin >> a;
+        l += i;
+        t++;
+        if (l + r >= k) return t;
 
-        if (Y.count(a)) Y[a][1] = i, Y[a][2]++;
-        else Y[a] = {i, i, 1};
-    }
-    
-    vii M, X;
-    for (auto &m : Y) M.push_back(m.second);
-    sortx(M);
-
-    for (auto &m : M) {
-        if (X.empty() || m[0] > X.back()[1]) X.push_back(m);
-        else {
-            X.back()[1] = max(X.back()[1], m[1]);
-            X.back()[2] = max(X.back()[2], m[2]);
+        if (i >= x) {
+            r += i;
+            t++;
+            if (l + r >= k) return t;
         }
     }
+}
+
+void solve(int tc) {
+    ll k, n;
+
+    cin >> k >> n;
+
+    while (n--)
+    {
+        ll x; cin >> x;
+        cout << req(k, x) << '\n';
+    }
     
-    ll summ = 0;
-    for (auto &m : X) summ += m[1] - m[0] + 1 - m[2];
-    cout << summ << '\n ';
 }
 
 int main()
 {
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;
-    //freopen("citystate.in", "r", stdin);
-    //freopen("citystate.out", "w", stdout);
+    freopen("race.in", "r", stdin);
+    freopen("race.out", "w", stdout);
     //cin >> size;
     for (int i = 1; i <= size; i++) solve(i);
 }
