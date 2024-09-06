@@ -24,44 +24,63 @@ const int MODE = 1e9 + 7;
 
 using namespace std;
 
+ll req(string s) {
+    ll n = s.size();
+    ll ans = 0;
+    for (int i = 1; i < n; i++) ans += (s[i] == s[i - 1]);
+    return ans;
+}
 
 void solve(int tc) {
-    ll n, q;
+    ll n;
+    string s;
 
-    cin >> n >> q;
+    cin >> n >> s;
 
-    map<ll, vi> Y;
-    for (int i = 0; i < n; i++)
-    {
-        ll a; cin >> a;
+    ll cnt = count(all(s), 'F');
 
-        if (Y.count(a)) Y[a][1] = i, Y[a][2]++;
-        else Y[a] = {i, i, 1};
+    if (cnt == n) {
+        cout << n << "\n";
+        for (int i = 0; i <= n - 1; i++)
+            cout << i << "\n";
+        return;
     }
-    
-    vii M, X;
-    for (auto &m : Y) M.push_back(m.second);
-    sortx(M);
 
-    for (auto &m : M) {
-        if (X.empty() || m[0] > X.back()[1]) X.push_back(m);
-        else {
-            X.back()[1] = max(X.back()[1], m[1]);
-            X.back()[2] = max(X.back()[2], m[2]);
+    ll re = 0;
+    while (s[re] == 'F') re++;
+    s = s.substr(re, - 1);
+
+    string t = s;
+    for (int i = 1; i < t.size(); i++)
+        if (t[i] == 'F') {
+            if (t[i - 1] == 'B') t[i] = 'E';
+            else t[i] = 'B';
         }
-    }
     
-    ll summ = 0;
-    for (auto &m : X) summ += m[1] - m[0] + 1 - m[2];
-    cout << summ << '\n ';
+    ll mn = req(t);
+
+    t = s;
+    for (int i = 1; i < t.size(); i++)
+        if (t[i] == 'F') t[i] = t[i - 1];
+    ll mx = req(t) + re;
+
+    bool isit = 1;
+    if (re || s.back() == 'F') isit = 0;
+
+    set<ll> ans;
+    for (int i = mn; i <= mx; i+= 1 + isit)
+        ans.insert(i);
+    
+    cout << ans.size() << "\n";
+    for (auto x : ans) cout << x << "\n";
 }
 
 int main()
 {
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;
-    //freopen("citystate.in", "r", stdin);
-    //freopen("citystate.out", "w", stdout);
+    //freopen("hoofball.in", "r", stdin);
+    //freopen("hoofball.out", "w", stdout);
     //cin >> size;
     for (int i = 1; i <= size; i++) solve(i);
 }
