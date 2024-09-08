@@ -50,6 +50,27 @@ pl rotate_90(const pl& a, const pl& b) {
 }
 
 
+/**
+ * Common Area of 2 rectangles.
+ * A is vector:
+ * [0 , 2 -> low, high x]
+ * [1 , 3 -> low, high y]
+ */
+ll commonArea(vi &A, vi &B) {
+    if (A[0] > A[2]) swap(A[0], A[2]);
+    if (A[1] > A[3]) swap(A[1], A[3]);
+    if (B[0] > B[2]) swap(B[0], B[2]);
+    if (B[1] > B[3]) swap(B[1], B[3]);
+    ll x1 = max(A[0], B[0]);
+    ll x2 = min(A[2], B[2]);
+    ll y1 = max(A[1], B[1]);
+    ll y2 = min(A[3], B[3]);
+
+    if (x1 > x2 || y1 > y2) return 0;
+    return (x2 - x1) * (y2 - y1);
+}
+
+
 // get sin on angle
 const double PI = 3.14159265358979323846264338327950288419716939937510;
 sin(angle * PI / 180);

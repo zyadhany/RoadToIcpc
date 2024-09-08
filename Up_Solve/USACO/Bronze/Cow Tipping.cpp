@@ -12,7 +12,7 @@
 #define vcc vector<vc>
 #define vp vector<pl>
 #define mi map<ll,ll>
-#define mc map<char,int>
+#define mc map<char,ll>
 #define sortx(X) sort(X.begin(),X.end());
 #define all(X) X.begin(),X.end()
 #define ln '\n'
@@ -25,18 +25,38 @@ const int MODE = 1e9 + 7;
 using namespace std;
 
 void solve(int tc) {
+    ll n;
 
+    cin >> n;
+
+    vector<string> X(n);
+
+    for (int i = 0; i < n; i++)
+        cin >> X[i];
+
+    ll sol = 0;
+    vi Z(n);
+
+    for (int i = n - 1; i >= 0; i--)
+    {
+        ll cnt = 0;
+        for (int j = n - 1; j >= 0; j--)
+        {
+            cnt += Z[j];
+            ll re = (X[i][j] == '1') ^ (cnt % 2);
+            if (re) Z[j]++, cnt++, sol++;
+        }
+    }
+        
+    cout << sol << '\n';
 }
 
 int main()
 {
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;
-
-    //freopen("input.txt", "r", stdin);
-    //freopen("output.txt", "w", stdout);
-
-    cin >> size;
-    for (int i = 1; i <= size; i++)
-        solve(i);
+    freopen("cowtip.in", "r", stdin);
+    freopen("cowtip.out", "w", stdout);
+    //cin >> size;
+    for (int i = 1; i <= size; i++) solve(i);
 }
