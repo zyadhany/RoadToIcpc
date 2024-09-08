@@ -24,45 +24,49 @@ const int MODE = 1e9 + 7;
 
 using namespace std;
 
-ll commonArea(vi &A, vi &B) {
-    if (A[0] > A[2]) swap(A[0], A[2]);
-    if (A[1] > A[3]) swap(A[1], A[3]);
-    if (B[0] > B[2]) swap(B[0], B[2]);
-    if (B[1] > B[3]) swap(B[1], B[3]);
+vi commonEdge(vi &A, vi &B) {
     ll x1 = max(A[0], B[0]);
     ll x2 = min(A[2], B[2]);
     ll y1 = max(A[1], B[1]);
     ll y2 = min(A[3], B[3]);
 
-    if (x1 > x2 || y1 > y2) return 0;
-    return (x2 - x1) * (y2 - y1);
+    if (x1 > x2 || y1 > y2) return vi(4, -1);
+    return {x1, y1, x2, y2};
 }
 
 ll RecArea(vi &A) {
     return (A[2] - A[0]) * (A[3] - A[1]);
 }
 
-bool covered(int x, int y, int x1, int y1, int x2, int y2) {
-	return x >= x1 && x <= x2 && y >= y1 && y <= y2;
+ll commonArea(vi &A, vi &B) {
+    vi rec = commonEdge(A, B);
+    return RecArea(rec);
 }
 
+
 void solve(int tc) {
-    vii X(2, vi(4));
+    ll H, W;
+    ll x1, x2, y1, y2;
+    ll a, b;    
 
-    for (int i = 0; i < 2; i++)
-        for (int j = 0; j < 4; j++)
-            cin >> X[i][j];
-    ll sol = RecArea(X[0]);
+    cin >> W >> H;
+    cin >> x1 >> y1 >> x2 >> y2;
+    cin >> a >> b;
 
-    int corner_num = 0;
-	if (covered(X[0][0], X[0][1], X[1][0], X[1][1], X[1][2], X[1][3])) corner_num++;
-	if (covered(X[0][0], X[0][3], X[1][0], X[1][1], X[1][2], X[1][3])) corner_num++;
-	if (covered(X[0][2], X[0][1], X[1][0], X[1][1], X[1][2], X[1][3])) corner_num++;
-	if (covered(X[0][2], X[0][3], X[1][0], X[1][1], X[1][2], X[1][3])) corner_num++;
+    ll w = x2 - x1;
+    ll h = y2 - y1;
+    ll mn = INT32_MAX;
 
-    if (corner_num >= 2) sol -= commonArea(X[0], X[1]);
+    if (W - w >= a) {
+        mn = min({mn, a - x1, x2 - W + a});
+    }
 
-    cout << sol << '\n';
+    if (H - h >= b) {
+        mn = min({mn, b - y1, y2 - H + b});
+    }
+    
+    if (mn == INT32_MAX) MUN;
+    cout << max(mn, 0ll) << '\n';
 }
 
 int main()
@@ -70,10 +74,10 @@ int main()
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;
 
-    freopen("billboard.in", "r", stdin);
-    freopen("billboard.out", "w", stdout);
+    //freopen("billboard.in", "r", stdin);
+    //freopen("billboard.out", "w", stdout);
 
-    //cin >> size;
+    cin >> size;
     for (int i = 1; i <= size; i++)
         solve(i);
 }
