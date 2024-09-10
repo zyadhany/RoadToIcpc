@@ -24,49 +24,64 @@ const int MODE = 1e9 + 7;
 
 using namespace std;
 
-vi commonEdge(vi &A, vi &B) {
-    ll x1 = max(A[0], B[0]);
-    ll x2 = min(A[2], B[2]);
-    ll y1 = max(A[1], B[1]);
-    ll y2 = min(A[3], B[3]);
+void req(vi &X) {
+    ll n = X.size();
+    vp Y(n + 10);
 
-    if (x1 > x2 || y1 > y2) return vi(4, -1);
-    return {x1, y1, x2, y2};
-}
+    for (int i = 0; i < n; i++)
+        Y[i] = {X[i], i};
+    sort(Y.rbegin(), Y.rend());
 
-ll RecArea(vi &A) {
-    return (A[2] - A[0]) * (A[3] - A[1]);
-}
-
-ll commonArea(vi &A, vi &B) {
-    vi rec = commonEdge(A, B);
-    return RecArea(rec);
-}
+    vi Z(n + 10);
+    for (int i = 0; i < min(n, 3ll); i++)
+        Z[Y[i].second] = i + 1;
 
 
-void solve(int tc) {
-    ll H, W;
-    ll x1, x2, y1, y2;
-    ll a, b;    
+    ll cnt = (Y[0].first != 0) + (Y[1].first != 0) + (Y[2].first != 0);
 
-    cin >> W >> H;
-    cin >> x1 >> y1 >> x2 >> y2;
-    cin >> a >> b;
-
-    ll w = x2 - x1;
-    ll h = y2 - y1;
-    ll mn = INT32_MAX;
-
-    if (W - w >= a) {
-        mn = min({mn, a - x1, x2 - W + a});
-    }
-
-    if (H - h >= b) {
-        mn = min({mn, b - y1, y2 - H + b});
+    for (int i = 0; i < n; i++)
+    {
+        if (!Z[i]) cout << "pushBack\n";
+        else if (Z[i] == 1) cout << "pushFront\n";
+        else if (Z[i] == 2) cout << "pushQueue\n";
+        else cout << "pushStack\n";
     }
     
-    if (mn == INT32_MAX) MUN;
-    cout << max(mn, 0ll) << '\n';
+    cout << cnt;
+    for (int i = 0; i < cnt; i++)
+    {
+        cout << " ";
+        if (i == 0) cout << "popFront";
+        else if (i == 1) cout << "popQueue";
+        else cout << "popStack";
+    }
+    
+    cout << '\n';
+}
+
+void solve(int tc) {
+    ll n;
+
+    cin >> n;
+
+    vi X;
+    vii Z;
+
+    for (int i = 0; i < n; i++)
+    {
+        ll a; cin >> a;
+        if (a) X.push_back(a);
+        else
+        {
+            Z.push_back(X);
+            X.clear();
+        }
+    }
+    
+    for (int i = 0; i < Z.size(); i++)
+        req(Z[i]);
+    for (int i = 0; i < X.size(); i++)
+        cout << "pushStack\n";
 }
 
 int main()
@@ -74,10 +89,10 @@ int main()
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;
 
-    //freopen("billboard.in", "r", stdin);
-    //freopen("billboard.out", "w", stdout);
+    //freopen("whatbase.in", "r", stdin);
+    //freopen("whatbase.out", "w", stdout);
 
-    cin >> size;
+    //cin >> size;
     for (int i = 1; i <= size; i++)
         solve(i);
 }
