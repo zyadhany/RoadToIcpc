@@ -22,10 +22,43 @@
 
 const int MODE = 1e9 + 7;
 
-using namespace std;
+using namespace std;    
+
+bool issorted(vi &X) {
+    for (int i = 0; i < X.size() - 1; i++)
+        if (X[i] > X[i + 1]) return 0;
+
+    return 1;
+}
 
 void solve(int tc) {
+    ll n;
+
+    cin >> n;
+
+    vi X(n);
+
+    for (int i = 0; i < n; i++)
+    {
+        cin >> X[i];
+    }
     
+    ll cnt = 1;
+    for (int i = 0; i < n; i++)
+    {
+        while (X[i] % 2 == 0)
+        {
+            X[i] /= 2;
+            cnt *= 2;
+        }
+    }
+    sortx(X);
+    X.back() *= cnt;
+
+    ll summ = 0;
+    for (int i = 0; i < n; i++)
+        summ += X[i];
+    cout << summ << '\n';    
 }
 
 int main()
@@ -36,7 +69,7 @@ int main()
     // freopen("lazy.in", "r", stdin);
     // freopen("lazy.out", "w", stdout);
 
-    //cin >> size;
+    cin >> size;
     for (int i = 1; i <= size; i++)
         solve(i);
 }
