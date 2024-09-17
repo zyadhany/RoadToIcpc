@@ -24,8 +24,26 @@ const int MODE = 1e9 + 7;
 
 using namespace std;
 
+
 void solve(int tc) {
+    ll n;
+    cin >> n;
+
+    vi X(n + 1);
+    vi Y(7);
+
+    for (int i = 1; i <= n; i++)
+    {
+        cin >> X[i];
+        X[i] += X[i - 1];
+        X[i] %= 7;
+        Y[X[i]] = i;
+    }
     
+    ll mx = 0;
+    for (int i = 0; i < n; i++)
+        mx = max(mx, Y[X[i]] - i);
+    cout << mx << '\n';
 }
 
 int main()
@@ -33,8 +51,8 @@ int main()
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;
 
-    // freopen("lazy.in", "r", stdin);
-    // freopen("lazy.out", "w", stdout);
+    freopen("div7.in", "r", stdin);
+    freopen("div7.out", "w", stdout);
 
     //cin >> size;
     for (int i = 1; i <= size; i++)

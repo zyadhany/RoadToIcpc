@@ -24,8 +24,23 @@ const int MODE = 1e9 + 7;
 
 using namespace std;
 
+
 void solve(int tc) {
-    
+    ll n, k;
+
+    cin >> n >> k;
+
+    vi X(n + 1);
+
+    for (int i = 0; i < k; i++)
+    {
+        ll a, b; cin >> a >> b;
+        X[a]++; X[b + 1]--;
+    }
+    for (int i = 1; i <= n; i++)
+        X[i] += X[i - 1];
+    sortx(X);
+    cout << X[n / 2 + 1] << '\n';
 }
 
 int main()
@@ -33,8 +48,8 @@ int main()
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;
 
-    // freopen("lazy.in", "r", stdin);
-    // freopen("lazy.out", "w", stdout);
+    //freopen("stacking.in", "r", stdin);
+    //freopen("stacking.out", "w", stdout);
 
     //cin >> size;
     for (int i = 1; i <= size; i++)

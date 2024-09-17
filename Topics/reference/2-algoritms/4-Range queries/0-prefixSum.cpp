@@ -47,3 +47,26 @@ void solve(ll tc) {
     }
     
 }
+
+
+/**
+ * Given Diamond Shape convert it to squere
+ * 1 2 3
+ * 4 5 6
+ * 7 8 9
+ * ===>>>
+ * 0 0 1 0 0 
+ * 0 4 0 2 0 
+ * 7 0 5 0 3 
+ * 0 8 0 6 0 
+ * 0 0 9 0 0 
+ */
+vii ConverDiamondToMatix(vii &X) {
+    ll n = X.size();
+    vii Z(n * 2 - 1, vi(2 * n - 1));
+    
+    for (int i = 0; i < n; i++)
+        for (int j = 0; j < n; j++)
+            Z[i + j][n - i + j - 1] = X[i][j];
+    return Z;    
+}
