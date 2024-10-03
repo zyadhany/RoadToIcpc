@@ -25,7 +25,33 @@ const int MODE = 1e9 + 7;
 using namespace std;    
 
 void solve(int tc) {
+    ll n, m, k;
 
+    cin >> m >> k;
+    cin >> n;
+
+    vi X;
+
+    for (int i = 0; i < n; i++)
+    {
+        double re; cin >> re;
+        if (re < 2.8) {
+            double a = 2.8 - re;
+            a = ceil(a);
+            X.push_back(a);
+        }
+    }
+    
+    sort(X.rbegin(), X.rend());
+
+    k /= m;
+    while (!X.empty() && k >= X.back())
+    {
+        k -= X.back();
+        X.pop_back();
+    }
+
+    cout << X.size() << '\n';
 }
 
 int main()

@@ -1,7 +1,6 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include <bits/stdc++.h>
 #include <unordered_map>
-#include <unordered_set>
 
 #define ll long long
 #define ld long double
@@ -18,14 +17,36 @@
 #define ln '\n'
 #define YES {cout << "YES\n"; return;}
 #define NO {cout << "NO\n"; return;}
-#define MUN {cout << "-1\n"; return;}
 
 const int MODE = 1e9 + 7;
 
-using namespace std;    
+using namespace std;
+
 
 void solve(int tc) {
+    ll n;
 
+    cin >> n;
+
+    vi L, R;
+
+    for (int i = 0; i < n; i++)
+    {
+        ll a; cin >> a;
+        if (a > 0) L.push_back(a);
+        else if (a < 0) R.push_back(a);
+    }
+    
+    ll sol = (!L.empty() | (R.size() >= 2));
+    
+    for (auto a : L) sol *= a;
+    
+    sortx(R);
+    ll st = R.size() % 2;
+    for (int i = 0; i < R.size() - st; i++)
+        sol *= R[i];
+    
+    cout << sol << '\n';
 }
 
 int main()
@@ -33,8 +54,8 @@ int main()
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;
 
-    //freopen("meetings.in", "r", stdin);
-    //freopen("meetings.out", "w", stdout);
+    //freopen("input.txt", "r", stdin);
+    //freopen("output.txt", "w", stdout);
 
     //cin >> size;
     for (int i = 1; i <= size; i++)

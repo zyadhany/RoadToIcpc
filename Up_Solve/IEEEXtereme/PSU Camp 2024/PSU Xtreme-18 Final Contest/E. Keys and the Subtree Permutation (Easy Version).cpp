@@ -24,8 +24,48 @@ const int MODE = 1e9 + 7;
 
 using namespace std;    
 
-void solve(int tc) {
+vi X, res;
+vii Y;
 
+pl req(ll n, ll p) {
+    ll mx = X[n];
+    ll sz = 1;
+
+    for (auto neg : Y[n]) {
+        if (neg == p) continue;
+        pl re = req(neg, n);
+        sz += re.first;
+        mx = max(mx, re.second);
+    }
+
+    if (mx != sz) res[n] = 0;
+    return {sz, mx};
+}
+
+void solve(int tc) {
+    ll n;
+
+    cin >> n;
+
+    X.resize(n + 1);
+    res.assign(n + 1, 1);
+    Y.resize(n + 1);
+
+    for (int i = 0; i < n; i++)
+        cin >> X[i + 1];
+
+    for (int i = 0; i < n - 1; i++)
+    {
+        ll u, v; cin >> u >> v;
+        Y[u].push_back(v);
+        Y[v].push_back(u);
+    }
+
+    req(1, 0);
+
+    for (int i = 1; i <= n; i++)
+        if (res[i]) cout << "YES\n";
+        else cout << "NO\n";
 }
 
 int main()

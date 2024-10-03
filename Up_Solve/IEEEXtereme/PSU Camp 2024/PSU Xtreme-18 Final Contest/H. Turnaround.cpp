@@ -25,7 +25,25 @@ const int MODE = 1e9 + 7;
 using namespace std;    
 
 void solve(int tc) {
+    ll n;
 
+    cin >> n;
+
+    vi X;
+
+    while (n)
+    {
+        X.push_back(n % 2);
+        n /= 2;
+    }
+
+    for (int i = 0; i < X.size(); i++)
+    {
+        n *= 2;
+        n += X[i];
+    }
+    
+    cout << n << '\n';
 }
 
 int main()

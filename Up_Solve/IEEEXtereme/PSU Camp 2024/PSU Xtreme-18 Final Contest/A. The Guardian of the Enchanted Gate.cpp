@@ -24,8 +24,13 @@ const int MODE = 1e9 + 7;
 
 using namespace std;    
 
-void solve(int tc) {
 
+void solve(int tc) {
+    ll n;
+
+    cin >> n;
+
+    cout << n / 2 << ' ' << (n + 1) / 2 << '\n';
 }
 
 int main()
