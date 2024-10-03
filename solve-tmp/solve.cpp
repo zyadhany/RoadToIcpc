@@ -24,41 +24,69 @@ const int MODE = 1e9 + 7;
 
 using namespace std;    
 
-bool issorted(vi &X) {
-    for (int i = 0; i < X.size() - 1; i++)
-        if (X[i] > X[i + 1]) return 0;
-
-    return 1;
-}
 
 void solve(int tc) {
-    ll n;
+    ll n, m;
 
-    cin >> n;
+    cin >> n >> m;
 
-    vi X(n);
+    vii X(n, vi(3));
+    vi L, R;
+
+    for (int i = 0; i < n; i++)
+        cin >> X[i][1] >> X[i][0] >> X[i][2];
+    sortx(X);
 
     for (int i = 0; i < n; i++)
     {
-        cin >> X[i];
+        if (X[i][2] == -1) L.push_back(X[i][0]);
+        else R.push_back(m - X[i][0]);
     }
     
-    ll cnt = 1;
+    vp time;
+    ll total_wid = 0;
     for (int i = 0; i < n; i++)
     {
-        while (X[i] % 2 == 0)
-        {
-            X[i] /= 2;
-            cnt *= 2;
+        total_wid += X[i][1];
+        if (i < L.size()) time.push_back({L[i], X[i][1]});
+        else time.push_back({R[i - L.size()], X[i][1]});
+    }
+    sortx(time);
+    ll t, summ = 0;
+
+    for (int i = 0; i < n; i++)
+    {
+        summ += time[i].second;
+        if (i < n - 1 && time[i].first == time[i + 1].first) continue;
+        if (summ >= (total_wid + 1ll) / 2) {
+            t = time[i].first;
+            break;
         }
     }
-    sortx(X);
-    X.back() *= cnt;
-
-    ll summ = 0;
+    
+    L.clear(), R.clear();
     for (int i = 0; i < n; i++)
-        summ += X[i];
-    cout << summ << '\n';    
+        if (X[i][2] == 1) L.push_back(X[i][0]);
+        else R.push_back(X[i][0]);
+    
+    ll sol = 0;
+    for (int i = 0; i < L.size(); i++)
+    {
+        ll l, r;
+        r = upper_bound(all(R), L[i] + 2 * t) - R.begin();
+        l = lower_bound(all(R), L[i]) - R.begin();
+        sol += r - l;
+    }
+
+    for (int i = 0; i < R.size(); i++)
+    {
+        ll l, r;
+        l = lower_bound(all(L), R[i] - 2 * t) - L.begin();
+        r = upper_bound(all(L), R[i]) - L.begin();
+        sol += r - l;
+    }
+    
+    cout << sol / 2 << '\n';
 }
 
 int main()
@@ -66,10 +94,10 @@ int main()
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;
 
-    // freopen("lazy.in", "r", stdin);
-    // freopen("lazy.out", "w", stdout);
+    freopen("meetings.in", "r", stdin);
+    freopen("meetings.out", "w", stdout);
 
-    cin >> size;
+    //cin >> size;
     for (int i = 1; i <= size; i++)
         solve(i);
 }
