@@ -1,7 +1,6 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include <bits/stdc++.h>
 #include <unordered_map>
-#include <unordered_set>
 
 #define ll long long
 #define ld long double
@@ -29,20 +28,35 @@ void solve(int tc) {
 
     cin >> n;
 
-    vi X(n);
-    for (int i = 0; i < n; i++)
-        cin >> X[i];
-    sort(X.rbegin(), X.rend());
-    
+    vii X(n, vi(3));
+
     for (int i = 0; i < n; i++)
     {
-        if (X[i] < i) {
-            cout << i << '\n';
-            return;
+        cin >> X[i][0] >> X[i][2];
+        X[i][1] = -i;
+    }
+    sortx(X);
+
+    ll at = 0;
+    ll time = 0;
+    ll mx = 0;
+    priority_queue<pl> pq;
+
+    while (at < n || !pq.empty())
+    {
+        if (pq.empty() && time < X[at][0]) time = X[at][0];
+        while (at < n && time >= X[at][0])
+        {
+            pq.push({X[at][1], at});
+            at++;
         }
+
+        mx = max(mx, time - X[pq.top().second][0]);
+        time += X[pq.top().second][2];
+        pq.pop();
     }
 
-    cout << n << '\n';
+    cout << mx << '\n';
 }
 
 int main()
@@ -50,9 +64,8 @@ int main()
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;
 
-    freopen("lemonade.in", "r", stdin);
-    freopen("lemonade.out", "w", stdout);
-    
+    freopen("convention2.in", "r", stdin);
+    freopen("convention2.out", "w", stdout);
     //cin >> size;
     for (int i = 1; i <= size; i++) solve(i);
 }

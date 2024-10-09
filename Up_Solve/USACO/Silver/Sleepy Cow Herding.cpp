@@ -12,17 +12,17 @@
 #define vcc vector<vc>
 #define vp vector<pl>
 #define mi map<ll,ll>
-#define mc map<char,ll>
+#define mc map<char,int>
 #define sortx(X) sort(X.begin(),X.end());
 #define all(X) X.begin(),X.end()
 #define ln '\n'
 #define YES {cout << "YES\n"; return;}
 #define NO {cout << "NO\n"; return;}
+#define MUN {cout << "-1\n"; return;}
 
 const int MODE = 1e9 + 7;
 
-using namespace std;
-
+using namespace std;    
 
 void solve(int tc) {
     ll n;
@@ -32,17 +32,24 @@ void solve(int tc) {
     vi X(n);
     for (int i = 0; i < n; i++)
         cin >> X[i];
-    sort(X.rbegin(), X.rend());
-    
+    sortx(X);
+
+    ll mn, mx;
+
+    mn = INT32_MAX;
+
     for (int i = 0; i < n; i++)
     {
-        if (X[i] < i) {
-            cout << i << '\n';
-            return;
-        }
+        ll re = lower_bound(all(X), X[i] + n) - X.begin();
+        re = n - (re - i);
+        if (re == 1) re += (X[i + n - 2] != X[i] + n - 1);
+        mn = min(mn, re);
     }
+    ll l = X[n - 2] - X[0] - (n - 2);
+    ll r = X[n - 1] - X[1] - (n - 2);
+    mx = max(l, r);
 
-    cout << n << '\n';
+    cout << mn << '\n' << mx << '\n';
 }
 
 int main()
@@ -50,9 +57,10 @@ int main()
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;
 
-    freopen("lemonade.in", "r", stdin);
-    freopen("lemonade.out", "w", stdout);
-    
+    freopen("herding.in", "r", stdin);
+    freopen("herding.out", "w", stdout);
+
     //cin >> size;
-    for (int i = 1; i <= size; i++) solve(i);
+    for (int i = 1; i <= size; i++)
+        solve(i);
 }

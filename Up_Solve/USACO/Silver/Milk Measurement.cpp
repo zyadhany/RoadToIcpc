@@ -1,7 +1,6 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include <bits/stdc++.h>
 #include <unordered_map>
-#include <unordered_set>
 
 #define ll long long
 #define ld long double
@@ -25,24 +24,42 @@ using namespace std;
 
 
 void solve(int tc) {
-    ll n;
+    ll n, k;
 
-    cin >> n;
+    cin >> n >> k;
 
-    vi X(n);
+    mi X;
+    vii Y(n, vi(3));
+
     for (int i = 0; i < n; i++)
-        cin >> X[i];
-    sort(X.rbegin(), X.rend());
+        for (int j = 0; j < 3; j++)
+            cin >> Y[i][j];
+    sortx(Y);
+
+    multiset<ll> st;
+    for (int i = 0; i < n; i++)
+        st.insert(0);
     
-    for (int i = 0; i < n; i++)
-    {
-        if (X[i] < i) {
-            cout << i << '\n';
-            return;
-        }
+    ll res = 0;
+    for (auto &Q : Y) {
+        ll ind = Q[1];
+        ll val = Q[2];
+        
+        ll mx = *prev(st.end());
+        ll cnt = st.count(mx);
+        ll prevx = X[ind];
+        st.erase(st.find(X[ind]));
+    
+        X[ind] += val;
+        st.insert(X[ind]);
+        ll nmx = *prev(st.end());
+        ll ncnt = st.count(nmx);
+
+        if (prevx == mx && cnt == 1) res += (nmx != X[ind] || ncnt != 1);        
+        else res += (nmx != mx || ncnt != cnt);
     }
 
-    cout << n << '\n';
+    cout << res << '\n';
 }
 
 int main()
@@ -50,9 +67,8 @@ int main()
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;
 
-    freopen("lemonade.in", "r", stdin);
-    freopen("lemonade.out", "w", stdout);
-    
+    freopen("measurement.in", "r", stdin);
+    freopen("measurement.out", "w", stdout);
     //cin >> size;
     for (int i = 1; i <= size; i++) solve(i);
 }

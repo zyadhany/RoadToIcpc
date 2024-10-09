@@ -1,3 +1,12 @@
+// custom copmprator
+struct cmp {
+    bool operator() (int a, int b) const {
+        return a < b;
+    }
+};
+set<int, cmp> st;
+
+
 // find the greates element less than him in left.
 vi Smallestonleft(vi& arr)
 {
