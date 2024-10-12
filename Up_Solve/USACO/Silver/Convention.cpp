@@ -24,36 +24,31 @@ const int MODE = 1e9 + 7;
 
 using namespace std;
 
-vii Y(1e6);
-vi vis(1e6);
-
-void req(ll n) {
-    if (vis[n]) return;
-    vis[n] = 1;
-    for (auto neg : Y[n]) req(neg);
-}
 
 void solve(int tc) {
-    ll n, m;
+    ll n, m, c;
 
-    cin >> n >> m;
+    cin >> n >> m >> c;
 
-    for (int i = 0; i < m; i++)
+    vi X(n);
+    for (int i = 0; i < n; i++)
+        cin >> X[i];
+    sortx(X);
+
+    ll l = 0, r = INT32_MAX;
+    while (l < r)
     {
-        ll u, v; cin >> u >> v;
-        Y[u].push_back(v);
-        Y[v].push_back(u);
+        ll mid = (l + r) / 2;
+        ll cnt = 1;
+        ll at = 0;
+        for (int i = 0; i < n; i++)
+            if (X[i] - X[at] > mid || i - at == c) at = i, cnt++;
+
+        if (cnt <= m) r = mid;
+        else l = mid + 1;
     }
 
-    ll cnt = 0;
-    for (int i = 1; i <= n; i++)
-    {
-        if (vis[i]) continue;
-        cnt++;
-        req(i);
-    }
-    
-    cout << cnt - 1 << '\n';
+    cout << l << '\n';
 }
 
 int main()
@@ -61,8 +56,8 @@ int main()
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;
 
-    //freopen("socdist.in", "r", stdin);
-    //freopen("socdist.out", "w", stdout);
+    freopen("convention.in", "r", stdin);
+    freopen("convention.out", "w", stdout);
     
     //cin >> size;
     for (int i = 1; i <= size; i++) solve(i);

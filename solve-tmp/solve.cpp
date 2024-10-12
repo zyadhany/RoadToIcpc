@@ -1,98 +1,60 @@
-#define _CRT_SECURE_NO_WARNINGS
-#include <bits/stdc++.h>
-#include <unordered_map>
-#include <unordered_set>
-
+#include<bits/stdc++.h>
+#define endl "\n"
+#define pb push_back
+#define fi first
+#define se second
+#define all(x) (x).begin(), (x).end()
+#define SZ(x) ((int)(x).size())
+#define Bit(x) (1 << (x))
 #define ll long long
-#define ld long double
-#define pl pair<ll, ll>
-#define vi vector<ll>
-#define vii vector<vi>
-#define vc vector<char>
-#define vcc vector<vc>
-#define vp vector<pl>
-#define mi map<ll,ll>
-#define mc map<char,ll>
-#define sortx(X) sort(X.begin(),X.end());
-#define all(X) X.begin(),X.end()
-#define ln '\n'
-#define YES {cout << "YES\n"; return;}
-#define NO {cout << "NO\n"; return;}
-#define MUN {cout << "-1\n"; return;}
-
-const int MODE = 1e9 + 7;
-
 using namespace std;
 
-struct cow
-{
-    ll l, r, num, typ;
-};
 
-bool cmp(cow &a, cow &b) {
-    if (a.l != b.l) return a.l < b.l;
-    return a.typ > b.typ;
+const int mod = 998244353, CN = 2e5 + 8;
+vector<ll> inv(CN + 6), fac(CN + 6), ifac(CN + 6); 
+
+ll C(int a, int b) {
+    if (b > a || b < 0) return 0;
+    return fac[a] * ifac[b] % mod * ifac[a - b] % mod; 
 }
 
-void solve(int tc) {
-    ll n;
-
-    cin >> n;
-
-    vector<cow> X(n);
-    set<ll> ptr;
-
-    for (int i = 0; i < n; i++)
-    {
-        ll x, t;
-        cin >> X[i].typ;
-        cin >> t >> x;
-        cin >> X[i].num;
-        X[i].l = x - t;
-        X[i].r = x + t;
-
-        ptr.insert(X[i].l);
-        ptr.insert(X[i].r);
-    }
-    sort(all(X), cmp);
-
-    ll sol = 0;
-    mi mp;
-
-    for (int i = 0; i < n; i++)
-    {
-        if (X[i].typ == 2) {
-            mp[X[i].r] += X[i].num;
-            continue;
-        }
-
-        ll r = X[i].r;
-        ll num = X[i].num;
-        while (num)
-        {
-            auto it = mp.lower_bound(r);
-            if (it == mp.end()) break;
-            
-            ll mn = min(num, it->second);
-            it->second -= mn;
-            num -= mn;
-            sol += mn;
-            
-            if (!it->second) mp.erase(it->first);
-        }
-    }
-    
-    cout << sol << '\n';
+void prep(void) {
+    inv[1] = fac[0] = ifac[0] = 1;
+    for (int i = 2; i <= CN; i++) 
+        inv[i] = (mod - mod / i) * inv[mod % i] % mod;
+    for (int i = 1; i <= CN; i++)
+        fac[i] = fac[i - 1] * i % mod, ifac[i] = ifac[i - 1] * inv[i] % mod;    
 }
 
-int main()
-{
-    ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
-    int size = 1;
+void add(ll& a, ll b) {
+    a += b;
+    if (a >= mod) a -= mod;
+}
 
-    //freopen("berries.in", "r", stdin);
-    //freopen("berries.out", "w", stdout);
-    
-    //cin >> size;
-    for (int i = 1; i <= size; i++) solve(i);
+ll calc(int n, int m, int k) {
+    if (k == 0) return C(n + m - 1, m - 1);
+    ll ret = 0;
+    int sgn = 1;
+    for (int i = 1; i * k <= n && i <= m; i++) {
+        add(ret, (sgn * C(m, i) * C(n - i * k + m - 1, m - 1) % mod + mod) % mod);
+        sgn *= -1;
+    }
+    return ret;
+}
+
+inline void solve() {
+    int n, m, k;
+    cin >> n >> m >> k;
+    cout << (calc(m, n - m + 1, k) - calc(m, n - m + 1, k + 1) + mod) % mod << endl; 
+}
+
+int main(void) {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int tc = 1;
+    prep();
+    for (int i = 1; i <= tc; i++) {
+        solve();
+    }
+    return 0;
 }

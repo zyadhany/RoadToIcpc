@@ -1,2 +1,2 @@
-g++ solve.cpp
-.\a.exe < input.txt > output.txt
+g++ solve.cpp -o solveee.exe
+.\solveee.exe < input.txt > output.txt

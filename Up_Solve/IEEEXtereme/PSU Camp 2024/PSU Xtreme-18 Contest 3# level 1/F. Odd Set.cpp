@@ -24,36 +24,23 @@ const int MODE = 1e9 + 7;
 
 using namespace std;
 
-vii Y(1e6);
-vi vis(1e6);
-
-void req(ll n) {
-    if (vis[n]) return;
-    vis[n] = 1;
-    for (auto neg : Y[n]) req(neg);
-}
 
 void solve(int tc) {
-    ll n, m;
+    ll n;
 
-    cin >> n >> m;
+    cin >> n;
 
-    for (int i = 0; i < m; i++)
-    {
-        ll u, v; cin >> u >> v;
-        Y[u].push_back(v);
-        Y[v].push_back(u);
-    }
+    ll a, b;
+    a = b = 0;
 
-    ll cnt = 0;
-    for (int i = 1; i <= n; i++)
-    {
-        if (vis[i]) continue;
-        cnt++;
-        req(i);
+    for (int i = 0; i < n * 2; i++) {
+        ll k; cin >> k;
+        if (k % 2) a++;
+        else b++;
     }
     
-    cout << cnt - 1 << '\n';
+    if (a == b) YES;
+    NO;
 }
 
 int main()
@@ -64,6 +51,6 @@ int main()
     //freopen("socdist.in", "r", stdin);
     //freopen("socdist.out", "w", stdout);
     
-    //cin >> size;
+    cin >> size;
     for (int i = 1; i <= size; i++) solve(i);
 }

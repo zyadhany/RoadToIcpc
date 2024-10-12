@@ -24,36 +24,28 @@ const int MODE = 1e9 + 7;
 
 using namespace std;
 
-vii Y(1e6);
-vi vis(1e6);
-
-void req(ll n) {
-    if (vis[n]) return;
-    vis[n] = 1;
-    for (auto neg : Y[n]) req(neg);
-}
 
 void solve(int tc) {
-    ll n, m;
+    ll n, q;
 
-    cin >> n >> m;
+    cin >> n >> q;
 
-    for (int i = 0; i < m; i++)
+    vi X(n);
+    for (int i = 0; i < n; i++)
+        cin >> X[i];
+    sortx(X);
+
+    while (q--)
     {
-        ll u, v; cin >> u >> v;
-        Y[u].push_back(v);
-        Y[v].push_back(u);
-    }
+        ll l, r;
+        cin >> l >> r;
 
-    ll cnt = 0;
-    for (int i = 1; i <= n; i++)
-    {
-        if (vis[i]) continue;
-        cnt++;
-        req(i);
-    }
+        ll a = lower_bound(all(X), l) - X.begin();
+        ll b = upper_bound(all(X), r) - X.begin();
     
-    cout << cnt - 1 << '\n';
+        cout << b - a << '\n';
+    }
+        
 }
 
 int main()
@@ -61,8 +53,8 @@ int main()
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;
 
-    //freopen("socdist.in", "r", stdin);
-    //freopen("socdist.out", "w", stdout);
+    freopen("haybales.in", "r", stdin);
+    freopen("haybales.out", "w", stdout);
     
     //cin >> size;
     for (int i = 1; i <= size; i++) solve(i);

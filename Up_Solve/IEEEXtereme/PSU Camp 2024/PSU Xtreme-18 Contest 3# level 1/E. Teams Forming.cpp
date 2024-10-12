@@ -24,36 +24,22 @@ const int MODE = 1e9 + 7;
 
 using namespace std;
 
-vii Y(1e6);
-vi vis(1e6);
-
-void req(ll n) {
-    if (vis[n]) return;
-    vis[n] = 1;
-    for (auto neg : Y[n]) req(neg);
-}
 
 void solve(int tc) {
-    ll n, m;
+    ll n;
 
-    cin >> n >> m;
+    cin >> n;
 
-    for (int i = 0; i < m; i++)
-    {
-        ll u, v; cin >> u >> v;
-        Y[u].push_back(v);
-        Y[v].push_back(u);
-    }
+    vi X(n);
+    for (int i = 0; i < n; i++)
+        cin >> X[i];
+    sortx(X);
 
     ll cnt = 0;
-    for (int i = 1; i <= n; i++)
-    {
-        if (vis[i]) continue;
-        cnt++;
-        req(i);
-    }
-    
-    cout << cnt - 1 << '\n';
+    for (int i = 0; i < n; i+=2)
+        cnt += X[i + 1] - X[i];
+        
+    cout << cnt << '\n';
 }
 
 int main()

@@ -24,36 +24,39 @@ const int MODE = 1e9 + 7;
 
 using namespace std;
 
-vii Y(1e6);
-vi vis(1e6);
-
-void req(ll n) {
-    if (vis[n]) return;
-    vis[n] = 1;
-    for (auto neg : Y[n]) req(neg);
-}
 
 void solve(int tc) {
-    ll n, m;
+    ll n, mt;
 
-    cin >> n >> m;
+    cin >> n >> mt;
 
-    for (int i = 0; i < m; i++)
+    vi X(n);
+    for (int i = 0; i < n; i++)
+        cin >> X[i];
+
+    ll l = 1, r = n;
+
+    while (l < r)
     {
-        ll u, v; cin >> u >> v;
-        Y[u].push_back(v);
-        Y[v].push_back(u);
+        ll mid = (l + r) / 2;
+
+        multiset<ll> st;
+        for (int i = 0; i < mid; i++)
+            st.insert(X[i]);
+
+        for (int i = mid; i < n; i++)
+        {
+            ll re = *st.begin() + X[i];
+            st.erase(st.begin());
+            st.insert(re);
+        }
+        
+        ll time = *prev(st.end());
+        if (time <= mt) r = mid;
+        else l = mid + 1;
     }
 
-    ll cnt = 0;
-    for (int i = 1; i <= n; i++)
-    {
-        if (vis[i]) continue;
-        cnt++;
-        req(i);
-    }
-    
-    cout << cnt - 1 << '\n';
+    cout << l << '\n';    
 }
 
 int main()
@@ -61,8 +64,8 @@ int main()
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;
 
-    //freopen("socdist.in", "r", stdin);
-    //freopen("socdist.out", "w", stdout);
+    freopen("cowdance.in", "r", stdin);
+    freopen("cowdance.out", "w", stdout);
     
     //cin >> size;
     for (int i = 1; i <= size; i++) solve(i);
