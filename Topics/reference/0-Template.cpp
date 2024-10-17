@@ -15,6 +15,7 @@
 #define mc map<char,int>
 #define sortx(X) sort(X.begin(),X.end());
 #define all(X) X.begin(),X.end()
+#define allr(X) X.rbegin(),X.rend()
 #define ln '\n'
 #define YES {cout << "YES\n"; return;}
 #define NO {cout << "NO\n"; return;}

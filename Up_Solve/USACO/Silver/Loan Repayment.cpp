@@ -24,44 +24,38 @@ const int MODE = 1e9 + 7;
 
 using namespace std;
 
-void req(vii &adj, set<ll> &st, vi &sk, vi &vis, ll n) {
-    if (vis[n] != -1) {
-        for (int i = vis[n]; i < sk.size(); i++)
-            st.insert(sk[i]);
-        return;
-    }
-    vis[n] = sk.size();
-    sk.push_back(n);
-
-    for (auto neg : adj[n]) req(adj, st, sk, vis, neg);
-
-    vis[n] = -1;
-    sk.pop_back();
-}
 
 void solve(int tc) {
-    ll n, m;
+    ll n, k, m;
 
-    cin >> n >> m;
+    cin >> n >> k >> m;
 
-    vii Y(n + 1);
-    for (int i = 0; i < m; i++)
+    ll l = 1, r = 1e12;
+    while (l < r)
     {
-        ll u, v, a, b;
-        cin >> u >> v >> a >> b;
-        if (a > b) Y[u].push_back(v);
-        if (a < b) Y[v].push_back(u);
+        ll mid = (l + r + 1) / 2;
+        ll cnt = 0;
+        ll G = n;
+        while (G >= 0)
+        {
+            ll re = G / mid;
+            
+            if (re <= m) {
+                cnt += (G + m - 1) / m;
+                break;
+            }
+            
+            ll ro = re * mid;
+            ll lef = G - ro;
+            ll dy = lef / re + 1;
+            cnt += dy;
+            G -= dy * re;
+        }
+
+        if (cnt <= k) l = mid;
+        else r = mid - 1;
     }
-    
-    set<ll> st;
-    vi sk;
-    vi vis(n + 1, -1);
-
-    for (int i = 1; i <= n; i++)
-        req(Y, st, sk, vis, i);
-    
-
-    cout << st.size() << '\n';
+    cout << l << '\n';
 }
 
 int main()
@@ -69,8 +63,8 @@ int main()
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;
 
-    //freopen("fenceplan.in", "r", stdin);
-    //freopen("fenceplan.out", "w", stdout);
+    freopen("loan.in", "r", stdin);
+    freopen("loan.out", "w", stdout);
     
     //cin >> size;
     for (int i = 1; i <= size; i++) solve(i);
