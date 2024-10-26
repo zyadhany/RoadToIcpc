@@ -48,28 +48,32 @@ ll req(vii &Y, vi &X, vi &Z, ll n, ll p) {
 
 void solve(int tc) {
     ll n;
+
     cin >> n;
-
-    vi X(n * 2);
-    for (int i = 0; i < n * 2; i++)
-        X[i] = i + 1;
     
-    ll cnt = 0;
+    vi X(n + 1);
+    vii Y(n + 1);
 
-    do
+    for (int i = 0; i < n; i++)
+        cin >> X[i + 1];
+
+    for (int i = 0; i < n - 1; i++)
     {
-        bool isit = 1;
-        for (int i = 0; i < n - 1; i++)
-        {
-            if (X[i] > X[i + 1]) isit = 0;
-            if (X[i + n] > X[i + 1 + n]) isit = 0;
-            if (X[i] > X[i + n]) isit = 0;
-        }
-    
-        cnt += isit;
-    } while (next_permutation(all(X)));
-        
-    cout << cnt << '\n';
+        ll u, v; cin >> u >> v;
+        Y[u].push_back(v);
+        Y[v].push_back(u);
+    }
+
+    ll sol = 0;    
+    for (int i = 1; i <= n; i++)
+    {
+        if (Y[i].size() > 1) continue;
+        vi tr;
+        ll re = req(Y, X, tr, i, 0);
+        sol = max(sol, re);
+    }
+
+    cout << sol << '\n';
 }
 
 int main()
