@@ -12,9 +12,10 @@
 #define vcc vector<vc>
 #define vp vector<pl>
 #define mi map<ll,ll>
-#define mc map<char,ll>
+#define mc map<char,int>
 #define sortx(X) sort(X.begin(),X.end());
 #define all(X) X.begin(),X.end()
+#define allr(X) X.rbegin(),X.rend()
 #define ln '\n'
 #define YES {cout << "YES\n"; return;}
 #define NO {cout << "NO\n"; return;}
@@ -24,51 +25,54 @@ const int MODE = 1e9 + 7;
 
 using namespace std;
 
-vi dx = {1, -1, 0, 0};
-vi dy = {0, 0, 1, -1};
+ll req(vii &Y, vi &X, vi &Z, ll n, ll p) {
+    ll at = lower_bound(all(Z), X[n]) - Z.begin();
+    ll prev = -1;
+    bool isit = (at == Z.size());
+
+    if (isit) Z.push_back(X[n]);
+    else prev = Z[at], Z[at] = X[n];
+
+    ll sol = Z.size();
+    for (auto neg : Y[n]) {
+        if (neg == p) continue;
+        ll re = req(Y, X, Z, neg, n);
+        sol = max(sol, re);
+    }
+
+    if (isit) Z.pop_back();
+    else Z[at] = prev;
+
+    return sol;
+}
 
 void solve(int tc) {
-    ll n, m;
+    ll n;
 
-    cin >> n >> m;
-
-    vii X(n + 2, vi(m + 2, INT32_MAX));
-    priority_queue<pair<ll, pl>> pq;
-    vector<vector<ld>> Z(n + 2, vector<ld>(m + 2, 1));
-
-    for (int i = 1; i <= n; i++) {
-        for (int j = 1; j <= m; j++) {
-            cin >> X[i][j];
-            pq.push({X[i][j], {i, j}});
-        }
-    }
-
-    ld sol = 0;
-    while (!pq.empty())
-    {
-        ll k = pq.top().first;
-        ll l = pq.top().second.first;
-        ll r = pq.top().second.second;
-        pq.pop();
-
-        vp P;
-        for (int i = 0; i < 4; i++)
-        {
-            ll a = l + dx[i];
-            ll b = r + dy[i];
-            if (X[a][b] < k) P.push_back({a, b});
-        }
-        
-        if (P.empty()) {
-            sol = max(sol, Z[l][r]);
-            continue;
-        }
-
-        ld amount = Z[l][r] / P.size();
-        for (auto re : P) Z[re.first][re.second] += amount;
-    }
+    cin >> n;
     
-    cout << fixed << setprecision(5) << sol << '\n';
+    vi X(n + 1);
+    vii Y(n + 1);
+
+    for (int i = 0; i < n; i++)
+        cin >> X[i + 1];
+
+    for (int i = 0; i < n - 1; i++)
+    {
+        ll u, v; cin >> u >> v;
+        Y[u].push_back(v);
+        Y[v].push_back(u);
+    }
+
+    ll sol = 0;    
+    for (int i = 1; i <= n; i++)
+    {
+        vi tr;
+        ll re = req(Y, X, tr, i, 0);
+        sol = max(sol, re);
+    }
+
+    cout << sol << '\n';
 }
 
 int main()
@@ -76,9 +80,10 @@ int main()
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;
 
-    //freopen("fenceplan.in", "r", stdin);
-    //freopen("fenceplan.out", "w", stdout);
-    
+    //freopen("input.txt", "r", stdin);
+    //freopen("output.txt", "w", stdout);
+
     //cin >> size;
-    for (int i = 1; i <= size; i++) solve(i);
+    for (int i = 1; i <= size; i++)
+        solve(i);
 }
