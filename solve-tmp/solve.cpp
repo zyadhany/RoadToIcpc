@@ -25,51 +25,70 @@ const int MODE = 1e9 + 7;
 
 using namespace std;
 
-ll req(vii &Y, vi &X, vi &Z, ll n, ll p) {
-    ll at = lower_bound(all(Z), X[n]) - Z.begin();
-    ll prev = -1;
-    bool isit = (at == Z.size());
-
-    if (isit) Z.push_back(X[n]);
-    else prev = Z[at], Z[at] = X[n];
-
-    ll sol = Z.size();
-    for (auto neg : Y[n]) {
-        if (neg == p) continue;
-        ll re = req(Y, X, Z, neg, n);
-        sol = max(sol, re);
+void req(vector<vp> &Y, vp &X, vi &visy, vi &visx, vi &res, pl k) {
+    if (visy[k.second] || visx[k.first]) return;
+    visy[k.second] = 1;
+    visx[k.first] = 1;
+    res.push_back(k.first);
+    for (auto neg : Y[k.second]) {
+        req(Y, X, visy, visx, res, neg);
     }
+}
 
-    if (isit) Z.pop_back();
-    else Z[at] = prev;
+vi getres(vector<vp> &Y, vp &X){
+    ll n = X.size() - 1;
+    ll m = Y.size() - 1;
+    vi res;
+    vi visy(m + 1);
+    vi visx(n + 1);
 
-    return sol;
+    for (int i = 1; i <= n; i++)
+    {
+        if (visy[X[i].first] || visx[i]) continue;
+        if (Y[X[i].second].size() == 1 &&  Y[X[i].first].size() != 1) continue;
+        req(Y, X, visy, visx, res, {i, X[i].first});
+    }
+    for (int i = 1; i <= n; i++)
+        req(Y, X, visy, visx, res, {i, X[i].first});
+    for (int i = 1; i <= n; i++)
+        req(Y, X, visy, visx, res, {i, X[i].second});
+
+    return {res};
 }
 
 void solve(int tc) {
-    ll n;
-    cin >> n;
-
-    vi X(n * 2);
-    for (int i = 0; i < n * 2; i++)
-        X[i] = i + 1;
+    ll n, m;
     
-    ll cnt = 0;
+    cin >> n >> m;
 
-    do
+    vp X(n + 1);
+    vector<vp> Y(m + 1);
+
+    for (int i = 1; i <= n; i++)
     {
-        bool isit = 1;
-        for (int i = 0; i < n - 1; i++)
-        {
-            if (X[i] > X[i + 1]) isit = 0;
-            if (X[i + n] > X[i + 1 + n]) isit = 0;
-            if (X[i] > X[i + n]) isit = 0;
-        }
+        ll u, v; cin >> u >> v;
+        X[i] = {u, v};
+        Y[u].push_back({i, v});
+        Y[v].push_back({i, u});
+    }
     
-        cnt += isit;
-    } while (next_permutation(all(X)));
-        
+    vi L = getres(Y, X);
+    for (int i = 1; i <= n; i++)
+        swap(X[i].first, X[i].second);
+    vi R = getres(Y, X);
+    reverse(all(R));
+
+    vi res;
+    if (L.size() >= R.size()) res = L;
+    else res = R;
+
+    set<ll> st(all(res));
+    ll cnt = n - st.size();
+    for (int i = 1; i <= n; i++)
+        if (!st.count(i)) res.push_back(i);
+
     cout << cnt << '\n';
+    for (auto x : res) cout << x << '\n';
 }
 
 int main()
