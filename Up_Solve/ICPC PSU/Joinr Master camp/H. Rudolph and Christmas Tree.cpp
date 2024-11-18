@@ -1,4 +1,4 @@
-    #define _CRT_SECURE_NO_WARNINGS
+#define _CRT_SECURE_NO_WARNINGS
 #include <bits/stdc++.h>
 #include <unordered_map>
 #include <unordered_set>
@@ -26,27 +26,26 @@ const int MODE = 1e9 + 7;
 using namespace std;
 
 void solve(int tc) {
-    ll n;
+    ll n, d, h;
 
-    cin >> n;
+    cin >> n >> d >> h;
+    
+    vi X(n);
+    for (int i = 0; i < n; i++)
+        cin >> X[i];
+    reverse(all(X));
 
-    vi pw3(3e5 + 1, 1);
-    vi pw20(3e5 + 1, 1);
-    vi pw7(3e5 + 1, 1);
-    for (int i = 1; i < pw3.size(); i++) {
-        pw3[i] = (pw3[i - 1] * 3) % MODE;
-        pw20[i] = (pw20[i - 1] * 20) % MODE;
-        pw7[i] = (pw7[i - 1] * 7) % MODE;
+    long double sol = (d * h) / 2.0;
+    for (int i = 1; i < n; i++)
+    {
+        ll mun = max(0ll, X[i] + h - X[i - 1]);
+        double area = (h * d) / 2.0;
+        double ratio = (1.0 * mun) / h;
+        double ext = (ratio * ratio * h * d) / 2;
+        sol += area - ext;
     }
     
-    ll sol = 0;
-    for (int i = 0; i < n; i++)
-    {
-        ll re = ((pw7[i] * 20) % MODE * pw3[n * 3 - (i + 1) * 3]) % MODE;
-        sol = (sol + re) % MODE;
-    }
-
-    cout << sol << '\n';
+    cout << fixed << setprecision(9) << sol << '\n';
 }
 
 int main()
@@ -57,7 +56,7 @@ int main()
     //freopen("input.txt", "r", stdin);
     //freopen("output.txt", "w", stdout);
 
-    //cin >> size;
+    cin >> size;
     for (int i = 1; i <= size; i++)
         solve(i);
 }

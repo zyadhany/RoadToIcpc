@@ -26,25 +26,44 @@ const int MODE = 1e9 + 7;
 using namespace std;
 
 void solve(int tc) {
-    ll n;
+    ll n, m;
 
-    cin >> n;
+    cin >> n >> m;
 
-    vi pw3(3e5 + 1, 1);
-    vi pw20(3e5 + 1, 1);
-    vi pw7(3e5 + 1, 1);
-    for (int i = 1; i < pw3.size(); i++) {
-        pw3[i] = (pw3[i - 1] * 3) % MODE;
-        pw20[i] = (pw20[i - 1] * 20) % MODE;
-        pw7[i] = (pw7[i - 1] * 7) % MODE;
-    }
-    
+    vii X(n, vi(m));
+
+    for (int i = 0; i < n; i++)
+        for (int j = 0; j < m; j++)
+            cin >> X[i][j];
+
+    vi pw2(51, 1);
+    for (int i = 1; i < pw2.size(); i++)
+        pw2[i] = pw2[i - 1] * 2;
+        
     ll sol = 0;
+
     for (int i = 0; i < n; i++)
     {
-        ll re = ((pw7[i] * 20) % MODE * pw3[n * 3 - (i + 1) * 3]) % MODE;
-        sol = (sol + re) % MODE;
+        ll l = 0;
+        for (int j = 0; j < m; j++)
+            l += X[i][j];
+        ll r = m - l;
+        sol += pw2[l] - 1;
+        sol += pw2[r] - 1;
     }
+
+    
+    for (int i = 0; i < m; i++)
+    {
+        ll l = 0;
+        for (int j = 0; j < n; j++)
+            l += X[j][i];
+        ll r = n - l;
+        sol += pw2[l] - 1;
+        sol += pw2[r] - 1;
+    }
+    
+    sol -= n * m;
 
     cout << sol << '\n';
 }

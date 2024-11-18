@@ -1,4 +1,4 @@
-    #define _CRT_SECURE_NO_WARNINGS
+#define _CRT_SECURE_NO_WARNINGS
 #include <bits/stdc++.h>
 #include <unordered_map>
 #include <unordered_set>
@@ -26,27 +26,28 @@ const int MODE = 1e9 + 7;
 using namespace std;
 
 void solve(int tc) {
-    ll n;
+    ll n, m, k;
 
-    cin >> n;
+    cin >> n >> m >> k;
 
-    vi pw3(3e5 + 1, 1);
-    vi pw20(3e5 + 1, 1);
-    vi pw7(3e5 + 1, 1);
-    for (int i = 1; i < pw3.size(); i++) {
-        pw3[i] = (pw3[i - 1] * 3) % MODE;
-        pw20[i] = (pw20[i - 1] * 20) % MODE;
-        pw7[i] = (pw7[i - 1] * 7) % MODE;
-    }
-    
-    ll sol = 0;
+    vi X(n);
+    vi Y(m);
+
+    for (int i = 0; i < n; i++)
+        cin >> X[i];
+    for (int i = 0; i < m; i++)
+        cin >> Y[i];
+    sortx(X); sortx(Y);
+
+    ll cnt = 0;
+    ll at = 0;
     for (int i = 0; i < n; i++)
     {
-        ll re = ((pw7[i] * 20) % MODE * pw3[n * 3 - (i + 1) * 3]) % MODE;
-        sol = (sol + re) % MODE;
+        while (at < m && Y[at] < X[i] - k) at++;
+        if (at < m && X[i] <= Y[at] + k) cnt++, at++;
     }
 
-    cout << sol << '\n';
+    cout << cnt << '\n';
 }
 
 int main()

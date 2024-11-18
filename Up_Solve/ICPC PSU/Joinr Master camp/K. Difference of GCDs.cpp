@@ -26,27 +26,21 @@ const int MODE = 1e9 + 7;
 using namespace std;
 
 void solve(int tc) {
-    ll n;
+    ll n, l, r;
 
-    cin >> n;
+    cin >> n >> l >> r;
 
-    vi pw3(3e5 + 1, 1);
-    vi pw20(3e5 + 1, 1);
-    vi pw7(3e5 + 1, 1);
-    for (int i = 1; i < pw3.size(); i++) {
-        pw3[i] = (pw3[i - 1] * 3) % MODE;
-        pw20[i] = (pw20[i - 1] * 20) % MODE;
-        pw7[i] = (pw7[i - 1] * 7) % MODE;
+    vi X(n);
+    for (int i = 1; i <= n; i++)
+    {
+        ll re = r - r % i;
+        if (re >= l) X[i - 1] = re;
+        else NO;
     }
     
-    ll sol = 0;
-    for (int i = 0; i < n; i++)
-    {
-        ll re = ((pw7[i] * 20) % MODE * pw3[n * 3 - (i + 1) * 3]) % MODE;
-        sol = (sol + re) % MODE;
-    }
-
-    cout << sol << '\n';
+    cout << "YES\n";
+    for (auto a : X) cout << a << ' ';
+    cout << '\n';
 }
 
 int main()
@@ -57,7 +51,7 @@ int main()
     //freopen("input.txt", "r", stdin);
     //freopen("output.txt", "w", stdout);
 
-    //cin >> size;
+    cin >> size;
     for (int i = 1; i <= size; i++)
         solve(i);
 }
