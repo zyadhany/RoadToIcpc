@@ -25,42 +25,29 @@ const int MODE = 1e9;
 
 using namespace std;
 
+ll dfs(vii &adj, vi &X, ll n) {
+    for (auto neg : adj[n]) X[n] += dfs(adj, X, neg);
+    return (X[n] + 1);
+}
+
 void solve(int tc) {
     ll n;
 
     cin >> n;
 
+    vi X(n + 1);
     vii adj(n + 1);
-    for (int i = 1; i <= n; i++)
+
+    for (int i = 2; i <= n; i++)
     {
-        ll a; cin >> a;
-        adj[a].push_back(i);
-        adj[i].push_back(a);
+        ll u; cin >> u;
+        adj[u].push_back(i);
     }
-    
-    ll sol = 0;
-    vi vis(n + 1);
+
+    dfs(adj, X, 1);
     for (int i = 1; i <= n; i++)
-    {
-        if (vis[i]) continue;
-        stack<ll> st;
-        st.push(i);
-        vis[i] = 1;
-        while (!st.empty())
-        {
-            ll tp = st.top();
-            st.pop();
-            for (auto neg : adj[tp])
-                if (!vis[neg]) {
-                    st.push(neg);
-                    vis[neg] = 1;
-                }    
-        }
-        
-        sol++;
-    }
-    
-    cout << sol << '\n';    
+        cout << X[i] << ' ';
+    cout << '\n';   
 }
 
 int main()
