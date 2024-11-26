@@ -21,39 +21,22 @@
 #define NO {cout << "NO\n"; return;}
 #define MUN {cout << "-1\n"; return;}
 
-const int MODE = 1e9;
+const int MODE = 1e9 + 7;
 
 using namespace std;
 
-ll req(vector<vp> &adj, ll n, ll p, ll k) {
-    ll res = 1;
-    for (auto neg: adj[n]) {
-        if (neg.first == p || neg.second < k) continue;
-        res += req(adj, neg.first, n, k);
-    }
-    return res;
-}
-
 void solve(int tc) {
-    ll n, q;
+    ll n, m;
 
-    cin >> n >> q;
+    cin >> n >> m;
 
-    vector<vp> adj(n + 1);
+    ll cnt = 0;
+    for (int i = 0; i <= n; i++)
+        for (int j = 0; j <= m; j++)
+            if (i * i + j == n && i + j * j == m)
+                cnt++;
 
-    for (int i = 0; i < n - 1; i++)
-    {
-        ll u, v, c; cin >> u >> v >> c;
-        adj[u].push_back({v, c});
-        adj[v].push_back({u, c});
-    }
-    
-    while (q--)
-    {
-        ll l, r;
-        cin >> r >> l;
-        cout << req(adj, l, 0, r) - 1 << '\n';
-    }
+    cout << cnt << '\n';    
 }
 
 int main()
@@ -61,10 +44,10 @@ int main()
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;
 
-    freopen("mootube.in", "r", stdin);
-    freopen("mootube.out", "w", stdout);
+    //freopen("input.txt", "r", stdin);
+    //freopen("output.txt", "w", stdout);
 
-    // cin >> size;
+    //cin >> size;
     for (int i = 1; i <= size; i++)
         solve(i);
 }

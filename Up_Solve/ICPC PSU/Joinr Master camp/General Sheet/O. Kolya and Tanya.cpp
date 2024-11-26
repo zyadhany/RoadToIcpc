@@ -1,4 +1,4 @@
-#define _CRT_SECURE_NO_WARNINGS
+    #define _CRT_SECURE_NO_WARNINGS
 #include <bits/stdc++.h>
 #include <unordered_map>
 #include <unordered_set>
@@ -21,39 +21,32 @@
 #define NO {cout << "NO\n"; return;}
 #define MUN {cout << "-1\n"; return;}
 
-const int MODE = 1e9;
+const int MODE = 1e9 + 7;
 
 using namespace std;
 
-ll req(vector<vp> &adj, ll n, ll p, ll k) {
-    ll res = 1;
-    for (auto neg: adj[n]) {
-        if (neg.first == p || neg.second < k) continue;
-        res += req(adj, neg.first, n, k);
-    }
-    return res;
-}
-
 void solve(int tc) {
-    ll n, q;
+    ll n;
 
-    cin >> n >> q;
+    cin >> n;
 
-    vector<vp> adj(n + 1);
-
-    for (int i = 0; i < n - 1; i++)
-    {
-        ll u, v, c; cin >> u >> v >> c;
-        adj[u].push_back({v, c});
-        adj[v].push_back({u, c});
+    vi pw3(3e5 + 1, 1);
+    vi pw20(3e5 + 1, 1);
+    vi pw7(3e5 + 1, 1);
+    for (int i = 1; i < pw3.size(); i++) {
+        pw3[i] = (pw3[i - 1] * 3) % MODE;
+        pw20[i] = (pw20[i - 1] * 20) % MODE;
+        pw7[i] = (pw7[i - 1] * 7) % MODE;
     }
     
-    while (q--)
+    ll sol = 0;
+    for (int i = 0; i < n; i++)
     {
-        ll l, r;
-        cin >> r >> l;
-        cout << req(adj, l, 0, r) - 1 << '\n';
+        ll re = ((pw7[i] * 20) % MODE * pw3[n * 3 - (i + 1) * 3]) % MODE;
+        sol = (sol + re) % MODE;
     }
+
+    cout << sol << '\n';
 }
 
 int main()
@@ -61,10 +54,10 @@ int main()
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;
 
-    freopen("mootube.in", "r", stdin);
-    freopen("mootube.out", "w", stdout);
+    //freopen("input.txt", "r", stdin);
+    //freopen("output.txt", "w", stdout);
 
-    // cin >> size;
+    //cin >> size;
     for (int i = 1; i <= size; i++)
         solve(i);
 }
