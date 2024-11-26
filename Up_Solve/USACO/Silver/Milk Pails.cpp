@@ -5,7 +5,7 @@
 
 #define ll long long
 #define ld long double
-#define pl pair<ll, ll>
+#define pl pair<int, int>
 #define vi vector<ll>
 #define vii vector<vi>
 #define vc vector<char>
@@ -25,38 +25,40 @@ const int MODE = 1e9;
 
 using namespace std;
 
-ll dfs(vii &adj, vi &X, ll n) {
-    for (auto neg : adj[n]) X[n] += dfs(adj, X, neg);
-    return (X[n] + 1);
+const int SZ = 4e3 + 10;
+ll x, y, k, m;
+
+ll req(vector<vii> &dp, ll l, ll r, ll t) {
+    ll &res = dp[l][r][t];
+    if (res != -1) return res;
+    res = abs(m - l - r);
+    if (!t) return res;
+    res = min(res, req(dp, l, 0, t - 1));
+    res = min(res, req(dp, l, y, t - 1));
+    res = min(res, req(dp, 0, r, t - 1));
+    res = min(res, req(dp, x, r, t - 1));
+    res = min(res, req(dp, l - min(l, y - r), r + min(l, y - r), t - 1));
+    res = min(res, req(dp, l + min(r, x - l), r - min(r, x - l), t - 1));
+
+    return res;
 }
 
 void solve(int tc) {
-    ll n;
 
-    cin >> n;
+    cin >> x >> y >> k >> m;
 
-    vi X(n + 1);
-    vii adj(n + 1);
+    vector<vii> dp(x + 1, vii(y + 1, vi(k + 1, -1)));
 
-    for (int i = 2; i <= n; i++)
-    {
-        ll u; cin >> u;
-        adj[u].push_back(i);
-    }
-
-    dfs(adj, X, 1);
-    for (int i = 1; i <= n; i++)
-        cout << X[i] << ' ';
-    cout << '\n';   
-}
+    cout << req(dp, 0, 0, k);
+}  
 
 int main()
 {
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;
 
-    // freopen("multimoo.in", "r", stdin);
-    // freopen("multimoo.out", "w", stdout);
+    freopen("pails.in", "r", stdin);
+    freopen("pails.out", "w", stdout);
 
     // cin >> size;
     for (int i = 1; i <= size; i++)
