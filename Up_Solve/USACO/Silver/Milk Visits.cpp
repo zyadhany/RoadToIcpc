@@ -25,34 +25,51 @@ const int MODE = 1e9;
 
 using namespace std;
 
-ll req(vector<vp> &adj, ll n, ll p, ll k) {
-    ll res = 1;
-    for (auto neg: adj[n]) {
-        if (neg.first == p || neg.second < k) continue;
-        res += req(adj, neg.first, n, k);
-    }
-    return res;
-}
 
 void solve(int tc) {
     ll n, q;
+    string s;
 
     cin >> n >> q;
+    cin >> s;
 
-    vector<vp> adj(n + 1);
+    vii adj(n + 1);
 
     for (int i = 0; i < n - 1; i++)
     {
-        ll u, v, c; cin >> u >> v >> c;
-        adj[u].push_back({v, c});
-        adj[v].push_back({u, c});
+        ll u, v; cin >> u >> v;
+        adj[u].push_back(v);
+        adj[v].push_back(u);
     }
-    
+
+    vi vis(n + 1);
+    ll at = 1;
+    for (int i = 1; i <= n; i++)
+    {
+        if (vis[i]) continue;
+        stack<ll> st;
+        st.push(i);
+        vis[i] = at;
+        while (!st.empty())
+        {
+            ll tp = st.top();
+            st.pop();
+            for (auto neg : adj[tp]) {
+                if (vis[neg] || s[neg - 1] != s[i - 1]) continue;
+                vis[neg] = at;
+                st.push(neg);
+            }
+        }
+        
+        at++;
+    }
+
     while (q--)
     {
-        ll l, r;
-        cin >> r >> l;
-        cout << req(adj, l, 0, r) - 1 << '\n';
+        ll l, r; char c;
+        cin >> l >> r >> c;
+        if (vis[l] != vis[r] || s[l - 1] == c) cout << "1";
+        else cout << "0";
     }
 }
 
@@ -61,8 +78,8 @@ int main()
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;
 
-    freopen("mootube.in", "r", stdin);
-    freopen("mootube.out", "w", stdout);
+    freopen("milkvisits.in", "r", stdin);
+    freopen("milkvisits.out", "w", stdout);
 
     // cin >> size;
     for (int i = 1; i <= size; i++)
