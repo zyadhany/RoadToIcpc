@@ -21,58 +21,46 @@
 #define NO {cout << "NO\n"; return;}
 #define MUN {cout << "-1\n"; return;}
 
-using namespace std;
-
-
 const int MODE = 1e9 + 7;
 
-ll req(vii &adj, vector<mi> &dp, ll n, ll k) {
-    if (k == 0) return 1;
-    if (dp[n].count(k)) return dp[n][k];
-    ll &res = dp[n][k];
-    res = 0;
-
-    for (auto neg : adj[n]) {
-        res += req(adj, dp, neg, k - 1);
-        res %= MODE;
-    }
-
-    res %= MODE;
-    return res;
-}
+using namespace std;
 
 void solve(int tc) {
-    ll n, m, q;
+    ll n;
 
-    cin >> n >> m >> q;
+    cin >> n;
 
-    vii adj(n + 1);
-    for (int i = 0; i < m; i++) {
-        ll u, v;
-        cin >> u >> v;
-        adj[u].push_back(v);
-        adj[v].push_back(u);
-    }
-
-    vector<mi> dp(n + 1, mi());
-    while (q--)
-    {
-        ll a, k; cin >> a >> k;
-        ll res = req(adj, dp, a, k);
-        res %= MODE;
-        cout << res << ln;
-    }
+    vi X(n);
+    for (int i = 0; i < n; i++)
+        cin >> X[i];
     
+    ll l = 1, r = 1e18;
+    while (l < r)
+    {
+        ll mid = l + (r - l) / 2;
+        ll cnt = 1;
+
+        for (int i = 0; i < n; i++) {
+            if (i == n - 1 || X[i + 1] - X[i] > mid) cnt++;
+            else i++;
+        }
+        
+        if (cnt > 2) l = mid + 1;
+        else r = mid;
+    }
+
+    cout << l << '\n';    
 }
 
 int main()
 {
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;
+
     //freopen("input.txt", "r", stdin);
     //freopen("output.txt", "w", stdout);
 
-    //cin >> size;
+    cin >> size;
     for (int i = 1; i <= size; i++)
         solve(i);
 }
