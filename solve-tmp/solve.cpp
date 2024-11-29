@@ -25,26 +25,32 @@ const int MODE = 1e9;
 
 using namespace std;
 
+ll k;
+
+void get() {
+    cin >> k;
+    string s;
+    for (int i = 0; i < k; i++) cin >> s;
+}
+
 void solve(int tc) {
-    ll n;
-
-    cin >> n;
-
-    vp X(n);
-
-    for (int i = 0; i < n; i++)
-        cin >> X[i].first >> X[i].second;
-    sortx(X);
-
-    ll cnt = 0;
-    ll ls = 0;
-    for (int i = 0; i < n; i++)
-    {
-        if (X[i].first >= ls) ls = X[i].second, cnt++;
-        else ls = min(ls, X[i].second);
+    do {
+        cout << "next ";
+        for (int i = 1; i <= 9; i++) cout << i << ' ';
+        cout << endl;
+        get();
+        cout << "next 9" << endl;
+        get();
+    } while (k == 3);
+    
+    while (k == 2) {
+        cout << "next ";
+        for (int i = 0; i <= 9; i++) cout << i << ' ';
+        cout << endl;
+        get();
     }
     
-    cout << cnt << '\n';    
+    cout << "done" << endl;
 }
 
 int main()
@@ -52,8 +58,8 @@ int main()
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;
 
-    // freopen("mootube.in", "r", stdin);
-    // freopen("mootube.out", "w", stdout);
+    // freopen("cruise.in", "r", stdin);
+    // freopen("cruise.out", "w", stdout);
 
     // cin >> size;
     for (int i = 1; i <= size; i++)
