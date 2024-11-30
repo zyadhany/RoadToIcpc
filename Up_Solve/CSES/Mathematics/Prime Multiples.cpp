@@ -25,52 +25,48 @@ const int MODE = 998244353;
 
 using namespace std;
 
-ll a, b, g;
+ll gcd(ll a, ll b)
+{
+    if (b == 0) return (a);
+    return (gcd(b, a % b));
+}
 
-void req(ll at) {
-    if (at < 0) return;
-    
-    ll k;    
-    ll a1 = (a | (1 << at));
-    ll b1 = (b | (1 << at));
-    
-    if (g == 0) {
-        cout << "? " << a << ' ' << b1 << endl;
-        cin >> k;
-        if (k == 1) {
-            a = a1;
-            b = b1;
-        }
-        return req(at - 1);
-    }
-
-    ll one, zer;
-    cout << "? " << a1 << ' ' << b1 << endl;
-    cin >> one;
-    cout << "? " << a << ' ' << b1 << endl;
-    cin >> zer;
-
-    if (one != g) {
-        if (one == 1) b = b1;
-        else a = a1;
-        g = zer;
-    } else {
-        if (zer == 1) a=a1, b=b1;
-        g = one;
-    }
-
-    return req(at - 1);
+ll lcm(ll a, ll b) 
+{ 
+    return (a / gcd(a, b)) * b; 
 }
 
 void solve(int tc) {
-    a = b = 0;
+    ll n, m;
+
+    cin >> n >> m;
+
+    ll sol = 0;
+    vector<ll> X(m);
+    for (int i = 0; i < m; i++)
+        cin >> X[i];
     
-    cout << "? 0 0" << endl;
-    cin >> g;
+    for (int i = 1; i < (1 << m); i++)
+    {
+        ll cnt = 0;
+        ll re = 1;
+        for (int j = 0; j < m; j++)
+        {
+            if (i & (1 << j)) {
+                cnt++;
+                if (n / re < X[j]) {
+                    re = n + 1;
+                    break;
+                }
+                re *= X[j];
+            }
+        }
+        
+        if (cnt % 2) sol += n / re;
+        else sol -= n / re;
+    }
 
-    req(29);
-
-    cout << "! " << a << ' ' << b << endl;
+    cout << sol << '\n';
 }
 
 int main()

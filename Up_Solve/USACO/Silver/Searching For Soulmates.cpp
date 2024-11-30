@@ -21,56 +21,22 @@
 #define NO {cout << "NO\n"; return;}
 #define MUN {cout << "-1\n"; return;}
 
-const int MODE = 998244353;
+const int MODE = 1e9;
 
 using namespace std;
 
-ll a, b, g;
-
-void req(ll at) {
-    if (at < 0) return;
-    
-    ll k;    
-    ll a1 = (a | (1 << at));
-    ll b1 = (b | (1 << at));
-    
-    if (g == 0) {
-        cout << "? " << a << ' ' << b1 << endl;
-        cin >> k;
-        if (k == 1) {
-            a = a1;
-            b = b1;
-        }
-        return req(at - 1);
-    }
-
-    ll one, zer;
-    cout << "? " << a1 << ' ' << b1 << endl;
-    cin >> one;
-    cout << "? " << a << ' ' << b1 << endl;
-    cin >> zer;
-
-    if (one != g) {
-        if (one == 1) b = b1;
-        else a = a1;
-        g = zer;
-    } else {
-        if (zer == 1) a=a1, b=b1;
-        g = one;
-    }
-
-    return req(at - 1);
+ll sol(ll a, ll b) {
+    if (a == b) return 0;
+    if (a > b) return 1 + a % 2 + sol((a + 1) / 2, b);
+    return min(b - a, 1 + b % 2 + sol(a, b / 2));
 }
 
 void solve(int tc) {
-    a = b = 0;
-    
-    cout << "? 0 0" << endl;
-    cin >> g;
+    ll a, b;
 
-    req(29);
+    cin >> a >> b;
 
-    cout << "! " << a << ' ' << b << endl;
+    cout << sol(a, b) << '\n';
 }
 
 int main()
@@ -81,7 +47,7 @@ int main()
     // freopen("cruise.in", "r", stdin);
     // freopen("cruise.out", "w", stdout);
 
-    // cin >> size;
+    cin >> size;
     for (int i = 1; i <= size; i++)
         solve(i);
 }
