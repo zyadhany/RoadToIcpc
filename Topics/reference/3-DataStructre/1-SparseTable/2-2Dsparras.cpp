@@ -1,19 +1,3 @@
-#include <bits/stdc++.h>
-#define ll long long
-#define pl pair<ll, ll>
-#define vi vector<int>
-#define vii vector<vi>
-#define viii vector<vii>
-#define all(X) X.begin(), X.end()
-#define sortx(X) sort(all(X))
-
-using namespace std;
-
-const int MODE = 1e9 + 7;
-
-const int N = 1e5 + 5;
- 
-
 ll gcd(ll a, ll b)
 {
     if (b == 0) return (a);
@@ -58,42 +42,4 @@ long long query(vector<vii> &table, int x1, int y1, ll x2, ll y2)
     c = table[x2 - sht][y1][j];
     d = table[x2 - sht][y2 - sht][j];
     return gcd(gcd(a, b), gcd(c, d));
-}
-
-void solve() {
-    ll n, m;
-
-    cin >> n >> m;
-
-    vii X(n, vi(m));
-
-    for (int i = 0; i < n; i++)
-        for (int j = 0; j < m; j++)
-            cin >> X[i][j];
-
-    auto SPT = buildSparseTable(X);
-
-    ll q; cin >> q;
-    ll sol = 1;
-    while (q--)
-    {
-        ll x, y,k; cin >> x >> y >> k;
-        x--, y--;
-        ll re = query(SPT, x, y, x + k - 1, y + k - 1);
-        sol *= re;
-        sol %= MODE;
-    }
-    cout << sol << '\n';
-}
-
-int main() {
-    ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
-    int size = 1;
-
-    cin >> size;
-    for (int i = 0; i < size; i++)
-    {
-        solve();
-    }
-    
 }
