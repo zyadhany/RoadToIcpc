@@ -16,8 +16,7 @@ ll cntSubarrayWithSumModK(vi v,ll k)
 
 
 /* 
-عناصر عددهم (k)
-مجموعهم (n)
+Elements with a count of (k) and a sum of (n)
 */
 ll n,k ; cin >> n >> k;
 ll x=(n-(k*(k-1)/2));

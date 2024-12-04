@@ -1,60 +1,65 @@
-سريع في الاضافه من اي جزء
+#include <iostream>
+#include <list>
+#include <algorithm>
 
-تعريفه
-   list<int> l={1,2,3};
+using namespace std;
 
-لحذف جميع ال 2 في الليست
-   l.remove(2);
+bool evenNum(int n) {
+    return n % 2 == 0;
+}
 
-العنصر التالي
-next(it)
+int main() {
+    // Define the list
+    list<int> l = {1, 2, 3};
 
-لحذف رينج معين
-    auto it=l.begin();
-    it++;
-    l.erase(it,l.end());
+    // Remove all occurrences of 2 from the list
+    l.remove(2);
 
-لحذف من مكان لعنصرين
- it=l.erase(it, next(it,2));
+    // Get the next element using iterator
+    auto it = l.begin();
+    it++;  // Move iterator to the second element
+    auto nextIt = next(it);  // Get the next element after `it`
 
+    // Erase a range of elements
+    it = l.begin();
+    it++; // Move iterator to the second element
+    l.erase(it, l.end()); // Erase from the second element to the end
 
- اضافه قيم في مكان معين
-auto it=l.begin();
-    it++;
-    l.insert(it,2,50);
-هيضيف 50 مرتين في مكان الايتيريتور
+    // Erase two elements starting from a specific iterator
+    it = l.erase(it, next(it, 2));
 
+    // Insert values at a specific position in the list
+    it = l.begin();
+    it++; // Move iterator to the second element
+    l.insert(it, 2, 50); // Insert 50 twice at the second position
 
-تغيير كل العناصر الي 2 عشر مرات
-    l.assign(10,2);
+    // Assign the value 2 ten times to the list
+    l.assign(10, 2);
 
-عمل دمج لعناصر في الاول مع تفريغ الي جوا القوس مع ترتيبهم تصاعدي
-    l1.merge(l2);
+    // Merge two lists (sorted) into the first one
+    list<int> l1 = {1, 2, 3};
+    list<int> l2 = {4, 5, 6};
+    l1.merge(l2);  // Merge and sort l2 into l1 in ascending order
 
-عمل دمج لكن في موقع معين مع تفريغ الي في القوس دون الترتيب
-    l1.splice(l1.begin(),l2);
+    // Merge l2 into l1 at the beginning without sorting
+    l1.splice(l1.begin(), l2);  // Merges l2 into l1 at the start without sorting
 
-حذف كل العناصر المكررة
-    l1.unique();
+    // Remove duplicate elements
+    l1.unique();  // Removes consecutive duplicates from l1
 
+    // Remove elements based on a condition (even numbers)
+    l1.remove_if(evenNum);  // Remove all even numbers from l1
 
-للحذف عند تحقق شرط ما
-  bool evenNum(ll n)
-   {
-    if (n%2==0)return true;
-    else return false;
-    }
-    l1.remove_if(evenNum);
-     هيسمح كل الزوجي  
+    // Sort elements in ascending order
+    l1.sort();
 
+    // Sort elements in descending order
+    l1.sort(greater<int>());
 
-الترتيب للعناصر تصاعدي
-l1.sort();
-تنازلي
-l1.sort(greater<int>());
+    // Change the value of an element at a specific position
+    it = l1.begin();
+    it++;  // Move iterator to the second element
+    *it = 5;  // Change the second element to 5
 
-لتغيير قيمه عنصر
-auto it=l1.begin();
-    it++;
-    *it=5;
-
+    return 0;
+}

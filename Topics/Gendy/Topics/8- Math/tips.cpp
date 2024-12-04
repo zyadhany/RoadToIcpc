@@ -1,4 +1,4 @@
-// arithmetic -> الفرق بين كل رقمين ثابت
+// arithmetic -> The difference between every two numbers is constant.
 
 3 is always bigger mul 3*3=9
 
@@ -20,8 +20,8 @@ sum(n-k)
 Geometric progression
 
 1 2 4 8
-كل رقم علي الي قبله بيساوي نسبه معينة
-r=2 --> نسبة القسمة كل رقم عل الي قبله
+Each number divided by the one before it equals a specific ratio.
+r=2 --> the ratio of each number to the one before it is 2
 
 an = a*powl(r,(n-1))
 
@@ -36,9 +36,9 @@ ncr
   --------
 (r! * (n-r)!)
 
-اختيار عدد عناصر r 
-حجم الاراي n
-مع عدم مراعاه الترتيب
+Selection of the number of elements (r)  
+Size of the array (n)  
+Without considering the order.
 -----------------------------
 npr
 
@@ -46,9 +46,9 @@ npr
    -----
    (n-r)!
 
-اختيار عدد عناصر r 
-حجم الاراي n
-مع مراعاه الترتيب
+Selection of the number of elements (r)
+Size of the array (n)
+Considering the order
 
 
 double customLog(double base, double x) {

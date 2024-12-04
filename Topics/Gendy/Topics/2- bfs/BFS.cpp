@@ -1,4 +1,4 @@
-// بيمشي بالترتيب بالليفل
+// Moves sequentially by level
 
 // bfs and check cycle
 

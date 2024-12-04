@@ -26,14 +26,14 @@ while(n)
 if(n&1==1)cnt++;
 n=n>>1;
 }
-اسرع
+// Faster
 
 // numper of set bits
 x = __builtin_popcount(n);
 
 
 
-ايجاد الاحتمالات الممكنة
+// Finding possible probabilities
 
 vi T;
 void rec(int n)
@@ -150,7 +150,7 @@ x & ~(x-1)
 
 
 
-الفرق بين عدد الوحايد فيه والي قبله بتساوي 1
+The difference between the current digit and the previous one equals 1
 int grayCode(int i)
 {
 	return(i ^ (i>>1));

@@ -1,4 +1,4 @@
-//بيمشي للاخر خالص بعدين يرجع
+// Goes all the way to the end, then comes back
 
 vii node(1e6+10,vi());
 vector<bool> vis(1e6+10,false);
