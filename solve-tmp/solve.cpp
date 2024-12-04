@@ -1,99 +1,97 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include <bits/stdc++.h>
-#define ll long long
-#define pl pair<ll, ll>
-#define vi vector<int>
-#define vii vector<vi>
-#define viii vector<vii>
-#define all(X) X.begin(), X.end()
-#define sortx(X) sort(all(X))
+#include <unordered_map>
+#include <unordered_set>
 
-using namespace std;
+#define ll long long
+#define ld long double
+#define pl pair<ll, ll>
+#define vi vector<ll>
+#define vii vector<vi>
+#define vc vector<char>
+#define vcc vector<vc>
+#define vp vector<pl>
+#define mi map<ll,ll>
+#define mc map<char,int>
+#define sortx(X) sort(X.begin(),X.end());
+#define all(X) X.begin(),X.end()
+#define allr(X) X.rbegin(),X.rend()
+#define ln '\n'
+#define YES {cout << "YES\n"; return;}
+#define NO {cout << "NO\n"; return;}
+#define MUN {cout << "-1\n"; return;}
 
 const int MODE = 1e9 + 7;
 
-const int N = 1e5 + 5;
- 
+using namespace std;
 
-ll gcd(ll a, ll b)
-{
-    if (b == 0) return (a);
-    return (gcd(b, a % b));
+int longestCycleLength = -1;
+
+// Helper function to perform DFS
+void dfs(int node, const vector<vector<int>> &adj, vector<int> &visited, vector<int> &recStack, vector<int> &entryTime, int currentTime) {
+    visited[node] = 1;        // Mark as visiting
+    recStack[node] = currentTime; // Track entry time
+    entryTime[node] = currentTime;
+
+    for (int neighbor : adj[node]) {
+        if (!visited[neighbor]) {
+            dfs(neighbor, adj, visited, recStack, entryTime, currentTime + 1);
+        } else if (recStack[neighbor] != -1) { // Found a back edge
+            longestCycleLength = max(longestCycleLength, currentTime - recStack[neighbor] + 1);
+        }
+    }
+
+    recStack[node] = -1; // Mark as no longer in the stack
 }
 
-vector<vii> buildSparseTable(vii &X)
-{
-    ll n, m, k;
-    n = X.size(); m = X[0].size(); k = ceil(log2(max(n, m)));
+// Function to find the longest cycle in a directed graph
+int findLongestCycle(int n, const vector<vector<int>> &adj) {
+    vector<int> visited(n, 0);
+    vector<int> recStack(n, -1); // Tracks entry times for nodes in the recursion stack
+    vector<int> entryTime(n, -1);
+    longestCycleLength = -1;
 
-    viii table(n, vii(m, vi(k + 1)));
-    for (int i = 0; i < n; i++)
-        for (int j = 0; j < m; j++)
-            table[i][j][0] = X[i][j];
- 
-    for (int h = 1; h <= k; h++)
-        for (int i = 0; i <= n - (1 << h); i++) {
-            for (int j = 0; j <= m - (1 << h) ; j++)
-            {
-                ll a, b, c, d;
-                ll sht = (1 << (h - 1));
-                a = table[i][j][h - 1];
-                b = table[i][j + sht][h - 1];
-                c = table[i + sht][j][h - 1];
-                d = table[i + sht][j + sht][h - 1];
-                table[i][j][h] = gcd(gcd(a, b), gcd(c, d));
+    for (int i = 0; i < n; ++i) {
+        if (!visited[i]) {
+            dfs(i, adj, visited, recStack, entryTime, 0);
+        }
+    }
+
+    return longestCycleLength;
+}
+
+void solve(int tc) {
+    ll n;
+
+    cin >> n;
+
+    vector<vector<int>> adj(n + 1);
+
+    for (int i = 1; i <= n; i++)
+    {
+        for (int j = 0; j < 30; j++)
+        {
+            if (i & (1 << j) && i ^ (1 << j)) {
+                adj[i].push_back(i ^ (1 << j));
+                adj[i ^ (1 << j)].push_back(i);
             }
         }
-
-    return (table);
-}
- 
-// optmization to get in O(1)
-long long query(vector<vii> &table, int x1, int y1, ll x2, ll y2) 
-{ 
-    int j = (int)log2(x2 - x1 + 1);
-    ll a, b, c, d;
-    ll sht = (1 << j) - 1;
-    a = table[x1][y1][j];
-    b = table[x1][y2 - sht][j];
-    c = table[x2 - sht][y1][j];
-    d = table[x2 - sht][y2 - sht][j];
-    return gcd(gcd(a, b), gcd(c, d));
-}
-
-void solve() {
-    ll n, m;
-
-    cin >> n >> m;
-
-    vii X(n, vi(m));
-
-    for (int i = 0; i < n; i++)
-        for (int j = 0; j < m; j++)
-            cin >> X[i][j];
-
-    auto SPT = buildSparseTable(X);
-
-    ll q; cin >> q;
-    ll sol = 1;
-    while (q--)
-    {
-        ll x, y,k; cin >> x >> y >> k;
-        x--, y--;
-        ll re = query(SPT, x, y, x + k - 1, y + k - 1);
-        sol *= re;
-        sol %= MODE;
     }
-    cout << sol << '\n';
+
+    
+    
+    cout << findLongestCycle(n, adj) << '\n';
 }
 
-int main() {
+int main()
+{
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;
 
+    //freopen("input.txt", "r", stdin);
+    //freopen("output.txt", "w", stdout);
+
     cin >> size;
-    for (int i = 0; i < size; i++)
-    {
-        solve();
-    }
-    
+    for (int i = 1; i <= size; i++)
+        solve(i);
 }
