@@ -1,5 +1,6 @@
 // Dp to find the longest increasing subsequence in (n^2)
 
+// بسم الله الرحمن الرحيم
 
 ll n;
 vi v, dp;
@@ -121,3 +122,9 @@ void solve(ll test) {
 
 
 
+
+/*
+const int N = 5005;
+ll dp[N][N];
+memset(dp, -1, sizeof dp); // will make all element = -1
+*/

@@ -231,3 +231,21 @@ bool isDivisible(long long n, long long m, long long k) {
 }
 
 
+
+
+// Find divisors from 1 to 1e6 in O(1)
+const int MAXN = 1e6 + 5;
+vi divisors(MAXN);
+
+void preprocess_divisors() {
+    for (int i = 1; i < MAXN; ++i) {
+        for (int j = i; j < MAXN; j += i) {
+            divisors[j]++;
+            //cout<<i<<' '<<j<<endl;
+        }
+    }
+}
+
+void solve(ll test){
+    preprocess_divisors();
+}

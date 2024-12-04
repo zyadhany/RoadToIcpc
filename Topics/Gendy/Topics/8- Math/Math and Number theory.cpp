@@ -2,6 +2,7 @@
 (a*b)%c= ((a%c)*(b%c))%c
 (a-b)%c= ((a%c)-(b%c)+c)%c
 (a/b)%c= ((a%c)*((b^-1)%c))%c
+(a^b)%c= ((a%n)^b) %c
 
 ll add (ll a,ll b)
 {
@@ -46,6 +47,18 @@ ll modfpow(ll x,ll y,ll z)
     }
     return result;
 }
+
+
+// Find a^1 + a^2 +...+ a^k on O(k)
+ll sumPows(ll a, ll k){
+    if(k==0)
+        return 0;
+    if (k%2)
+        return a*(1+ sumPows(a, k-1));
+    ll half = sumPows(a, k/2);
+    return half * (1 + half - sumPows(a, k/2 - 1));
+}
+
 -----------------------------------------
 // summ of numpers divisible by m from 1 to n
 
@@ -160,6 +173,9 @@ ll ncr(ll n, ll r) {
     if (r > n) {
         return 0;
     }
+    if (r > n - r) {
+        r = n - r; // Updated
+    }
     ll res = 1;
     for (ll i = 0; i < r; i++) {
         res *= (n-i);
@@ -172,7 +188,7 @@ ll nCr(ll n, ll r) {
     if (r > n) return 0;
     if (r == 0 || n == r) return 1;
     ld res = 0;
-    for (int i = 0; i < r; i++) {
+    for (ll i = 0; i < r; i++) {
         res += log(n-i) - log(i+1);
     }
     return (ll)round(exp(res));
@@ -291,6 +307,7 @@ void seive(ll n)
 ----------------------------------------------------------------------------
 ceil(n/d)=(n+d-1)/d
 ----------------------
+اول رقم بعد 10 بيقبل القسمة علي 3
 
 ceil(10/3)*3=12
 
@@ -333,10 +350,12 @@ void solve() {
 }
 ------------------------------------------------------------
 Miller Rabin Primality Testing
-Fermat Primality testing 
+Fermat Primality testing //حاسسهم مش مهمين علشان مش اكيد 
 not 100%
 ------------------------------------------------
 // Euler Totient 
+// كام رقم اصغر منه ال gcd
+// معاه بيساوي 1
 // coprimes
 
 phi(a*b)=phi(a)*phi(b)
@@ -361,6 +380,7 @@ ll phi(ll n)
 
 
 
+    مثلث الارقام
     ll sum= (n * (n + 1) * (n + 2)) / 6;
 
 
@@ -502,6 +522,11 @@ ll nPr(int n, int r) {
     ll numerator = factorials[n];
     ll denominator = inv_factorials[n - r];
     return (numerator * denominator) % MOD;
+}
+
+long long nCr(int n, int r) {
+    if (r > n || r < 0) return 0;
+    return (factorials[n] * inv_factorials[r] % MOD) * inv_factorials[n - r] % MOD;
 }
 
 
