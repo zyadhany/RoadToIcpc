@@ -25,62 +25,82 @@ const int MODE = 1e9 + 7;
 
 using namespace std;
 
-int longestCycleLength = -1;
+const int MX = 1e5 + 1;
 
-// Helper function to perform DFS
-void dfs(int node, const vector<vector<int>> &adj, vector<int> &visited, vector<int> &recStack, vector<int> &entryTime, int currentTime) {
-    visited[node] = 1;        // Mark as visiting
-    recStack[node] = currentTime; // Track entry time
-    entryTime[node] = currentTime;
+ll n;
+vector<pair<ld, ld>> X(MX);
+vi nx(MX), pre(MX);
+multiset<pair<ld, ll>> dist;
 
-    for (int neighbor : adj[node]) {
-        if (!visited[neighbor]) {
-            dfs(neighbor, adj, visited, recStack, entryTime, currentTime + 1);
-        } else if (recStack[neighbor] != -1) { // Found a back edge
-            longestCycleLength = max(longestCycleLength, currentTime - recStack[neighbor] + 1);
-        }
-    }
+ld distToSegment(pair<ld, ld> a, pair<ld, ld> b, pair<ld, ld> p) {
+    ld dx = b.first - a.first;
+    ld dy = b.second - a.second;
 
-    recStack[node] = -1; // Mark as no longer in the stack
+    // Vector projection scalar t
+    ld t = ((p.first - a.first) * dx + (p.second - a.second) * dy) / (dx * dx + dy * dy);
+
+    // Clamp t to [0, 1] to restrict to the segment
+    t = max(0.0L, min(1.0L, t));
+
+    // Closest point on segment
+    pair<ld, ld> closest = {a.first + t * dx, a.second + t * dy};
+
+    // Distance from P to the closest point
+    ld x = p.first - closest.first;
+    ld y = p.second - closest.second;
+    return sqrt(x * x + y * y);
 }
 
-// Function to find the longest cycle in a directed graph
-int findLongestCycle(int n, const vector<vector<int>> &adj) {
-    vector<int> visited(n, 0);
-    vector<int> recStack(n, -1); // Tracks entry times for nodes in the recursion stack
-    vector<int> entryTime(n, -1);
-    longestCycleLength = -1;
+ld distline(ll i) {
+    return distToSegment(X[i], X[nx[i]], {0, 0});
+}
 
-    for (int i = 0; i < n; ++i) {
-        if (!visited[i]) {
-            dfs(i, adj, visited, recStack, entryTime, 0);
-        }
-    }
-
-    return longestCycleLength;
+ld getdouble() {
+    string s; cin >> s;
+    return stold(s);
 }
 
 void solve(int tc) {
-    ll n;
-
     cin >> n;
 
-    vector<vector<int>> adj(n + 1);
+    dist.clear();
 
     for (int i = 1; i <= n; i++)
     {
-        for (int j = 0; j < 30; j++)
-        {
-            if (i & (1 << j) && i ^ (1 << j)) {
-                adj[i].push_back(i ^ (1 << j));
-                adj[i ^ (1 << j)].push_back(i);
-            }
-        }
+        X[i].first = getdouble();
+        X[i].second = getdouble();
+        nx[i] = i + 1;
+        pre[i] = i - 1;
     }
+    pre[1] = n;
+    nx[n] = 1;
 
+    ld sx, sy;
+    sx = getdouble();
+    sy = getdouble();
+
+    for (int i = 1; i <= n; i++)
+    {
+        X[i].first -= sx;
+        X[i].second -= sy;        
+    }
+    for (int i = 1; i <= n; i++)
+        dist.insert({distline(i), i});
     
+    cout << fixed << setprecision(6) << dist.begin()->first << '\n';
     
-    cout << findLongestCycle(n, adj) << '\n';
+    ll q; cin >> q;
+    while (q--)
+    {
+        ll a; cin >> a;
+        dist.erase(dist.find({distline(a), a}));
+        dist.erase(dist.find({distline(pre[a]), pre[a]}));
+        
+        pre[nx[a]] = pre[a];
+        nx[pre[a]] = nx[a];
+        dist.insert({distline(pre[a]), pre[a]});
+        cout << fixed << setprecision(6) << dist.begin()->first << '\n';
+    } 
 }
 
 int main()
