@@ -1,3 +1,4 @@
+// Goes all the way to the end, then comes back
 
 vii node(1e6+10,vi());
 vector<bool> vis(1e6+10,false);
@@ -50,7 +51,7 @@ void dfs(ll n,bool clr)
 }
 
 
-//remove by order
+//remove by order topological sort
 
 vii node(1e6+10,vi());
 vector<ll> vis(1e6+10,0);
@@ -75,11 +76,20 @@ void dfs(ll n)
     vis[n] = 2;
 }
 
+void solve(ll test) {
+
+    if (!g) // it can be impossible if its not tree
+    {
+        cout<<"IMPOSSIBLE\n";
+    }
+}
+
 
 // bibrate
 
 // to divide the elemnt to 2 and
 // to check if any edge if connected to one from another side
+// the cycles should be even if odd i have to remove one edge
 
 
 vector<bool>vis;

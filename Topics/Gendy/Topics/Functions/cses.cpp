@@ -16,6 +16,7 @@ ll cntSubarrayWithSumModK(vi v,ll k)
 
 
 /* 
+Elements with a count of (k) and a sum of (n)
 */
 ll n,k ; cin >> n >> k;
 ll x=(n-(k*(k-1)/2));
@@ -69,9 +70,48 @@ ll n,x;cin>>n>>x;
     cout<<cnt;
 
 
-// the number of subarrays where the sum of values is divisible by n
-// with negatives
-ll n;cin>>n;
+/*
+The number of times there is Subarray with sum equal to target
+in all ranges l, r
+Tested with target = 0 only
+*/
+    string s;
+    cin >> s;
+    ll target = 0;
+    // cin >> target;
+
+    ll n = s.size();
+    vi v;
+    v.push_back(0);
+    for (int i = 0; i < n; ++i)
+    {
+        if (s[i] == '0')
+            v.push_back(-1);
+        else
+            v.push_back(1);
+    }
+
+    pre(v);
+
+    mi m;
+    ll cnt = 0;
+
+    for (int i = 0; i <= n; ++i)
+    {
+        ll required_sum = v[i] - target;
+        cnt = (cnt + (n - i + 1) * m[required_sum]) % MOD;
+        m[v[i]] = (m[v[i]] + (i + 1)) % MOD;
+    }
+    cout << cnt << "\n";
+
+
+
+
+
+    // the number of subarrays where the sum of values is divisible by n
+    // with negatives
+    ll n;
+    cin >> n;
     vi v(n);
     cin(v);
     mi m;

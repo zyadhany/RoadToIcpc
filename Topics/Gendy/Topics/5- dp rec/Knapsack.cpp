@@ -54,3 +54,36 @@ void solve(ll test) {
     cout << knapSack(W, weight, profit, n);
 
 }
+
+
+
+
+// min packages with 2^n
+
+ll n, maxWeight;
+cin >> n >> maxWeight;
+vi weights(n);
+cin(weights);
+ll l = (1ll << n);
+vp dp(l, {INT64_MAX, INT64_MAX});
+dp[0] = {1, 0};
+for (int i = 1; i < l; ++i)
+{
+    for (int j = 0; j < n; ++j)
+    {
+        if (((1ll << j) & i) == 0) continue;
+        
+        pair<ll, ll> res = dp[(1ll << j) ^ i];
+        if (res.S + weights[j] <= maxWeight)
+        {
+            res.S += weights[j];
+        }
+        else
+        {
+            res.F++;
+            res.S = weights[j];
+        }
+        dp[i] = min(dp[i], res);
+    }
+}
+cout << dp[l - 1].F;
