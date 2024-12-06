@@ -27,45 +27,33 @@ using namespace std;
 
 const int MX = 1e5 + 1;
 
-ll req(vii &adj, vi &res, ll n, ll p) {
-    ll ch = adj[n].size();
-    ll mx = ch;
-    res[n] = ch;
-    vi X;
-
-    for (auto neg : adj[n]) {
-        if (neg == p) continue;
-        ll re = req(adj, res, neg, n);
-        mx = max(mx, re + ch - 1);
-        X.push_back(re);
-    }
-    sort(X.rbegin(), X.rend());
-
-    res[n] = mx;
-    if (X.size() >= 2) {
-        res[n] = max(res[n], X[0] + X[1] + ch - 2);
-    }
-
-    return mx - (p != 0);
-}
-
 void solve(int tc) {
     ll n;
+    string s;
 
-    cin >> n;
+    cin >> s;
+    n = s.size();
 
-    vii adj(n + 1);
+    for (int i = 0; i < s.size(); i++) {
+        ll at, mx;
+        at = i;
+        mx = s[i] - '0';
 
-    for (int i = 0; i < n - 1; i++)
-    {
-        ll u, v; cin >> u >> v;
-        adj[u].push_back(v);
-        adj[v].push_back(u);
+        for (int j = i + 1; j < i + 9 && j < n; j++)
+        {
+            if (s[j] - '0' - j + i > mx) {
+                mx = s[j] - '0' - j + i;
+                at = j;
+            }
+        }
+        
+        for (int j = at - 1; j >= i; j--) {
+            swap(s[j], s[j + 1]);        
+            s[j]--;
+        }
     }
-    
-    vi res(n + 1);
-    req(adj, res, 1, 0);
-    cout << *max_element(all(res)) << '\n';
+
+    cout << s << '\n';
 }
 
 int main()

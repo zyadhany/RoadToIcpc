@@ -1,4 +1,4 @@
-#define _CRT_SECURE_NO_WARNINGS
+    #define _CRT_SECURE_NO_WARNINGS
 #include <bits/stdc++.h>
 #include <unordered_map>
 #include <unordered_set>
@@ -27,45 +27,27 @@ using namespace std;
 
 const int MX = 1e5 + 1;
 
-ll req(vii &adj, vi &res, ll n, ll p) {
-    ll ch = adj[n].size();
-    ll mx = ch;
-    res[n] = ch;
+void solve(int tc) {
+    ll n, m;
+
+    cin >> n >> m;
+
     vi X;
 
-    for (auto neg : adj[n]) {
-        if (neg == p) continue;
-        ll re = req(adj, res, neg, n);
-        mx = max(mx, re + ch - 1);
-        X.push_back(re);
-    }
-    sort(X.rbegin(), X.rend());
-
-    res[n] = mx;
-    if (X.size() >= 2) {
-        res[n] = max(res[n], X[0] + X[1] + ch - 2);
-    }
-
-    return mx - (p != 0);
-}
-
-void solve(int tc) {
-    ll n;
-
-    cin >> n;
-
-    vii adj(n + 1);
-
-    for (int i = 0; i < n - 1; i++)
+    for (int i = 0; i < n; i++)
     {
-        ll u, v; cin >> u >> v;
-        adj[u].push_back(v);
-        adj[v].push_back(u);
+        string s; cin >> s;
+        X.push_back(s.size());
     }
     
-    vi res(n + 1);
-    req(adj, res, 1, 0);
-    cout << *max_element(all(res)) << '\n';
+    ll cnt = 0;
+    for (int i = 0; i < n; i++)
+    {
+        m -= X[i];
+        cnt += (m >= 0);
+    }
+    
+    cout << cnt << '\n';
 }
 
 int main()

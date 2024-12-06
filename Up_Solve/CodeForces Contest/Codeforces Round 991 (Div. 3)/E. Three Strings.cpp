@@ -27,45 +27,28 @@ using namespace std;
 
 const int MX = 1e5 + 1;
 
-ll req(vii &adj, vi &res, ll n, ll p) {
-    ll ch = adj[n].size();
-    ll mx = ch;
-    res[n] = ch;
-    vi X;
-
-    for (auto neg : adj[n]) {
-        if (neg == p) continue;
-        ll re = req(adj, res, neg, n);
-        mx = max(mx, re + ch - 1);
-        X.push_back(re);
-    }
-    sort(X.rbegin(), X.rend());
-
-    res[n] = mx;
-    if (X.size() >= 2) {
-        res[n] = max(res[n], X[0] + X[1] + ch - 2);
-    }
-
-    return mx - (p != 0);
-}
-
 void solve(int tc) {
-    ll n;
+    string s, t, c;
+    cin >> s >> t >> c;
 
-    cin >> n;
+    ll n = s.size(), m = t.size(), k = n + m;
 
-    vii adj(n + 1);
+    vii dp(k + 10, vi(k + 10, INT32_MAX));
 
-    for (int i = 0; i < n - 1; i++)
+    dp[0][0] = 0;
+    for (int i = 0; i < k; i++)
     {
-        ll u, v; cin >> u >> v;
-        adj[u].push_back(v);
-        adj[v].push_back(u);
+        for (int j = 0; j <= n; j++)
+        {
+            if (dp[i][j] == INT32_MAX) continue;
+            ll h = i - j;
+            if (h != m) dp[i + 1][j] = min(dp[i+1][j], dp[i][j] + (c[i] != t[h]));
+            if (j != n) dp[i + 1][j + 1] = min(dp[i+1][j+1], dp[i][j] + (c[i] != s[j]));
+        }
+        
     }
     
-    vi res(n + 1);
-    req(adj, res, 1, 0);
-    cout << *max_element(all(res)) << '\n';
+    cout << dp[k][n] << '\n';
 }
 
 int main()

@@ -27,45 +27,28 @@ using namespace std;
 
 const int MX = 1e5 + 1;
 
-ll req(vii &adj, vi &res, ll n, ll p) {
-    ll ch = adj[n].size();
-    ll mx = ch;
-    res[n] = ch;
-    vi X;
-
-    for (auto neg : adj[n]) {
-        if (neg == p) continue;
-        ll re = req(adj, res, neg, n);
-        mx = max(mx, re + ch - 1);
-        X.push_back(re);
-    }
-    sort(X.rbegin(), X.rend());
-
-    res[n] = mx;
-    if (X.size() >= 2) {
-        res[n] = max(res[n], X[0] + X[1] + ch - 2);
-    }
-
-    return mx - (p != 0);
-}
-
 void solve(int tc) {
     ll n;
 
-    cin >> n;
+    string s;
 
-    vii adj(n + 1);
+    cin >>  s;
 
-    for (int i = 0; i < n - 1; i++)
+    ll summ = 0;
+    for (int i = 0; i < s.size(); i++)
     {
-        ll u, v; cin >> u >> v;
-        adj[u].push_back(v);
-        adj[v].push_back(u);
+        summ += s[i] - '0';
     }
     
-    vi res(n + 1);
-    req(adj, res, 1, 0);
-    cout << *max_element(all(res)) << '\n';
+    ll cnt2 = count(all(s), '2');
+    ll cnt3 = count(all(s), '3');
+
+    for (int i = 0; i <= min(9ll, cnt2); i++)
+
+        for (int j = 0; j <= min(9ll, cnt3); j++)
+            if ((summ + i * 2 + j * 6) % 9 == 0) YES;
+
+    NO;
 }
 
 int main()

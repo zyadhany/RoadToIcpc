@@ -27,45 +27,32 @@ using namespace std;
 
 const int MX = 1e5 + 1;
 
-ll req(vii &adj, vi &res, ll n, ll p) {
-    ll ch = adj[n].size();
-    ll mx = ch;
-    res[n] = ch;
-    vi X;
-
-    for (auto neg : adj[n]) {
-        if (neg == p) continue;
-        ll re = req(adj, res, neg, n);
-        mx = max(mx, re + ch - 1);
-        X.push_back(re);
-    }
-    sort(X.rbegin(), X.rend());
-
-    res[n] = mx;
-    if (X.size() >= 2) {
-        res[n] = max(res[n], X[0] + X[1] + ch - 2);
-    }
-
-    return mx - (p != 0);
-}
-
 void solve(int tc) {
     ll n;
 
     cin >> n;
 
-    vii adj(n + 1);
-
-    for (int i = 0; i < n - 1; i++)
+    vi X(n);
+    ll o, e;
+    o = e = 0;
+    ll summ = 0;
+    for (int i = 0; i < n; i++)
     {
-        ll u, v; cin >> u >> v;
-        adj[u].push_back(v);
-        adj[v].push_back(u);
+        cin >> X[i];
+        if (i % 2) o += X[i];
+        else e += X[i];
+        summ += X[i];
     }
-    
-    vi res(n + 1);
-    req(adj, res, 1, 0);
-    cout << *max_element(all(res)) << '\n';
+
+    ll ce = (n + 1) / 2;    
+    ll co = (n) / 2;    
+
+    if (e % ce || o % co || summ % n) NO;
+    e /= ce;
+    o /= co;
+    summ /= n;
+    if (summ != e || summ != o) NO;
+    YES;
 }
 
 int main()
