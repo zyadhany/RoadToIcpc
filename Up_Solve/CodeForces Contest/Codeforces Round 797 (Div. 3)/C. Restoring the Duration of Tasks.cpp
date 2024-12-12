@@ -25,72 +25,23 @@ const int MODE = 1e9 + 7;
 
 using namespace std;
 
-ll gcd(ll a, ll b)
-{
-    if (b == 0) return (a);
-    return (gcd(b, a % b));
-}
-
-ll lcm(ll a, ll b) 
-{ 
-    return (a / gcd(a, b)) * b; 
-}
-
 void solve(int tc) {
     ll n;
-    string s;
 
     cin >> n;
-    cin >> s;
 
     vi X(n);
+    vi Y(n);
 
     for (int i = 0; i < n; i++)
-    {
-        cin >> X[i]; X[i]--;
-    }
-    
-    vi RE;
-    vi vis(n);
-    string t = s;
+        cin >> X[i];
     for (int i = 0; i < n; i++)
-    {
-        if (vis[i]) continue;
-        vi Z;
-
-        ll at = i;
-        while (!vis[at])
-        {
-            vis[at] = 1;
-            Z.push_back(at);
-            at = X[at];
-        }
-        
-        ll cnt = 1;
-        while (true)
-        {
-            bool isit = 1;
-
-            char c = t[i];
-            for (int j = 0; j < Z.size() - 1; j++)
-                t[Z[j]] = t[Z[j + 1]];
-            t[Z.back()] = c;            
-            
-            for (auto a : Z) {
-                if (s[a] != t[a]) isit = 0;
-            }
-
-            if (isit) break;
-            cnt++;
-        }
-        
-        RE.push_back(cnt);
-    }
+        cin >> Y[i];
     
-
-    ll res = RE[0];
-    for (auto a : RE) res = lcm(res, a);
-    cout << res << '\n';
+    cout << Y[0] - X[0] << ' ';
+    for (int i = 1; i < n; i++)
+        cout << Y[i] - max(X[i], Y[i - 1]) << ' ';
+    cout << '\n';
 }
 
 int main()
@@ -103,5 +54,5 @@ int main()
 
     cin >> size;
     for (int i = 1; i <= size; i++)
-        solve(i);   
+        solve(i);
 }

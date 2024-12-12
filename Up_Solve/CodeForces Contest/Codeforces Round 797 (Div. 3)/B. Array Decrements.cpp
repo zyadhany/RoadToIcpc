@@ -25,72 +25,38 @@ const int MODE = 1e9 + 7;
 
 using namespace std;
 
-ll gcd(ll a, ll b)
-{
-    if (b == 0) return (a);
-    return (gcd(b, a % b));
-}
-
-ll lcm(ll a, ll b) 
-{ 
-    return (a / gcd(a, b)) * b; 
-}
-
 void solve(int tc) {
     ll n;
-    string s;
 
     cin >> n;
-    cin >> s;
 
     vi X(n);
+    vi Y(n);
 
     for (int i = 0; i < n; i++)
     {
-        cin >> X[i]; X[i]--;
+        cin >> X[i];
     }
     
-    vi RE;
-    vi vis(n);
-    string t = s;
     for (int i = 0; i < n; i++)
     {
-        if (vis[i]) continue;
-        vi Z;
-
-        ll at = i;
-        while (!vis[at])
-        {
-            vis[at] = 1;
-            Z.push_back(at);
-            at = X[at];
-        }
-        
-        ll cnt = 1;
-        while (true)
-        {
-            bool isit = 1;
-
-            char c = t[i];
-            for (int j = 0; j < Z.size() - 1; j++)
-                t[Z[j]] = t[Z[j + 1]];
-            t[Z.back()] = c;            
-            
-            for (auto a : Z) {
-                if (s[a] != t[a]) isit = 0;
-            }
-
-            if (isit) break;
-            cnt++;
-        }
-        
-        RE.push_back(cnt);
+        cin >> Y[i];
     }
     
+    if (count(all(Y), 0) == n) YES;
 
-    ll res = RE[0];
-    for (auto a : RE) res = lcm(res, a);
-    cout << res << '\n';
+    ll re;
+
+    for (int i = 0; i < n; i++)
+        if (Y[i]) re = X[i] - Y[i];
+
+    if (re < 0) NO;
+
+    for (int i = 0; i < n; i++)
+        X[i] = max(0ll, X[i] - re);
+
+    if (X == Y) YES;
+    NO;        
 }
 
 int main()
@@ -103,5 +69,5 @@ int main()
 
     cin >> size;
     for (int i = 1; i <= size; i++)
-        solve(i);   
+        solve(i);
 }
