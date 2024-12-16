@@ -25,72 +25,52 @@ const int MODE = 1e9 + 7;
 
 using namespace std;
 
-ll gcd(ll a, ll b)
+struct GCD_type { long long x, y, d; };
+GCD_type ex_GCD(long long a, long long b)
 {
-    if (b == 0) return (a);
-    return (gcd(b, a % b));
+    if (b == 0) return {1, 0, a};
+    GCD_type pom = ex_GCD(b, a % b);
+    return {pom.y, pom.x - a / b * pom.y, pom.d};
 }
 
-ll lcm(ll a, ll b) 
-{ 
-    return (a / gcd(a, b)) * b; 
+pair<long, long> CRT(vector<long long> rem, vector<long long> num)
+{   
+    for (int i = 0; i < num.size(); i++)
+        rem[i] = (rem[i] % num[i] + num[i]) % num[i];
+
+    long long ans = rem[0];
+    long long lc = num[0];
+
+    for (int i = 1; i < num.size(); i++)
+    {
+        auto pom = ex_GCD(lc, num[i]);
+        int x1 = pom.x;
+        int d = pom.d;
+
+        if ((rem[i] - ans) % d != 0)
+            return {-1, -1};
+    
+        ans = ans + x1 * (rem[i] - ans) / d % (num[i] / d) * lc;
+        lc =  lc * num[i] / d;
+        ans = (ans % lc + lc) % lc;
+    }
+
+    return {ans, lc};    
 }
 
 void solve(int tc) {
-    ll n;
-    string s;
+    ll a, n, b, m;
 
-    cin >> n;
-    cin >> s;
+    cin >> a >> n >> b >> m;
 
-    vi X(n);
+    vi rem = {a, b};
+    vi num = {n, m};
 
-    for (int i = 0; i < n; i++)
-    {
-        cin >> X[i]; X[i]--;
-    }
-    
-    vi RE;
-    vi vis(n);
-    string t = s;
-    for (int i = 0; i < n; i++)
-    {
-        if (vis[i]) continue;
-        vi Z;
+    auto ans = CRT(rem, num);
 
-        ll at = i;
-        while (!vis[at])
-        {
-            vis[at] = 1;
-            Z.push_back(at);
-            at = X[at];
-        }
-        
-        ll cnt = 1;
-        while (true)
-        {
-            bool isit = 1;
-
-            char c = t[i];
-            for (int j = 0; j < Z.size() - 1; j++)
-                t[Z[j]] = t[Z[j + 1]];
-            t[Z.back()] = c;            
-            
-            for (auto a : Z) {
-                if (s[a] != t[a]) isit = 0;
-            }
-
-            if (isit) break;
-            cnt++;
-        }
-        
-        RE.push_back(cnt);
-    }
-    
-
-    ll res = RE[0];
-    for (auto a : RE) res = lcm(res, a);
-    cout << res << '\n';
+    if (ans.first == -1)
+        cout << "no solution" << ln;
+    else cout << ans.first << " " << ans.second << ln;
 }
 
 int main()
@@ -98,10 +78,10 @@ int main()
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;
 
-    // freopen("sabotage.in", "r", stdin);
-    // freopen("sabotage.out", "w", stdout);
+    //freopen("input.txt", "r", stdin);
+    //freopen("output.txt", "w", stdout);
 
     cin >> size;
     for (int i = 1; i <= size; i++)
-        solve(i);   
+        solve(i);
 }
