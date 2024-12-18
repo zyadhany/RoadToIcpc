@@ -7,6 +7,11 @@
 // a^{phi(n)} = 1 (mod n): (a, n are coprime numbers).
 
 
+/**
+ * phi(n) -> conut of i < n as gcd(n, i) = 1.
+ * phi(n / d) -> count of i < n as gcd(n, i) = d. (d in divsor of n).
+ */
+
 // Time O(sqrl(n)).
 int phi(int n)
 {
@@ -25,19 +30,21 @@ int phi(int n)
 
 
 // another approche to get phi from 1 to n
-std::vector <int> prime;
-bool is_composite[MAXN];
+
+const int MAXN = 1e6+1;
 int phi[MAXN];
 
-void sieve (int n) {
-	std::fill (is_composite, is_composite + n, false);
+void INIT() {
+    vector <int> prime;
+    bool is_composite[MAXN];
+	fill (is_composite, is_composite + MAXN, false);
 	phi[1] = 1;
-	for (int i = 2; i < n; ++i) {
+	for (int i = 2; i < MAXN; ++i) {
 		if (!is_composite[i]) {
 			prime.push_back (i);
 			phi[i] = i - 1;					//i is prime
 		}
-		for (int j = 0; j < prime.size () && i * prime[j] < n; ++j) {
+		for (int j = 0; j < prime.size () && i * prime[j] < MAXN; ++j) {
 			is_composite[i * prime[j]] = true;
 			if (i % prime[j] == 0) {
 				phi[i * prime[j]] = phi[i] * prime[j];	//prime[j] divides i
