@@ -44,8 +44,9 @@ void divsorFactors(vp &faccnt, vi &div, int at, int d) {
     }
 }
  
-vi divsors(int n) {
-    if (n == 1) return {1};
+// get vector pair p.first^p.second
+vp factorizationCnt(int n) {
+    if (n == 1) return {};
     vi fac;
     while(n > 1) fac.push_back(prime[n]), n /= prime[n];
     vp faccnt;
@@ -56,31 +57,36 @@ vi divsors(int n) {
         else faccnt.push_back(re), re = {fac[i], 1};
     }
     faccnt.push_back(re);
-    vi div;
-    divsorFactors(faccnt, div, 0, 1);
-    return div;
+    return faccnt;
 }
  
-const int MXN = 1e6 + 1;
-int vis[MXN] = {0};
+const int MXN = 2e5 + 1;
 
 void solve(int tc) {
     ll n;
- 
+
     cin >> n;
-  
+
+    vii Z(MXN);
+
     for (int i = 0; i < n; i++)
     {
         ll a; cin >> a;
-        vi div = divsors(a);
-        for (int d : div) vis[d]++;
+        vp Y = factorizationCnt(a);
+        for (auto p : Y) Z[p.first].push_back(p.second);
     }
- 
-    for (int i = MXN - 1; i >= 0; i--)
-        if (vis[i] >= 2) {
-            cout << i << '\n';
-            return;
-        }
+    
+    ll sol = 1;
+    for (int i = 2; i < Z.size(); i++)
+    {
+        if (Z[i].size() < n) Z[i].push_back(0);
+        if (Z[i].size() < n) Z[i].push_back(0);
+        sortx(Z[i]);
+        ll re = Z[i][1];
+        while (re--) sol *= i;        
+    }
+    
+    cout << sol << '\n';
 }
  
 int main()

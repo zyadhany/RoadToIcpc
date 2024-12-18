@@ -9,18 +9,6 @@ void INIT() {
     for (int i = 2; i < MAXSZ; i++) if(prime[i] == i) primes.push_back(i);
 }
 
-vi PF(ll n) {
-    vi X;
-
-    while (n > 1)
-    {
-        X.push_back(prime[n]);
-        n /= prime[n];
-    }
-    
-    return (X);
-}
-
 void divsorFactors(vp &faccnt, vi &div, ll at, ll d) {
     if (at == faccnt.size()) {div.push_back(d); return;}
     divsorFactors(faccnt, div, at + 1, d);
@@ -47,6 +35,34 @@ vi divsors(ll n) {
     vi div;
     divsorFactors(faccnt, div, 0, 1);
     return div;
+}
+
+// get vector pair p.first^p.second
+vp factorizationCnt(int n) {
+    if (n == 1) return {};
+    vi fac;
+    while(n > 1) fac.push_back(prime[n]), n /= prime[n];
+    vp faccnt;
+    pl re = {fac[0], 1};
+    for (int i = 1; i < fac.size(); i++)
+    {
+        if (fac[i] == re.first) re.second++;
+        else faccnt.push_back(re), re = {fac[i], 1};
+    }
+    faccnt.push_back(re);
+    return faccnt;
+}
+
+vi PF(ll n) {
+    vi X;
+
+    while (n > 1)
+    {
+        X.push_back(prime[n]);
+        n /= prime[n];
+    }
+    
+    return (X);
 }
 
 // another approh: linner sive
