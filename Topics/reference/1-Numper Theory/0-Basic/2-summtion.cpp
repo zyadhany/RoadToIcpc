@@ -7,6 +7,15 @@ ll summtion(ll n) {
     get value of n from summtion lowered down.
 */
 
+const int MODE = 1e9 + 7;
+const int TWO_MOD_INV = 500000004;
+
+// summ from st to en % MODE.
+long long total_sum(long long start, long long end) {
+	return ((((end - start + 1) % MODE) * ((start + end) % MODE) % MODE) * TWO_MOD_INV %
+	        MODE);
+}
+
  
 // summ of num from 1 to n that divide by k.
 ll summk(ll n, ll k) {
