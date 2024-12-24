@@ -31,6 +31,7 @@ ll modeenv(ll n) {
 
 // nCr = fac(n)/fac(r)*fac(n-r)
 ll nCr(ll n, ll r) {
+    if (n < r) return 0;
     ll res = fac[n];
     res *= (facinv[r] * facinv[n - r]) % MODE;
     return (res) % MODE;
@@ -43,8 +44,11 @@ ll nPr(ll n, ll r) {
 }
 
 void INIT() {
+    facinv[0] = facinv[1] = 1;
     for (int i = 2; i < SIZE; i++) {
         fac[i] = (i * fac[i - 1]) % MODE;
-        facinv[i] = modeenv(fac[i]);
+        facinv[i] = MODE - MODE / i * facinv[MODE%i] % MODE;
     }
+    for (int i = 2; i < SIZE; i++)
+        facinv[i] = (facinv[i] * facinv[i-1])%MODE;
 }
