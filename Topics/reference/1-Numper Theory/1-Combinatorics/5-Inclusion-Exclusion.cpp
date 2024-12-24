@@ -13,10 +13,19 @@
 Example with three sets A, B, C:
 |A ∪ B ∪ C| = |A| + |B| + |C| - |A ∩ B| - |A ∩ C| - |B ∩ C| + |A ∩ B ∩ C|.
 
-// Applications:
-// - Counting distinct elements in overlapping sets.
-// - Solving problems involving multiple constraints or conditions.
-// - Counting valid configurations when overlaps exist.
+
+/**
+ * restricted inclusion-exclusion principle.
+ * Standard Equation:
+ * Summation formula for Inclusion-Exclusion:
+ * 
+ * Total = Summation{i = 0 to n} [ (-1)^i * nCr(n, i) * f(i) ]
+ * 
+ * Explanation:
+ * - (-1)^i alternates between addition and subtraction.
+ * - nCr(n, i) chooses 'i' sets from 'n'.
+ * - f(i) represents the count or size of the intersection of chosen sets.
+ */
 
 // Count combinations where a_1 + a_2 + ... + a_n = k, with 0 <= a_i < m.
 ll count_combinations(ll n, ll m, ll k) {

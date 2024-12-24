@@ -48,16 +48,9 @@ void INIT() {
 }
 
 void solve(int tc) {
-    ll n, m;
-
-    cin >> n >> m;
-
-    vi Z(n + 10); Z[0] = Z[1] = 0, Z[2] = 1;
-    for (int i = 3; i <= n; i++)
-        Z[i] = ((i - 1) * (Z[i - 1] + Z[i - 2])) % m; 
-
-    for (int i = 1; i <= n; i++) cout << Z[i] << ' ';    
-    cout << '\n';    
+    ll n, r;
+    cin >> n >> r;
+    cout << nCr(n, r) << ln;
 }
 
 int main()
@@ -69,7 +62,7 @@ int main()
     //freopen("input.txt", "r", stdin);
     //freopen("output.txt", "w", stdout);
 
-    // cin >> size;
+    cin >> size;
     for (int i = 1; i <= size; i++)
         solve(i);
 }
