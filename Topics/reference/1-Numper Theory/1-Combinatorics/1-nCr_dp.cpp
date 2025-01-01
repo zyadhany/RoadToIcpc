@@ -1,3 +1,36 @@
+/*
+    Binomial Coefficients:
+   
+   - Number of ways to choose equal-length subsets from 2 sets of size x, y is C(x + y, x).
+
+    Properties of Binomial Coefficients:
+
+    1. Symmetry Rule:
+       C(n, k) = C(n, n-k)
+
+    2. Factoring In:
+       C(n, k) = (n / k) * C(n-1, k-1)
+
+    3. Sum over k:
+       Σ(C(n, k) for k = 0 to n) = 2^n
+
+    4. Sum over n:
+       Σ(C(m, k) for m = 0 to n) = C(n+1, k+1)
+
+    5. Sum over n and k:
+       Σ(C(n + k, k) for k = 0 to m) = C(n + m + 1, m)
+
+    6. Sum of the squares:
+       C(n, 0)^2 + C(n, 1)^2 + ... + C(n, n)^2 = C(2n, n)
+
+    7. Weighted Sum:
+       1*C(n, 1) + 2*C(n, 2) + ... + n*C(n, n) = n * 2^(n-1)
+
+    8. Connection with Fibonacci Numbers:
+       C(n, 0) + C(n-1, 1) + ... + C(n-k, k) + ... + C(0, n) = F(n+1)
+*/
+
+
 /**
  * dp solution to get 2d array of nCr.
  * C(n, k) = C(n - 1, k - 1) + C(n - 1, k).
@@ -47,4 +80,15 @@ ll binomialCoeff(int n, int k, vii &dp)
         binomialCoeff(n - 1, k, dp);
 
     return dp[n][k];
+}
+
+
+// get nCr without taking mod.
+ll nCrNoOverFlow(ll n, ll k) {
+    if (n < k || k < 0) return 0;
+    k = max(k, n - k);
+    ll ans = 1;
+    for (ll i = n; i > k; i--)
+        ans = (ans * i) / (n - i + 1);
+    cout << ans << '\n';
 }
