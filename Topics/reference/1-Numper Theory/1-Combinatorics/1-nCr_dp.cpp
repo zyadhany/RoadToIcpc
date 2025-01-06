@@ -90,5 +90,5 @@ ll nCrNoOverFlow(ll n, ll k) {
     ll ans = 1;
     for (ll i = n; i > k; i--)
         ans = (ans * i) / (n - i + 1);
-    cout << ans << '\n';
+    return ans;
 }

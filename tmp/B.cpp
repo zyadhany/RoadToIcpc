@@ -1,20 +1,7 @@
 #define _CRT_SECURE_NO_WARNINGS
+#include <bits/stdc++.h>
 #include <unordered_map>
 #include <unordered_set>
-#include <algorithm>
-#include <iostream>
-#include <iomanip>
-#include <fstream>
-#include <numeric>
-#include <cstring>
-#include <string>
-#include <vector>
-#include <bitset>
-#include <cassert>
-#include <cstdio>
-#include <memory>
-#include <sstream>
-#include <cmath>
 
 #define ll long long
 #define ld long double
@@ -39,119 +26,243 @@ const int MODE = 1e9 + 7;
 using namespace std;
 
 
-const int SIZE = 2e5 + 1;
-vi fac(SIZE, 1), facinv(SIZE, 1);
+/**
+ * usage:-
+ * creat tree element.
+ * SegmentTree sg;
+ * 
+ * Functions you can use:
+ * @set: set index or range to value.
+ * @geteange: get value of given range.
+ * @build: build tree with given vector or size.
+ * 
+ * make sure to look at item typedef.
+ * you can change merge function to change it's oppration.
+ * it you want to make change to segment work in checkLazy().
+*/
 
-ll gcdExtended(ll a, ll b, ll* x, ll* y)
+typedef pair<pl, pl> item;
+
+class SegmentTree
 {
-    if (a == 0) {
-        *x = 0, *y = 1;
-        return b;
-    }
-    ll x1, y1;
-    ll gcd = gcdExtended(b % a, a, &x1, &y1);
-    *x = y1 - (b / a) * x1;
-    *y = x1;
-    return gcd;
-}
+public:
 
-ll modeenv(ll n) {
-    ll x, y;
-    gcdExtended(n, MODE, &x, &y);
-    return (x + MODE) % MODE;
-}
-
-// nCr = fac(n)/fac(r)*fac(n-r)
-ll nCr(ll n, ll r) {
-    if (n < r) return 0;
-    ll res = fac[n];
-    res *= (facinv[r] * facinv[n - r]) % MODE;
-    return (res) % MODE;
-}
-
-void INIT() {
-    facinv[0] = facinv[1] = 1;
-    for (int i = 2; i < SIZE; i++) {
-        fac[i] = (i * fac[i - 1]) % MODE;
-        facinv[i] = MODE - MODE / i * facinv[MODE%i] % MODE;
-    }
-    for (int i = 2; i < SIZE; i++)
-        facinv[i] = (facinv[i] * facinv[i-1])%MODE;
-}
-
-// Count combinations where a_1 + a_2 + ... + a_n = k, with 0 <= a_i < m.
-ll count_combinations(ll n, ll m, ll k) {
-    /**
-     * Total combinations if there are no restrictions:
-     * total = nCr(n + k - 1, k)
-     *
-     * Define f(i): Count of combinations where at least i elements are >= m.
-     * Using Inclusion-Exclusion:
-     * result = f(0) - nCr(n, 1) * f(1) + nCr(n, 2) * f(2) - ... + nCr(n, n) * f(n)
-     */
-
-    ll result = 0; // Final result
-    for (int i = 0; i <= n; i++) {
-        // If k - i * m becomes negative, no valid combinations exist.
-        if (k - i * m < 0) break;
-
-        // Calculate current term using Inclusion-Exclusion
-        ll term = (nCr(n, i) * nCr(n + k - i * m - 1, n - 1)) % MODE;
-
-        // Alternate addition and subtraction based on Inclusion-Exclusion principle
-        if (i % 2 == 1) result = (result + MODE - term) % MODE;
-        else result = (result + term) % MODE;
+    void set(int index, int value) {
+        set(0, 0, size - 1, index, value);
     }
 
-    return result;
-}
+    item getrange(int l, int r) {
+        return (getrange(0, 0, size - 1, l, r));
+    }
 
-ll N;
+    void build(int n) {
+        size = 1;
+        while (size < n)
+            size *= 2;
+        tree.assign(size * 2, item());
+        lazy.assign(size * 2, 0);
+    }
 
-ll g(ll i, ll j) {
-    if (i < j) return 0;
-    if (!j) return 1;
-    ll res = (g(i - j, j) + g(i - j, j - 1) - g(i - (N + 1), j - 1)) % MODE;
-    if (res < 0) res += MODE;
-    return res;
-}
+    void build(vector<ll>& X) {
+        size = 1;
+        while (size < X.size())
+            size *= 2;
+        tree.assign(size * 2, item());
+        lazy.assign(size * 2, 0);
 
-ll f(ll n) {
-    ll summ = 0;
-    ll re;
-    ll i = 0;
-    do
+        build(X, 0, 0, size - 1);
+    }
+
+private:
+    int size;
+    vector<item> tree;
+    vector<long long> lazy;
+
+    item merge(item a, item b) {
+        item res;
+        if (a.first.first > b.first.first) res.first = a.first;
+        else res.first = b.first;
+
+        if (a.second.first < b.second.first) res.second = a.second;
+        else res.second = b.second;
+        return (res);
+    }
+
+    void set(int m, int lx, int rx, int pos, int val) {
+        if (pos < lx || rx < pos) return;
+        if (lx == rx && lx == pos)
+        {
+            tree[m] = {{val, pos}, {val, pos}};
+            return;
+        }
+
+        int mid = (lx + rx) / 2;
+        item s1, s2;
+
+        set(m * 2 + 1, lx, mid, pos, val);
+        set(m * 2 + 2, mid + 1, rx, pos, val);
+        s1 = tree[m * 2 + 1], s2 = tree[m * 2 + 2];
+
+        tree[m] = merge(s1, s2);
+    }
+
+
+    item getrange(int m, int lx, int rx, int l, int r) {
+        if (rx < l || r < lx) return {{INT_MIN, -1}, {INT_MAX, -1}};
+        if (l <= lx && rx <= r) return (tree[m]);
+
+        int mid = (lx + rx) / 2;
+        item s1, s2;
+
+        s1 = getrange(m * 2 + 1, lx, mid, l, r);
+        s2 = getrange(m * 2 + 2, mid + 1, rx, l, r);
+
+        return merge(s1, s2);
+    }
+
+    void build(vector<ll>& X, int m, int lx, int rx) {
+        if (lx == rx) {
+            if (lx < X.size()) tree[m] = {{X[lx], lx,}, {X[lx], lx}};
+            return;
+        }
+
+        int mid = (lx + rx) / 2;
+        item s1, s2;
+
+        build(X, m * 2 + 1, lx, mid);
+        build(X, m * 2 + 2, mid + 1, rx);
+        s1 = tree[m * 2 + 1], s2 = tree[m * 2 + 2];
+
+        tree[m] = merge(s1, s2);
+    }
+};
+
+void clc(SegmentTree& sgl, SegmentTree& sgr, vi& L, vi& R, vii &adj, vector<pair<pl, pl>>& res, multiset<ll>& st, ll k) {
+    auto ZZ =adj[k];
+    adj[k].clear();
+    for (auto i : adj[k])
     {
-        re = g(n, i);
-        if (i % 2) summ = (summ - re) % MODE;
-        else summ = (summ + re) % MODE;
-        i++;
-    } while (re);
-    
-    summ += MODE;
-    summ %= MODE;
-    return summ;
+        // if (res[i].first.second == k) {
+        //     st.erase(st.find(res[i].first.first));
+        //     res[i].first = {-1, -1};
+        // }
+        // if (res[i].second.second == k) {
+        //     st.erase(st.find(res[i].second.first));
+        //     res[i].second = {-1, -1};
+        // }
+        clc(sgl, sgr, L, R, adj, res, st, i);
+    }
+    if (res[k].first.first != -1) {
+        st.erase(st.find(res[k].first.first));
+        res[k].first = {-1, -1};
+    }
+    if (res[k].second.first != -1) {
+        st.erase(st.find(res[k].second.first));
+        res[k].second = {-1, -1};
+    }
+
+    if (k) {
+        auto a = sgl.getrange(0, k - 1);
+        pl mn = a.second;
+        ll vmx;
+        vmx = L[k] - mn.first;
+        // if (k == 7) cout << mn.first << ' ' << L[k] << ' ' << vmx << '\n';
+        res[k].first = {vmx, mn.second};
+        adj[mn.second].push_back(k);
+        st.insert(vmx);
+    }
+    if (k < L.size() - 1) {
+        auto a = sgr.getrange(k + 1, L.size() - 1);
+        pl mn = a.second;
+        ll vmx;
+        vmx = R[k] - mn.first;
+        res[k].second = {vmx, mn.second};
+        adj[mn.second].push_back(k);
+        st.insert(vmx);
+    }
+
+
+    if (k) {
+        auto a = sgr.getrange(0, k - 1);
+        pl mx = a.first;
+        ll vmn;
+        vmn = mx.first - R[k];
+
+
+        if (res[mx.second].second.first < vmn) {
+            if (res[mx.second].second.first != -1) {
+                st.erase(st.find(res[mx.second].second.first));
+            }
+            res[mx.second].second = {vmn, k};
+            adj[k].push_back(mx.second);
+            st.insert(vmn);
+        }
+    }
+    if (k < L.size() - 1) {
+        auto a = sgl.getrange(k + 1, L.size() - 1);
+        pl mx = a.first;
+        ll vmn;
+        vmn = mx.first - L[k];
+        
+        if (res[mx.second].first.first < vmn) {
+            if (res[mx.second].first.first != -1) {
+                st.erase(st.find(res[mx.second].first.first));
+            }
+            res[mx.second].first = {vmn, k};
+            adj[k].push_back(mx.second);
+            st.insert(vmn);
+        }
+    }
 }
 
 void solve(int tc) {
-    ll n, k;
+    ll n, q;
 
-    cin >> n >> k;
-    N = n;
+    cin >> n >> q;
 
-    ll m = n * (n + 1) / 2;
-    vi Z(m + 1);
-   
-
-    ll sol = 0;
-    for (int i = 0; i <= k; i++)
+    vi L(n), R(n);
+    for (int i = 0; i < n; i++)
     {
-        sol += (nCr(n + k - 1 - i, n - 1) * f(i)) % MODE;
-        sol += MODE;
-        sol %= MODE;
+        ll a; cin >> a;
+        L[i] = a - i;
+        R[i] = a + i;
     }
-    
-    cout << sol << '\n';
+    SegmentTree sgl, sgr;
+    sgl.build(L);
+    sgr.build(R);
+
+    multiset<ll> st;
+    st.insert(0);
+    vector<pair<pl, pl>> res(n, {{-1, -1}, {-1, -1}});
+    vii adj(n);
+
+    for (int i = 0; i < n; i++)
+    {
+        clc(sgl, sgr, L, R, adj, res, st, i);
+    }
+
+    cout << *prev(st.end()) << '\n';
+
+    // return;
+    while (q--)
+    {
+        ll p, x;
+        cin >> p >> x;
+        p--;
+        
+        L[p] = x - p;
+        R[p] = x + p;
+        sgl.set(p, L[p]);
+        sgr.set(p, R[p]);
+        clc(sgl, sgr, L, R, adj, res, st, p);
+
+        // if (q == 0)
+        // for (auto i : res)
+        // {
+        //     cout << i.first.first << ' ' << i.first.second << " | " << i.second.first << ' ' << i.second.second << '\n';
+        // }
+        cout << *prev(st.end()) << '\n';
+    }   
 }
 
 int main()
@@ -159,11 +270,10 @@ int main()
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;
 
-    INIT();
     //freopen("input.txt", "r", stdin);
     //freopen("output.txt", "w", stdout);
 
-    // cin >> size;
+    cin >> size;
     for (int i = 1; i <= size; i++)
         solve(i);
 }

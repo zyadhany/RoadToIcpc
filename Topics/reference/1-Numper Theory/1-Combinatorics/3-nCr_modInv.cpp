@@ -31,7 +31,7 @@ ll modeenv(ll n) {
 
 // nCr = fac(n)/fac(r)*fac(n-r)
 ll nCr(ll n, ll r) {
-    if (n < r) return 0;
+    if (n < r || n < 0) return 0;
     ll res = fac[n];
     res *= (facinv[r] * facinv[n - r]) % MODE;
     return (res) % MODE;

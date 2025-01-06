@@ -21,9 +21,9 @@
 #define NO {cout << "NO\n"; return;}
 #define MUN {cout << "-1\n"; return;}
 
+const int MODE = 1e9 + 7;
 
 using namespace std;
-
 
 /**
  * It use factorial fourmal of nCr,
@@ -33,16 +33,40 @@ using namespace std;
  * Space O(n).
 */
 
-const int SIZE = 1e6 + 1;
-const int MODE = 998244353;
+const int SIZE = 2e6 + 1;
 vi fac(SIZE, 1), facinv(SIZE, 1);
 
+ll gcdExtended(ll a, ll b, ll* x, ll* y)
+{
+    if (a == 0) {
+        *x = 0, *y = 1;
+        return b;
+    }
+    ll x1, y1;
+    ll gcd = gcdExtended(b % a, a, &x1, &y1);
+    *x = y1 - (b / a) * x1;
+    *y = x1;
+    return gcd;
+}
+
+ll modeenv(ll n) {
+    ll x, y;
+    gcdExtended(n, MODE, &x, &y);
+    return (x + MODE) % MODE;
+}
+
+// nCr = fac(n)/fac(r)*fac(n-r)
 ll nCr(ll n, ll r) {
-    if (n < r || n < 0) return 0;
-    if (n == 0) return 1;
+    if (n < r) return 0;
     ll res = fac[n];
     res *= (facinv[r] * facinv[n - r]) % MODE;
     return (res) % MODE;
+}
+
+// nPr = fac(n) / fac(n - r)
+ll nPr(ll n, ll r) {
+    ll res = (fac[n] * facinv[n - r]) % MODE;
+    return (res);
 }
 
 void INIT() {
@@ -55,53 +79,13 @@ void INIT() {
         facinv[i] = (facinv[i] * facinv[i-1])%MODE;
 }
 
+
 void solve(int tc) {
-    ll n, k;
+    ll n, m;
 
-    cin >> n >> k;
+    cin >> n >> m;
 
-    n--;
-    vector<vector<ld>> prob(n+1, vector<ld>(n+1));
-    prob[0][0] = 1;
-	for (int i = 1; i <= n; i++) {
-		prob[i][0] = prob[i - 1][0] / 2;
-		for (int j = 1; j <= n; j++)
-			prob[i][j] = (prob[i - 1][j] + prob[i - 1][j - 1]) / 2;
-	}   
-    
-    vector<ld> P(n+1), S(n + 1), C(n + 1);
-    C[n] = prob[n][n];
-    S[n] = C[n] * n;
-    P[0] = prob[n][0];
-    for (int i = n - 1; i >= 0; i--) {
-        P[n-i]=P[n-i-1]+prob[n][n-i];
-        C[i] = C[i+1] + prob[n][i];
-        S[i] = prob[n][i] * i + S[i+1];    
-    }
-
-    ld res = S[0];
-    k--;
-    while (k)
-    {
-        ll at = (ll)floor(res);
-        ld a = P[at], b = S[at+1];
-        
-        ll l = 1, r = k;
-        while (l < r)
-        {
-            ll mid = (l + r) / 2;
-            
-            ld re = res * pow(a, mid) + b * (pow(a, mid)-1) / (a-1);
-            ll nw = (ll) floor(re);
-            if (nw > at) r = mid;
-            else l = mid + 1;
-        }
-        l = min(l, k);
-        res = res * pow(a, l) + b * (pow(a, l)-1) / (a-1);
-        k -= l;
-    }
-
-    cout << fixed << setprecision(9) << res + 1 << '\n';    
+    cout << nCr(n + m - 1, m) << '\n';
 }
 
 int main()
@@ -110,8 +94,8 @@ int main()
     int size = 1;
 
     INIT();
-    // freopen("help.in", "r", stdin);
-    // freopen("help.out", "w", stdout);
+    //freopen("input.txt", "r", stdin);
+    //freopen("output.txt", "w", stdout);
 
     // cin >> size;
     for (int i = 1; i <= size; i++)

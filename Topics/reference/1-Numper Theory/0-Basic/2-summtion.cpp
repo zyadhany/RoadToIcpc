@@ -41,12 +41,31 @@ ll SummArithmetic (ll n, ll a, ll b){
     return n * (a + b) / 2;
 }
 
-/**
- * geometric progression: a + ak + a k^2 + a k^2 + ... + b
- * (bk - a) / (k - 1);
-*/
-ll GeometricProgression (ll a, ll b, ll k) {
-    return (b * k - a) / (k - 1);
+/*
+ * Geometric Sequence:
+ * A sequence where each term is multiplied by a constant ratio (r).
+ * Formula: a_n = a * r^(n-1), where:
+ *   - a: first term
+ *   - r: common ratio
+ *   - n: term index (1-based)
+ * 
+ * Sum of first k terms (if |r| < 1): S_k = a * (1 - r^k) / (1 - r)
+ * Sum of infinite terms (|r| < 1): S_inf = a / (1 - r)
+ * 
+ * Example usage:
+ */
+// Returns the nth term of a geometric sequence
+long long geometric_nth_term(long long a, long long r, long long n) {
+    return a * pow(r, n - 1); // a_n = a * r^(n-1)
+}
+// Returns the sum of the first k terms of a geometric sequence
+long long geometric_sum(long long a, long long r, long long k) {
+    if (r == 1) return a * k; // Special case when r = 1
+    return a * (1 - pow(r, k)) / (1 - r); // S_k = a * (1 - r^k) / (1 - r)
+}
+// Returns the sum of an infinite geometric sequence (|r| < 1)
+double geometric_sum_infinite(double a, double r) {
+    return a / (1 - r); // S_inf = a / (1 - r)
 }
 
 // summtion(x^i): 1 + x + x^2 + x^3 +...+ x^k
