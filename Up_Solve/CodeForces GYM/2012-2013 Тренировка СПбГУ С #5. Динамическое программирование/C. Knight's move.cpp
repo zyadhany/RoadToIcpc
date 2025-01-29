@@ -23,32 +23,21 @@
 
 using namespace std;
 
-const int MODE = 1e9 + 9;
+const int MODE = 998244353;
 
 void solve(int tc) {
-    ll n;
+    ll n, m;
 
-    cin >> n;
+    cin >> n >> m;
 
-    vi X(n), Y(n);
+    vii dp(n+10, vi(m+10));
 
-    for (int i = 0; i < n; i++)
-        cin >> X[i];
-    for (int i = 0; i < n; i++)
-        cin >> Y[i];
-
-    ll amm = -1;
-    ll mn = INT32_MAX;
-    for (int i = 0; i < n; i++)
-    {
-        if (X[i] < Y[i]) {
-            if (amm != -1) NO;
-            amm = Y[i] - X[i];
-        } else mn = min(mn, X[i] - Y[i]);
-    }
-
-    if (amm <= mn) YES;
-    NO;
+    dp[1][1] = 1;
+    for (int i = 1; i < n; i++)
+        for (int j = 1; j < m; j++)
+            dp[i+1][j+2] += dp[i][j], dp[i+2][j+1] += dp[i][j];
+    
+    cout << dp[n][m] << '\n';    
 }
 
 int main()
@@ -56,10 +45,10 @@ int main()
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;
 
-    // freopen("team.in", "r", stdin);
-    // freopen("team.out", "w", stdout);
+    freopen("knight.in", "r", stdin);
+    freopen("knight.out", "w", stdout);
 
-    cin >> size;
+    // cin >> size;
     for (int i = 1; i <= size; i++)
         solve(i);
 }

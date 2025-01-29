@@ -14,7 +14,7 @@ ll countPath(vi &Z, ll n, ll k){
     for (auto neg : adj[n]) {
         ans += countPath(Z, neg, k);
     }
-    
+
     return (ans);
 }
 

@@ -19,3 +19,4 @@ while (a != b) {
     len++;
 }
 // got leanght of cycle.
+

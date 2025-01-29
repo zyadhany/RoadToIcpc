@@ -23,32 +23,39 @@
 
 using namespace std;
 
-const int MODE = 1e9 + 9;
+const int MODE = 998244353;
+
+ll req(vii &adj, vii &dp, vi &X, ll n, ll d) {
+    if (d == dp[0].size() - 1) return (INT32_MIN * (n != 1));
+    ll &res = dp[n][d];
+    if (res != -1) return res;
+    res = INT32_MIN;
+    for (auto neg : adj[n]) res = max(res, req(adj, dp, X, neg, d + 1));
+    res += X[n];
+    return res;
+}
 
 void solve(int tc) {
-    ll n;
+    ll n, m, k;
 
-    cin >> n;
+    cin >> n >> m >> k;
 
-    vi X(n), Y(n);
-
+    vi X(n + 1);
+    vii dp(n + 1, vi(1001, -1));
+    vii adj(n + 1);
+    
     for (int i = 0; i < n; i++)
-        cin >> X[i];
-    for (int i = 0; i < n; i++)
-        cin >> Y[i];
-
-    ll amm = -1;
-    ll mn = INT32_MAX;
-    for (int i = 0; i < n; i++)
+        cin >> X[i + 1];
+    for (int i = 0; i < m; i++)
     {
-        if (X[i] < Y[i]) {
-            if (amm != -1) NO;
-            amm = Y[i] - X[i];
-        } else mn = min(mn, X[i] - Y[i]);
+        ll u, v; cin >> u >> v;
+        adj[u].push_back(v);
     }
 
-    if (amm <= mn) YES;
-    NO;
+    ll mx = 0;
+    for (int i = 0; i <= 1000; i++)
+        mx = max(mx, req(adj, dp, X, 1, i) - k * (1000 - i) * (1000 - i));    
+    cout << mx  << '\n';
 }
 
 int main()
@@ -56,10 +63,10 @@ int main()
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;
 
-    // freopen("team.in", "r", stdin);
-    // freopen("team.out", "w", stdout);
+    freopen("time.in", "r", stdin);
+    freopen("time.out", "w", stdout);
 
-    cin >> size;
+    // cin >> size;
     for (int i = 1; i <= size; i++)
         solve(i);
 }

@@ -26,29 +26,36 @@ using namespace std;
 const int MODE = 1e9 + 9;
 
 void solve(int tc) {
-    ll n;
+    ll n, m, k;
 
-    cin >> n;
+    cin >> n >> m >> k;
 
-    vi X(n), Y(n);
+    vi X(n + 1), Y(m + 1);
 
     for (int i = 0; i < n; i++)
         cin >> X[i];
-    for (int i = 0; i < n; i++)
+    for (int i = 0; i < m; i++)
         cin >> Y[i];
+    sortx(X); sortx(Y);
 
-    ll amm = -1;
-    ll mn = INT32_MAX;
-    for (int i = 0; i < n; i++)
+    vii pref(n + 1, vi(m + 1)), Z(n + 1, vi(m + 1));
+    for (int st = 0; st < k; st++)
     {
-        if (X[i] < Y[i]) {
-            if (amm != -1) NO;
-            amm = Y[i] - X[i];
-        } else mn = min(mn, X[i] - Y[i]);
+        for (int i = 1; i <= n; i++)
+        {
+            for (int j = 1; j <= m; j++)
+            {
+                if (i <= st || j <= st) Z[i][j] = 0;
+                else if (X[i] > Y[j]) Z[i][j] = pref[i-1][j-1] + (st == 0);
+                else Z[i][j] = 0;
+                Z[i][j] += Z[i-1][j]+Z[i][j-1]-Z[i-1][j-1];
+                Z[i][j] = (Z[i][j] % MODE + MODE) % MODE;
+            }
+        } 
+        swap(Z, pref);
     }
 
-    if (amm <= mn) YES;
-    NO;
+    cout << pref[n][m] << '\n';
 }
 
 int main()
@@ -56,10 +63,10 @@ int main()
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;
 
-    // freopen("team.in", "r", stdin);
-    // freopen("team.out", "w", stdout);
+    freopen("team.in", "r", stdin);
+    freopen("team.out", "w", stdout);
 
-    cin >> size;
+    // cin >> size;
     for (int i = 1; i <= size; i++)
         solve(i);
 }

@@ -23,32 +23,40 @@
 
 using namespace std;
 
-const int MODE = 1e9 + 9;
+const int MODE = 1e9 + 7;
 
 void solve(int tc) {
-    ll n;
+    ll n, a, b;
 
-    cin >> n;
+    cin >> n >> a >> b;
 
-    vi X(n), Y(n);
-
-    for (int i = 0; i < n; i++)
-        cin >> X[i];
-    for (int i = 0; i < n; i++)
-        cin >> Y[i];
-
-    ll amm = -1;
-    ll mn = INT32_MAX;
+    vi dp(n + 1);
+    dp[0] = 1;
     for (int i = 0; i < n; i++)
     {
-        if (X[i] < Y[i]) {
-            if (amm != -1) NO;
-            amm = Y[i] - X[i];
-        } else mn = min(mn, X[i] - Y[i]);
+        if (!dp[i]) continue;
+        if (i + a <= n) dp[i + a] = 1;
+        if (i + b <= n) dp[i + b] = 1;
+    }
+    
+    ll sol = 0;
+    
+    ll at = 0;
+    ll mxl = 0;
+
+    for (ll i = n; i >= 0; i--)
+    {
+        if (!dp[i]) continue;
+        while ((at + 1) <= n - i/2)
+        {
+            at++;   
+            if (dp[at]) mxl=at;
+        }
+        sol = max(sol, i);
+        sol = max(sol, i / 2 + mxl);
     }
 
-    if (amm <= mn) YES;
-    NO;
+    cout << sol << '\n';
 }
 
 int main()
@@ -56,10 +64,10 @@ int main()
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;
 
-    // freopen("team.in", "r", stdin);
-    // freopen("team.out", "w", stdout);
+    freopen("feast.in", "r", stdin);
+    freopen("feast.out", "w", stdout);
 
-    cin >> size;
+    // cin >> size;
     for (int i = 1; i <= size; i++)
         solve(i);
 }

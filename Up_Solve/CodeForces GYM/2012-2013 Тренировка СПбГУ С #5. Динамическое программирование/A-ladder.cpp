@@ -23,32 +23,23 @@
 
 using namespace std;
 
-const int MODE = 1e9 + 9;
+const int MODE = 998244353;
 
 void solve(int tc) {
     ll n;
 
     cin >> n;
 
-    vi X(n), Y(n);
-
+    vi X(n + 1);
     for (int i = 0; i < n; i++)
-        cin >> X[i];
-    for (int i = 0; i < n; i++)
-        cin >> Y[i];
+        cin >> X[i + 1];
 
-    ll amm = -1;
-    ll mn = INT32_MAX;
-    for (int i = 0; i < n; i++)
-    {
-        if (X[i] < Y[i]) {
-            if (amm != -1) NO;
-            amm = Y[i] - X[i];
-        } else mn = min(mn, X[i] - Y[i]);
-    }
 
-    if (amm <= mn) YES;
-    NO;
+    vi dp(n + 1); dp[1] = X[1];
+    for (int i = 2; i <= n; i++)
+        dp[i] = X[i] + max(dp[i-1], dp[i-2]);
+
+    cout << dp[n] << '\n';
 }
 
 int main()
@@ -56,10 +47,10 @@ int main()
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;
 
-    // freopen("team.in", "r", stdin);
-    // freopen("team.out", "w", stdout);
+    freopen("ladder.in", "r", stdin);
+    freopen("ladder.out", "w", stdout);
 
-    cin >> size;
+    // cin >> size;
     for (int i = 1; i <= size; i++)
         solve(i);
 }

@@ -21,34 +21,41 @@
 #define NO {cout << "NO\n"; return;}
 #define MUN {cout << "-1\n"; return;}
 
+const int MODE = 1e9 + 7;
+
 using namespace std;
 
-const int MODE = 1e9 + 9;
 
 void solve(int tc) {
-    ll n;
+    ll n, m;
 
-    cin >> n;
+    cin >> n >> m;
 
-    vi X(n), Y(n);
-
-    for (int i = 0; i < n; i++)
-        cin >> X[i];
-    for (int i = 0; i < n; i++)
-        cin >> Y[i];
-
-    ll amm = -1;
-    ll mn = INT32_MAX;
-    for (int i = 0; i < n; i++)
+    vi P;
+    for (int i = 2; i <= n; i++)
     {
-        if (X[i] < Y[i]) {
-            if (amm != -1) NO;
-            amm = Y[i] - X[i];
-        } else mn = min(mn, X[i] - Y[i]);
+        bool isit = 1;
+        for (auto a : P) {
+            if (i % a == 0) {isit = 0; break;}
+        }
+        if (isit) P.push_back(i);
     }
+    
+    vi dp(n + 1);
+    dp[0] = 1;
 
-    if (amm <= mn) YES;
-    NO;
+    for (auto a : P)
+        for (int i = n - a; i >= 0; i--) {
+            ll at = a;
+            while (at + i <= n) {
+                dp[i + at] = (dp[i + at] + dp[i] * at) % m;
+                at *= a;
+            }
+        }
+    
+    ll sol = 0;
+    for (auto x : dp) sol = (sol + x) % m;
+    cout << sol << '\n';
 }
 
 int main()
@@ -56,10 +63,10 @@ int main()
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;
 
-    // freopen("team.in", "r", stdin);
-    // freopen("team.out", "w", stdout);
+    freopen("exercise.in", "r", stdin);
+    freopen("exercise.out", "w", stdout);
 
-    cin >> size;
+    // cin >> size;
     for (int i = 1; i <= size; i++)
         solve(i);
 }

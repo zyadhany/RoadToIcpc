@@ -23,32 +23,27 @@
 
 using namespace std;
 
-const int MODE = 1e9 + 9;
+const int MODE = 998244353;
 
 void solve(int tc) {
     ll n;
+    string s;
 
-    cin >> n;
+    cin >> n >> s;
 
-    vi X(n), Y(n);
-
-    for (int i = 0; i < n; i++)
-        cin >> X[i];
-    for (int i = 0; i < n; i++)
-        cin >> Y[i];
-
-    ll amm = -1;
-    ll mn = INT32_MAX;
-    for (int i = 0; i < n; i++)
+    vi dp(n + 1, -1);
+    dp[1] = 0;
+    for (int i = 2; i <= n; i++)
     {
-        if (X[i] < Y[i]) {
-            if (amm != -1) NO;
-            amm = Y[i] - X[i];
-        } else mn = min(mn, X[i] - Y[i]);
+        if (s[i-1]=='w') continue;
+        for (int step = 1; step <= 5; step+=2)
+        {
+            if (step > i) break; // to not get negative index.
+            if (dp[i-step] != -1) dp[i] = max(dp[i], (s[i-1] == '\"') + dp[i-step]);
+        }
     }
-
-    if (amm <= mn) YES;
-    NO;
+    
+    cout << dp[n] << '\n';
 }
 
 int main()
@@ -56,10 +51,10 @@ int main()
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;
 
-    // freopen("team.in", "r", stdin);
-    // freopen("team.out", "w", stdout);
+    freopen("lepus.in", "r", stdin);
+    freopen("lepus.out", "w", stdout);
 
-    cin >> size;
+    // cin >> size;
     for (int i = 1; i <= size; i++)
         solve(i);
 }

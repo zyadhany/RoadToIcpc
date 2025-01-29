@@ -23,32 +23,37 @@
 
 using namespace std;
 
-const int MODE = 1e9 + 9;
+const int MODE = 998244353;
 
 void solve(int tc) {
-    ll n;
+    ll n, k;
 
-    cin >> n;
-
-    vi X(n), Y(n);
-
+    cin >> n >> k;
+    vi X(n + 1);
+    vii dp(n + 1, vi(k + 1, INT32_MAX));
     for (int i = 0; i < n; i++)
-        cin >> X[i];
-    for (int i = 0; i < n; i++)
-        cin >> Y[i];
+        cin >> X[i + 1];
 
-    ll amm = -1;
-    ll mn = INT32_MAX;
-    for (int i = 0; i < n; i++)
+    ll mx = 0, summ = 0;
+    dp[0] = vi(k + 1, 0);
+    for (int i = 1; i <= n; i++)
     {
-        if (X[i] < Y[i]) {
-            if (amm != -1) NO;
-            amm = Y[i] - X[i];
-        } else mn = min(mn, X[i] - Y[i]);
-    }
+        mx = max(mx, X[i]); summ += X[i];
+        dp[i][0] = mx * i - summ;
 
-    if (amm <= mn) YES;
-    NO;
+        for (int j = 1; j <= k; j++)
+        {
+            ll rmx = 0, rsum = 0;
+
+            for (int h = i; h >= 1; h--)
+            {
+                rmx = max(rmx, X[h]), rsum += X[h];
+                dp[i][j] = min(dp[i][j], dp[h-1][j-1] + (i - h + 1) * rmx - rsum);
+            }
+        }        
+    }
+    
+    cout << *min_element(all(dp[n])) << '\n';
 }
 
 int main()
@@ -56,10 +61,10 @@ int main()
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;
 
-    // freopen("team.in", "r", stdin);
-    // freopen("team.out", "w", stdout);
+    freopen("snakes.in", "r", stdin);
+    freopen("snakes.out", "w", stdout);
 
-    cin >> size;
+    // cin >> size;
     for (int i = 1; i <= size; i++)
         solve(i);
 }

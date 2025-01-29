@@ -23,32 +23,34 @@
 
 using namespace std;
 
-const int MODE = 1e9 + 9;
+const int MODE = 998244353;
+
 
 void solve(int tc) {
     ll n;
 
     cin >> n;
 
-    vi X(n), Y(n);
+    vi X(n + 1);
+    vii dp(n + 1, vi(n + 1, INT32_MAX));
+    vii pref(n + 1, vi(210));
 
-    for (int i = 0; i < n; i++)
-        cin >> X[i];
-    for (int i = 0; i < n; i++)
-        cin >> Y[i];
-
-    ll amm = -1;
-    ll mn = INT32_MAX;
-    for (int i = 0; i < n; i++)
+    for (int i = 1; i <= n; i++)
     {
-        if (X[i] < Y[i]) {
-            if (amm != -1) NO;
-            amm = Y[i] - X[i];
-        } else mn = min(mn, X[i] - Y[i]);
+        cin >> X[i];
+        pref[i][X[i]-i+100]=1;
     }
+    
+    for (int i = 1; i <= n; i++)
+        for (int j = 0; j < pref[i].size(); j++)
+            pref[i][j] += pref[i-1][j];    
 
-    if (amm <= mn) YES;
-    NO;
+    dp[0][0] = 0;
+    for (int i = 1; i <= n; i++)
+        for (int j = 1; j <= i; j++)
+            for (int h = i; h >= j; h--)
+                dp[i][j] = min(dp[i][j], dp[h-1][j-1] + (i-h+1) -(pref[i][100-h]-pref[h-1][100-h]));    
+    for (int i = 1; i <= n; i++) cout << dp[n][i] << '\n';
 }
 
 int main()
@@ -56,10 +58,10 @@ int main()
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;
 
-    // freopen("team.in", "r", stdin);
-    // freopen("team.out", "w", stdout);
+    freopen("taming.in", "r", stdin);
+    freopen("taming.out", "w", stdout);
 
-    cin >> size;
+    // cin >> size;
     for (int i = 1; i <= size; i++)
         solve(i);
 }

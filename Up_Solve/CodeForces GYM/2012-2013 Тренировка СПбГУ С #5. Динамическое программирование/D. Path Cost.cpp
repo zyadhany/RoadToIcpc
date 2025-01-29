@@ -23,32 +23,24 @@
 
 using namespace std;
 
-const int MODE = 1e9 + 9;
+const int MODE = 998244353;
 
 void solve(int tc) {
-    ll n;
+    ll n, m;
+    n = m = 8;
+    
+    vii X(n + 10, vi(m + 10));
+    vii dp(n + 10, vi(m + 10, INT32_MAX));
+    for (int i = 1; i <= n; i++)
+        for (int j = 1; j <= m; j++)
+            cin >> X[i][j];
 
-    cin >> n;
-
-    vi X(n), Y(n);
-
-    for (int i = 0; i < n; i++)
-        cin >> X[i];
-    for (int i = 0; i < n; i++)
-        cin >> Y[i];
-
-    ll amm = -1;
-    ll mn = INT32_MAX;
-    for (int i = 0; i < n; i++)
-    {
-        if (X[i] < Y[i]) {
-            if (amm != -1) NO;
-            amm = Y[i] - X[i];
-        } else mn = min(mn, X[i] - Y[i]);
-    }
-
-    if (amm <= mn) YES;
-    NO;
+    dp[n+1][0] = 0;
+    for (int i = n; i >= 1; i--)
+        for (int j = 1; j <= m; j++)
+            dp[i][j] = X[i][j] + min({dp[i+1][j],dp[i][j-1],dp[i+1][j-1]});
+        
+    cout << dp[1][m] << '\n';
 }
 
 int main()
@@ -56,10 +48,10 @@ int main()
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;
 
-    // freopen("team.in", "r", stdin);
-    // freopen("team.out", "w", stdout);
+    freopen("king2.in", "r", stdin);
+    freopen("king2.out", "w", stdout);
 
-    cin >> size;
+    // cin >> size;
     for (int i = 1; i <= size; i++)
         solve(i);
 }
