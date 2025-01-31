@@ -21,42 +21,21 @@
 #define NO {cout << "NO\n"; return;}
 #define MUN {cout << "-1\n"; return;}
 
-const int MODE = 1e9 + 7;
+// const int MODE = 1e9 + 7;
 
 using namespace std;
 
-
 void solve(int tc) {
-    ll n, m;
+    ll n;
 
-    cin >> n >> m;
+    cin >> n;
 
-    vi P;
-    for (int i = 2; i <= n; i++)
+    for (int i = 0; i < n; i++)
     {
-        bool isit = 1;
-        for (auto a : P) {
-            if (i % a == 0) {isit = 0; break;}
-        }
-        if (isit) P.push_back(i);
+        for (int j = 0; j <= i; j++)
+            cout << '*';
+        cout << '\n';        
     }
-    
-    vi dp(n + 1);
-    dp[0] = 1;
-
-    for (auto a : P)
-        for (int i = n - a; i >= 0; i--) {
-            ll at = a;
-            while (at + i <= n) {
-                dp[i + at] = (dp[i + at] + dp[i] * at) % m;
-                at *= a;
-            }
-        }
-    
-    
-    ll sol = 0;
-    for (auto x : dp) sol = (sol + x) % m;
-    cout << sol << '\n';
 }
 
 int main()
@@ -64,8 +43,8 @@ int main()
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;
 
-    freopen("exercise.in", "r", stdin);
-    freopen("exercise.out", "w", stdout);
+    // freopen("exercise.in", "r", stdin);
+    // freopen("exercise.out", "w", stdout);
 
     // cin >> size;
     for (int i = 1; i <= size; i++)
