@@ -28,6 +28,9 @@
 
     8. Connection with Fibonacci Numbers:
        C(n, 0) + C(n-1, 1) + ... + C(n-k, k) + ... + C(0, n) = F(n+1)
+    
+    9. Power Series Expansion:
+        Σ(X^i * C(n, i) for i = 0 to n) = (1+X)^n
 */
 
 
