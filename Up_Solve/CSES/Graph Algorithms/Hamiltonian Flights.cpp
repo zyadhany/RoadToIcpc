@@ -26,27 +26,35 @@ const int MODE = 1e9 + 7;
 using namespace std;
 
 void solve(int tc) {
-    ll n;
+    ll n, m;
 
-    cin >> n;
+    cin >> n >> m;
 
-    vi X(n);
+    vii adj(n);
 
-    for (int i = 0; i < n; i++)
-        cin >> X[i];
+    for (int i = 0; i < m; i++)
+    {
+        ll u, v; cin >> u >> v;
+        u--, v--;
+        adj[v].push_back(u);
+    }
+    
+    vii dp(1 << n, vi(n, 0));
+    dp[1][0] = 1;
+    for (int i = 3; i < (1<<n); i+=2)
+    {
+        for (int j = 0; j < n; j++)
+        {
+            if (!(i&(1<<j))) continue;
+            ll p = i - (1 << j);
+            for (auto neg : adj[j])
+                if (i & (1<<neg))
+                    dp[i][j] += dp[p][neg];
+            dp[i][j] %= MODE;
+        }
+    }
 
-    vi Z(512, INT32_MAX);
-    Z[0] = -1;
-
-    for (int i = 0; i < n; i++)
-        for (int j = 0; j < Z.size(); j++)
-            if (Z[j] <= X[i]) Z[j ^ X[i]] = min(Z[j ^ X[i]], X[i]);
-
-    vi sol;
-    for (int i = 0; i < Z.size(); i++)
-        if (Z[i] != INT32_MAX) sol.push_back(i);
-    cout << sol.size() << '\n';
-    for (auto a : sol) cout << a << ' ';
+    cout << dp[(1<<n)-1][n-1] << '\n'; 
 }
 
 int main()

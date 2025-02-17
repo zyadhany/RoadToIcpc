@@ -25,28 +25,35 @@ const int MODE = 1e9 + 7;
 
 using namespace std;
 
+ll fpow(ll x, ll y) {
+    ll res = 1;
+    x %= MODE;
+    while (y > 0) {
+        if (y & 1) res = (res * x) % MODE;
+        x = (x * x) % MODE;
+        y >>= 1;
+    }
+    return res;
+}
+
+ll modinv(ll x) {
+    return fpow(x, MODE - 2);
+}
+
 void solve(int tc) {
-    ll n;
+    ll n, x, b;
 
-    cin >> n;
+    cin >> n >> x >> b;
 
-    vi X(n);
+    ll sol = 0;
 
-    for (int i = 0; i < n; i++)
-        cin >> X[i];
+    sol = 1 + b - (((n*n)%MODE+2*n+1)%MODE * fpow(b, n))%MODE + ((n*n + n)%MODE * fpow(b, n+1))%MODE;
+    sol %= MODE;
+    sol *= modinv(fpow((1-b+MODE)%MODE, 3));
+    sol %= MODE;
 
-    vi Z(512, INT32_MAX);
-    Z[0] = -1;
-
-    for (int i = 0; i < n; i++)
-        for (int j = 0; j < Z.size(); j++)
-            if (Z[j] <= X[i]) Z[j ^ X[i]] = min(Z[j ^ X[i]], X[i]);
-
-    vi sol;
-    for (int i = 0; i < Z.size(); i++)
-        if (Z[i] != INT32_MAX) sol.push_back(i);
-    cout << sol.size() << '\n';
-    for (auto a : sol) cout << a << ' ';
+    cout << sol << '\n';
+    sol = (sol * x) % MODE;
 }
 
 int main()
@@ -57,7 +64,7 @@ int main()
     // freopen("exercise.in", "r", stdin);
     // freopen("exercise.out", "w", stdout);
 
-    // cin >> size;
+    cin >> size;
     for (int i = 1; i <= size; i++)
         solve(i);
 }
