@@ -41,21 +41,40 @@ void solve(int tc) {
     for (int i = 1; i < s.size(); i++)
         adj[Y[s[i-1]]][Y[s[i]]]++;
     
-    vi perm(n);
+    vi dp(1<<n, INT32_MAX);
+    dp[0] = 1;
+
+    ll bt = n / 2;
+    vii sl(n, vi(1<<bt)), sr(n, vi(1<<(n-bt)));
+
     for (int i = 0; i < n; i++)
     {
-        perm[i] = i;
+        for (int j = 0; j < (1<<bt); j++)
+            for (int h = 0; h < bt; h++)
+                if (j & (1<<h)) {
+                    sl[i][j] += adj[i][h];
+                }
+        for (int j = 0; j < (1<<(n-bt)); j++)
+            for (int h = 0; h < (n-bt); h++)
+                if (j & (1<<h)) {
+                    sr[i][j] += adj[i][h+bt];
+                }            
     }
-    
-    ll ans = INT32_MAX;
-    do {
-        ll sol = 1;
-        for (int i = 0; i < n; i++)
-            for (int j = 0; j <= i; j++)
-                sol += adj[i][j];
-        ans = min(ans, sol);        
-    } while (next_permutation(all(perm)));
-    cout << ans << '\n';
+
+    for (int i = 1; i < (1<<n); i++)
+    {
+        for (int j = 0; j < n; j++)
+        {
+            if (!(i &(1<<j))) continue;
+            int sub = (i ^ (1<<j));
+            ll ans = dp[sub];
+            ans += sl[j][i & ((1<<bt)-1)];
+            ans += sr[j][i >> bt];
+            dp[i] = min(dp[i], ans);
+        }
+    }
+
+    cout << dp[(1<<n)-1] << '\n';
 }
 
 int main()

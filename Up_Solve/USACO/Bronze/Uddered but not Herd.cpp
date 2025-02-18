@@ -28,9 +28,9 @@ using namespace std;
 
 
 void solve(int tc) {
-    string s;
+    string s, t;
     
-    cin >> s;
+    cin >> t >> s;
     
     ll n = 0;
     mc Y;
@@ -41,21 +41,15 @@ void solve(int tc) {
     for (int i = 1; i < s.size(); i++)
         adj[Y[s[i-1]]][Y[s[i]]]++;
     
-    vi perm(n);
-    for (int i = 0; i < n; i++)
-    {
-        perm[i] = i;
-    }
+    vi perm;
+    for (int i = 0; i < t.size(); i++)
+        if (Y.count(t[i])) perm.push_back(Y[t[i]]);
     
-    ll ans = INT32_MAX;
-    do {
-        ll sol = 1;
-        for (int i = 0; i < n; i++)
-            for (int j = 0; j <= i; j++)
-                sol += adj[i][j];
-        ans = min(ans, sol);        
-    } while (next_permutation(all(perm)));
-    cout << ans << '\n';
+    ll sol = 1;
+    for (int i = 0; i < n; i++)
+        for (int j = 0; j <= i; j++)
+            sol += adj[perm[i]][perm[j]];
+    cout << sol << '\n';
 }
 
 int main()

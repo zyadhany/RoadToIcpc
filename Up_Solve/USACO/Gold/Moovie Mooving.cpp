@@ -11,8 +11,7 @@
 #define vc vector<char>
 #define vcc vector<vc>
 #define vp vector<pl>
-#define mi map<ll,ll
-
+#define mi map<ll,ll>
 #define mc map<char,int>
 #define sortx(X) sort(X.begin(),X.end());
 #define all(X) X.begin(),X.end()
@@ -28,34 +27,39 @@ using namespace std;
 
 
 void solve(int tc) {
-    string s;
+    ll n, k;
     
-    cin >> s;
-    
-    ll n = 0;
-    mc Y;
-    for (auto c : s) if (!Y.count(c))
-        Y[c] = n++;
+    cin >> n >> k;
 
-    vii adj(n, vi(n));
-    for (int i = 1; i < s.size(); i++)
-        adj[Y[s[i-1]]][Y[s[i]]]++;
-    
-    vi perm(n);
+    vi X(n);
+    vii Y(n);
+
     for (int i = 0; i < n; i++)
     {
-        perm[i] = i;
+        cin >> X[i];
+        ll m; cin >> m;
+        Y[i].resize(m);
+        for (int j = 0; j < m; j++)
+            cin >> Y[i][j];
     }
     
-    ll ans = INT32_MAX;
-    do {
-        ll sol = 1;
-        for (int i = 0; i < n; i++)
-            for (int j = 0; j <= i; j++)
-                sol += adj[i][j];
-        ans = min(ans, sol);        
-    } while (next_permutation(all(perm)));
-    cout << ans << '\n';
+    int sol = INT32_MAX;
+    vi dp(1 << n);
+    for (int i = 1; i < 1<<n; i++)
+    {
+        for (int j = 0; j < n; j++)
+        {
+            if (!(i&(1<<j))) continue;
+            ll b = (i ^ (1<<j));
+            ll ind = upper_bound(all(Y[j]), dp[b]) - Y[j].begin() - 1;
+            if (ind != -1) dp[i] = max(dp[i], Y[j][ind] + X[j]);
+        }
+        
+        if (dp[i] >= k) sol = min(sol, __builtin_popcount(i));
+    }
+
+    if (sol == INT32_MAX) cout << "-1\n";
+    else cout << sol << '\n';
 }
 
 int main()
@@ -63,8 +67,8 @@ int main()
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;
 
-    // freopen("movie.in", "r", stdin);
-    // freopen("movie.out", "w", stdout);
+    freopen("movie.in", "r", stdin);
+    freopen("movie.out", "w", stdout);
 
     // cin >> size;
     for (int i = 1; i <= size; i++)
