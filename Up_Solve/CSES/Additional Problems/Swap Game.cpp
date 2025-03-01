@@ -2,8 +2,8 @@
 #include <bits/stdc++.h>
 #include <unordered_map>
 #include <unordered_set>
-
-#define ll long long
+ 
+#define ll int
 #define ld long double
 #define pl pair<ll, ll>
 #define vi vector<ll>
@@ -20,19 +20,19 @@
 #define YES {cout << "YES\n"; return;}
 #define NO {cout << "NO\n"; return;}
 #define MUN {cout << "-1\n"; return;}
-
+ 
 const int MODE = 998244353;
-
+ 
 using namespace std;
-
-mi MC;
-ll ST(string &X) {
-    ll re = 0;
+ 
+unordered_map<int, int> MC;
+int ST(vi &X) {
+    int re = 0;
     for (auto a : X) {
         re *= 10;
-        re += a - '0';
+        re += a;
     }
-
+ 
     auto it = MC.find(re);
     if (it == MC.end()) {
         MC[re] = MC.size();
@@ -40,32 +40,30 @@ ll ST(string &X) {
     }
     return it->second;
 }
-
-const int SZ = 362890;
-
+ 
+const int SZ = 362990;
+ 
 vp dd = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
-
+ 
 void solve(int tc) {
-    string X;
-    for (int i = 0; i < 9; i++) {
-        char a; cin >> a;
-        X += a;
-    }   
-
-    string Z;
-    for (char i = '1'; i <= '9'; i++)
-        Z[i] = i;
-
+    vi X(9);
+    MC.reserve(SZ);
+    for (int i = 0; i < 9; i++) cin >> X[i];   
+ 
+    vi Z(9);
+    for (int i = 0; i < 9; i++)
+        Z[i] = i + 1;
+ 
     ll en = ST(Z);
-    cout << en << "|\n";
+    
     vii adj(SZ + 1);
-
+ 
     do
     {
+        ll v = ST(Z);
         for (int k = 0; k < 9; k++)
         {
             ll i = k / 3, j = k % 3;
-            ll v = ST(Z);
             for (auto [x, y] : dd) {
                 ll a = x + i;
                 ll b = y + j;
@@ -78,7 +76,7 @@ void solve(int tc) {
             }
         }
     } while (next_permutation(all(Z)));
-
+    
     vi dp(SZ, INT32_MAX);
     queue<ll> q;
     ll st = ST(X);
@@ -88,9 +86,9 @@ void solve(int tc) {
     {
         ll tp = q.front();
         q.pop();
-
+ 
         for (auto neg : adj[tp]) {
-            if (dp[neg] > dp[tp]) {
+            if (dp[neg] > dp[tp] + 1) {
                 dp[neg] = dp[tp] + 1;
                 q.push(neg);
             }
@@ -99,15 +97,15 @@ void solve(int tc) {
     
     cout << dp[en] << '\n';
 }
-
+ 
 int main()
 {
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;
-
+ 
     // freopen("atlarge.in", "r", stdin);
     // freopen("atlarge.out", "w", stdout);
-
+ 
     // cin >> size;
     for (int i = 1; i <= size; i++)
         solve(i);

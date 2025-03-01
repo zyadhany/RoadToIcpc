@@ -22,7 +22,7 @@
                 "${workspaceFolder}/**"
             ],
             "defines": [],
-            "compilerPath": "C:/MinGW/bin/gcc.exe",
+            "compilerPath": "C:/mingw64/bin/gcc.exe",
             "cStandard": "c17",
             "cppStandard": "c++17",
             "intelliSenseMode": "gcc-x64"
