@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 7 3
 TTTTTTT
 TGGGGGT
@@ -6,3 +7,6 @@ MGGGGGD
 TGGGGGT
 TGGGGGT
 TGHHGGT
+=======
+aagog
+>>>>>>> e0f565092e2c4f7aaddbf08ac4aa5d18bb9357c0
