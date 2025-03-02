@@ -21,62 +21,135 @@
 #define NO {cout << "NO\n"; return;}
 #define MUN {cout << "-1\n"; return;}
 
-const int MODE = 998244353;
+const int MODE = 1e9 + 7;
 
 using namespace std;
 
-ll req(vii &dp, vii &adj, ll l, ll r) {
-    if (r < l) return 0;
-    if (l == r) return 1;
-    ll &res = dp[l][r];
-    if (res != -1) return res;
-    res = r - l + 1;
+const int MXV = pow(4, 27);
+vi PW27(5, 1);
 
-    for (int i = 0; i < 26; i++)
-    {
-        ll a = lower_bound(all(adj[i]), l) - adj[i].begin();
-        ll b = upper_bound(all(adj[i]), l) - adj[i].begin();
-        for (int j = a; j < b; j++)
-        {
-            for (int h = a; h <= j; h++)
-            {
-                ll ans = req(dp, adj, l, adj[i][h]-1);
-                ans += req(dp, adj, adj[i][j]+1, r);
-                ans += req(dp, adj, adj[i][h]+1, adj[i][j]-1);
-                res = min(res, ans);
-            }
-        }
-        
+
+class Graph {
+public:
+    int size;
+    vi vis;
+    vii adj;
+
+    void addEdge(int u, int v) {
+        adj[u].push_back(v);
     }
-    
-    return res;
+
+    bool DFS(vi &X, int u) {
+        if (vis[u] == 1) return 1;
+        if (vis[u] == -1) return 0;
+        vis[u] = -1;
+
+        for (auto v : adj[u])
+            if (!DFS(X, v)) return 0;
+
+        X.push_back(u);
+        vis[u] = 1;
+        return 1;
+    }
+
+    vi TopologicalSort() {
+        vi X;
+        for (int i = 1; i <= size; i++) 
+            if (!DFS(X, i)) return vi();
+        reverse(all(X));
+        return (X);
+    }
+
+    Graph(ll n) {
+        size = n;
+        vis.assign(n + 1, 0);
+        adj.resize(n + 1);
+    }
+};
+
+
+ll geths(string &s) {
+    ll re = 0;
+    for (int i = 0; i < s.size(); i++)
+    {
+        ll k;
+        if (s[i] == '_') k = 0;
+        else k = s[i] - 'a' + 1;
+        re += k * PW27[i];
+    }
+    return re;
+}
+
+set<ll> getcomb(string &s) {
+    set<ll> st;
+    for (int j = 0; j < 1<<s.size(); j++)
+    {
+        string t = "";
+        for (int h = 0; h < s.size(); h++)
+        if (j & (1 << h)) t += s[h];
+        else t += "_"; 
+        ll re = geths(t);
+        st.insert(re);
+    }
+    return st;
 }
 
 void solve(int tc) {
-    ll n;
-    string s;
+    ll n, m, k;
+    cin >> n >> m >> k;
+    
+    vector<string> X(n + 1);
+    vi HS(n + 1); 
+    Graph gr(n);
+    vector<set<ll>> Z(MXV);
+    
+    for (int i = 1; i <= n; i++) {
+        cin >> X[i];
+        HS[i] = geths(X[i]);
+        Z[HS[i]].insert(i);
+    }
 
-    cin >> s;
+    vector<pair<ll, string>> Y(m);    
+    for (int i = 0; i < m; i++)
+        cin >> Y[i].second >> Y[i].first;
+    
+    sort(Y.rbegin(), Y.rend());
+    for (pair<ll, string> pp : Y) {
+        string s = pp.second;
+        ll ind = pp.first;
+        set<ll> st = getcomb(s);
+    
+        if (!st.count(HS[ind])) NO;
+    
+        for (int j = 1; j <= n; j++)
+        {
+            if (j == ind) continue;
+            if (st.count(HS[j])) {
+                gr.addEdge(ind, j);
+            }
+        }
+    }
 
-    n = s.size();
-    vii adj(26);
-    vii dp(n, vi(n, -1));
+    auto tps = gr.TopologicalSort();
 
-    for (int i = 0; i < n; i++)
-        adj[s[i]-'a'].push_back(i);    
-
-    cout << req(dp, adj, 0, n-1);
+    if (tps.empty()) NO;
+    cout << "YES\n";
+    for (auto a : tps) cout << a << ' ';
+    cout << '\n';
 }
 
 int main()
 {
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;
-
-    // freopen("movie.in", "r", stdin);
-    // freopen("movie.out", "w", stdout);
-
+    
+    // freopen("milkorder.in", "r", stdin);
+    // freopen("milkorder.out", "w", stdout);
+    
+    for (int i = 1; i < PW27.size(); i++)
+    PW27[i] = PW27[i-1] * 27;
+    
     // cin >> size;
     for (int i = 1; i <= size; i++)
-        solve(i);
+    solve(i);
 }
