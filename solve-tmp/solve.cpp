@@ -1,155 +1,141 @@
-#define _CRT_SECURE_NO_WARNINGS
+/*
+#include <stdio.h>
+#define ll long long
+ll arr[100001], brr[100001], ind[100001];
+void mergeSort(ll *arr, int low, int high)
+{
+    if(low < high)
+    {
+        int mid = (low + high) >> 1;
+        mergeSort(arr, low, mid);
+        mergeSort(arr, mid + 1, high);
+        ll aux[high - low + 1 ], auxind[high - low + 1], inv = 0;
+        int j = 0, p1 = low, p2 = mid + 1, end1 = mid, end2 = high;
+
+        while(p1 <= end1 || p2 <= end2)
+        {
+            if(p1 <= end1 && p2 <= end2)
+            {
+                if(arr[p1] + inv >= arr[p2])
+                {
+                    ++inv;
+                    aux[j] = arr[p2];
+                    auxind[j] = ind[p2++];
+                }
+                else
+                {
+                    aux[j] = arr[p1]+inv;
+                    auxind[j] = ind[p1++];
+                }
+            }
+            else if(p1 <= end1)
+            {
+                aux[j] = arr[p1] + inv;
+                auxind[j] = ind[p1++];
+            }
+            else
+            {
+                aux[j] = arr[p2];
+                auxind[j] = ind[p2++];
+            }
+            ++j;
+
+        }
+        memcpy(arr + low, aux, j * sizeof(ll));
+        memcpy(ind + low, auxind, j * sizeof(ll));
+    }
+}
+int main()
+{
+    int n;
+    scanf("%i",&n);
+
+    for(register int i=0;i<n;i++)
+    {
+        scanf("%lli", &arr[i]);
+
+        // storing index of each element
+        ind[i] = i;        
+    }   
+
+    mergeSort(arr,0,n-1);
+
+    // rearranging elements after sorting in array brr
+    for(register int i = 0; i < n; ++i)
+        brr[ind[i]] = arr[i];
+
+    for(register int i = 0; i < n; ++i)
+        printf("%lli ",brr[i]);
+    return 0;
+}
+*/
+
 #include <bits/stdc++.h>
-#include <unordered_map>
-#include <unordered_set>
 
 #define ll long long
 #define ld long double
-#define pl pair<ll, ll>
 #define vi vector<ll>
-#define vii vector<vi>
-#define vc vector<char>
-#define vcc vector<vc>
-#define vp vector<pl>
-#define mi map<ll,ll>
-#define mc map<char,int>
-#define sortx(X) sort(X.begin(),X.end());
-#define all(X) X.begin(),X.end()
-#define allr(X) X.rbegin(),X.rend()
-#define ln '\n'
-#define YES {cout << "YES\n"; return;}
-#define NO {cout << "NO\n"; return;}
-#define MUN {cout << "-1\n"; return;}
-
-const int MODE = 1e9 + 7;
 
 using namespace std;
 
-const int MXV = pow(4, 27);
-vi PW27(5, 1);
+const int N = 1e5 + 5;
 
+int arr[N], brr[N], ind[N];
 
-class Graph {
-public:
-    int size;
-    vi vis;
-    vii adj;
+void merge_sort(int lw, int hi) {
+    if (lw >= hi) return;
 
-    void addEdge(int u, int v) {
-        adj[u].push_back(v);
-    }
-
-    bool DFS(vi &X, int u) {
-        if (vis[u] == 1) return 1;
-        if (vis[u] == -1) return 0;
-        vis[u] = -1;
-
-        for (auto v : adj[u])
-            if (!DFS(X, v)) return 0;
-
-        X.push_back(u);
-        vis[u] = 1;
-        return 1;
-    }
-
-    vi TopologicalSort() {
-        vi X;
-        for (int i = 1; i <= size; i++) 
-            if (!DFS(X, i)) return vi();
-        reverse(all(X));
-        return (X);
-    }
-
-    Graph(ll n) {
-        size = n;
-        vis.assign(n + 1, 0);
-        adj.resize(n + 1);
-    }
-};
-
-
-ll geths(string &s) {
-    ll re = 0;
-    for (int i = 0; i < s.size(); i++)
-    {
-        ll k;
-        if (s[i] == '_') k = 0;
-        else k = s[i] - 'a' + 1;
-        re += k * PW27[i];
-    }
-    return re;
-}
-
-set<ll> getcomb(string &s) {
-    set<ll> st;
-    for (int j = 0; j < 1<<s.size(); j++)
-    {
-        string t = "";
-        for (int h = 0; h < s.size(); h++)
-        if (j & (1 << h)) t += s[h];
-        else t += "_"; 
-        ll re = geths(t);
-        st.insert(re);
-    }
-    return st;
-}
-
-void solve(int tc) {
-    ll n, m, k;
-    cin >> n >> m >> k;
+    int mid = (lw + hi) >> 1;
+    merge_sort(lw, mid);
+    merge_sort(mid + 1, hi);
     
-    vector<string> X(n + 1);
-    vi HS(n + 1); 
-    Graph gr(n);
-    vector<set<ll>> Z(MXV);
-    
-    for (int i = 1; i <= n; i++) {
-        cin >> X[i];
-        HS[i] = geths(X[i]);
-        Z[HS[i]].insert(i);
-    }
+    vi aux(hi - lw + 1), auxind(hi - lw + 1);
+    int inv = 0, j = 0, p1 = lw, p2 = mid + 1, end1 = mid, end2 = hi;
 
-    vector<pair<ll, string>> Y(m);    
-    for (int i = 0; i < m; i++)
-        cin >> Y[i].second >> Y[i].first;
-    
-    sort(Y.rbegin(), Y.rend());
-    for (pair<ll, string> pp : Y) {
-        string s = pp.second;
-        ll ind = pp.first;
-        set<ll> st = getcomb(s);
-    
-        if (!st.count(HS[ind])) NO;
-    
-        for (int j = 1; j <= n; j++)
-        {
-            if (j == ind) continue;
-            if (st.count(HS[j])) {
-                gr.addEdge(ind, j);
+    while (p1 <= end1 || p2 <= end2) {
+        if (p1 <= end1 && p2 <= end2) {
+            if (arr[p1] + inv >= arr[p2]) {
+                ++inv;
+                aux[j] = arr[p2];
+                auxind[j] = ind[p2++];
+            } else {
+                aux[j] = arr[p1] + inv;
+                auxind[j] = ind[p1++];
             }
+        } else if (p1 <= end1) {
+            aux[j] = arr[p1] + inv;
+            auxind[j] = ind[p1++];
+        } else {
+            aux[j] = arr[p2];
+            auxind[j] = ind[p2++];
         }
+        ++j;
     }
-
-    auto tps = gr.TopologicalSort();
-
-    if (tps.empty()) NO;
-    cout << "YES\n";
-    for (auto a : tps) cout << a << ' ';
-    cout << '\n';
+    // memcpy(arr + lw, aux, j * sizeof(int));
+    // memcpy(ind + lw, auxind, j * sizeof(int));
+    for (int i = 0; i < j; i++) {
+        arr[lw + i] = aux[i];
+        ind[lw + i] = auxind[i];
+    }
 }
 
 int main()
 {
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
-    int size = 1;
-    
-    // freopen("milkorder.in", "r", stdin);
-    // freopen("milkorder.out", "w", stdout);
-    
-    for (int i = 1; i < PW27.size(); i++)
-    PW27[i] = PW27[i-1] * 27;
-    
-    // cin >> size;
-    for (int i = 1; i <= size; i++)
-    solve(i);
+
+    ll n;
+    cin >> n;
+
+    for (int i = 0; i < n; i++) {
+        cin >> arr[i];
+        ind[i] = i;
+    }
+
+    merge_sort(0, n - 1);
+
+    for (int i = 0; i < n; i++)
+        brr[ind[i]] = arr[i];
+
+    for (int i = 0; i < n; i++)
+        cout << brr[i] << ' ';
 }
