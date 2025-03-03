@@ -1,141 +1,108 @@
-/*
-#include <stdio.h>
-#define ll long long
-ll arr[100001], brr[100001], ind[100001];
-void mergeSort(ll *arr, int low, int high)
-{
-    if(low < high)
-    {
-        int mid = (low + high) >> 1;
-        mergeSort(arr, low, mid);
-        mergeSort(arr, mid + 1, high);
-        ll aux[high - low + 1 ], auxind[high - low + 1], inv = 0;
-        int j = 0, p1 = low, p2 = mid + 1, end1 = mid, end2 = high;
-
-        while(p1 <= end1 || p2 <= end2)
-        {
-            if(p1 <= end1 && p2 <= end2)
-            {
-                if(arr[p1] + inv >= arr[p2])
-                {
-                    ++inv;
-                    aux[j] = arr[p2];
-                    auxind[j] = ind[p2++];
-                }
-                else
-                {
-                    aux[j] = arr[p1]+inv;
-                    auxind[j] = ind[p1++];
-                }
-            }
-            else if(p1 <= end1)
-            {
-                aux[j] = arr[p1] + inv;
-                auxind[j] = ind[p1++];
-            }
-            else
-            {
-                aux[j] = arr[p2];
-                auxind[j] = ind[p2++];
-            }
-            ++j;
-
-        }
-        memcpy(arr + low, aux, j * sizeof(ll));
-        memcpy(ind + low, auxind, j * sizeof(ll));
-    }
-}
-int main()
-{
-    int n;
-    scanf("%i",&n);
-
-    for(register int i=0;i<n;i++)
-    {
-        scanf("%lli", &arr[i]);
-
-        // storing index of each element
-        ind[i] = i;        
-    }   
-
-    mergeSort(arr,0,n-1);
-
-    // rearranging elements after sorting in array brr
-    for(register int i = 0; i < n; ++i)
-        brr[ind[i]] = arr[i];
-
-    for(register int i = 0; i < n; ++i)
-        printf("%lli ",brr[i]);
-    return 0;
-}
-*/
-
+#define _CRT_SECURE_NO_WARNINGS
 #include <bits/stdc++.h>
+#include <unordered_map>
+#include <unordered_set>
 
 #define ll long long
 #define ld long double
+#define pl pair<ll, ll>
 #define vi vector<ll>
+#define vii vector<vi>
+#define vc vector<char>
+#define vcc vector<vc>
+#define vp vector<pl>
+#define mi map<ll,ll>
+#define mc map<char,int>
+#define sortx(X) sort(X.begin(),X.end());
+#define all(X) X.begin(),X.end()
+#define allr(X) X.rbegin(),X.rend()
+#define ln '\n'
+#define YES {cout << "YES\n"; return;}
+#define NO {cout << "NO\n"; return;}
+#define MUN {cout << "-1\n"; return;}
+
+const int MODE = 1e9 + 7;
 
 using namespace std;
 
-const int N = 1e5 + 5;
+struct voc
+{
+    ll val, ty, len, cost;
+    voc (ll val, ll ty, ll len, ll cost) {
+        this->val = val;
+        this->ty = ty;
+        this->len = len;
+        this->cost = cost;
+    }
 
-int arr[N], brr[N], ind[N];
+    bool operator<(const voc& v) {
+        if (val != v.val) return val < v.val;
+        return ty < v.ty;
+    }
+};
 
-void merge_sort(int lw, int hi) {
-    if (lw >= hi) return;
 
-    int mid = (lw + hi) >> 1;
-    merge_sort(lw, mid);
-    merge_sort(mid + 1, hi);
+void solve(int tc) {
+    ll n, m;
+
+    cin >> n >> m;
+
+    vector<vector<vp>> adj(2, vector<vp>(n + 1));
+    vector<vp> radj(n + 1);
+
+    for (int i = 0; i < m; i++)
+    {
+        ll u, v, w;
+        cin >> u >> v >> w;
+        adj[0][u].push_back({v, w});
+        adj[1][v].push_back({u, w});
+    }
     
-    vi aux(hi - lw + 1), auxind(hi - lw + 1);
-    int inv = 0, j = 0, p1 = lw, p2 = mid + 1, end1 = mid, end2 = hi;
+    priority_queue<pair<ll, pl>, vector<pair<ll, pl>>, greater<>> pq;
+    vii dp(n + 1, vi(2, INT64_MAX));
+    pq.push({0, {1, 0}});
+    dp[1][0] = 0;
 
-    while (p1 <= end1 || p2 <= end2) {
-        if (p1 <= end1 && p2 <= end2) {
-            if (arr[p1] + inv >= arr[p2]) {
-                ++inv;
-                aux[j] = arr[p2];
-                auxind[j] = ind[p2++];
-            } else {
-                aux[j] = arr[p1] + inv;
-                auxind[j] = ind[p1++];
-            }
-        } else if (p1 <= end1) {
-            aux[j] = arr[p1] + inv;
-            auxind[j] = ind[p1++];
-        } else {
-            aux[j] = arr[p2];
-            auxind[j] = ind[p2++];
+    while (!pq.empty())
+    {
+        ll cw = pq.top().first;
+        ll u = pq.top().second.first;
+        ll md = pq.top().second.second;
+        pq.pop();
+
+        if (cw > dp[u][md]) continue;
+        if (!md && cw < dp[u][1]) {
+            dp[u][1] = cw;
+            pq.push({cw, {u, 1}});
         }
-        ++j;
+
+        for (auto [v, w] : adj[md][u]) {
+            ll nw = cw + w;
+            if (nw < dp[v][md]) {
+                dp[v][md] = nw;
+                pq.push({nw, {v, md}});
+            }
+        }
     }
-    // memcpy(arr + lw, aux, j * sizeof(int));
-    // memcpy(ind + lw, auxind, j * sizeof(int));
-    for (int i = 0; i < j; i++) {
-        arr[lw + i] = aux[i];
-        ind[lw + i] = auxind[i];
+    
+    for (int i = 2; i <= n; i++)
+    {
+        ll dis = min(dp[i][0], dp[i][1]);
+        if (dis == INT64_MAX) cout << "-1 ";
+        else cout << dis << ' ';
     }
+    cout << '\n';
 }
 
 int main()
 {
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
+    int size = 1;
 
-    ll n;
-    cin >> n;
+    //freopen("input.txt", "r", stdin);
+    //freopen("output.txt", "w", stdout);
 
-    for (int i = 0; i < n; i++) {
-        cin >> arr[i];
-        ind[i] = i;
-    }
-
-    merge_sort(0, n - 1);
-
-    for (int i = 0; i < n; i++)
-        brr[ind[i]] = arr[i];
-
-    for (int i = 0; i < n; i++)
-        cout << brr[i] << ' ';
+    // cin >> size;
+    for (int i = 1; i <= size; i++)
+        solve(i);
 }
