@@ -1,3 +1,6 @@
+// Dijkstra (Sparse Graphs)
+// Time Complexity: O((n + m) * log(n))
+// Space Complexity: O(n + m)
 class Graph {
 public:
     int size;
@@ -23,9 +26,10 @@ public:
 
 			for (auto neg : adj[k.second]) {
 				ll cost = neg.second + k.first;
-				if (Z[neg.first] <= cost) continue;
-				Z[neg.first] = cost;
-				L.push({cost, neg.first});
+				if (Z[neg.first] > cost) {
+					Z[neg.first] = cost;
+					L.push({cost, neg.first});
+				}
 			}
 		}
 
@@ -38,3 +42,6 @@ public:
         adj.resize(n + 1);
     }
 };
+
+
+// Dijkstra (Dense Graphs) O(N)
