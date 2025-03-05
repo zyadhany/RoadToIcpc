@@ -8,26 +8,27 @@
  * -Repeat step#2 until there are (V-1) edges in the spanning tree.
 */
 
-//Function to find sum of weights of edges of the Minimum Spanning Tree.
-ll spanningTree(vii X, ll n)
-{
-    ll a, b, summ = 0;
-    sort(X.begin(), X.end());
+struct edge {
+    ll u, v, w;
+    edge(){}
+    edge(ll u, ll v, ll w) : u(u), v(v), w(w) {}
+    bool operator<(edge &e) {
+        return w < e.w;
+    }
+};
 
-    DSU ds;
-    ds.build(n);
+// return edge list of MST, if MST doesn't exist return empty list
+vector<edge> MST_Kruskal(vector<edge> E, ll n) {
+    vector<edge> TOK;
+    sortx(E);
 
-    for (int i = 0; i < X.size(); i++)
-    {
-        a = ds.get(X[i][1]);
-        b = ds.get(X[i][2]);
-
-        if (a != b)
-        {
-            ds.add(a, b);
-            summ += X[i][0];
+    for (auto e : E) {
+        if (get(e.u) != get(e.v)) {
+            add(e.u, e.v);
+            TOK.push_back(e);
         }
     }
 
-    return (summ);
+    if (TOK.size() != n-1) return {};
+    return TOK;
 }

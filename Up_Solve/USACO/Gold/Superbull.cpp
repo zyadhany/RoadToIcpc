@@ -24,35 +24,30 @@
 const int MODE = 1e9 + 7;
  
 using namespace std;
-
-const ll INF = 1e16;
-
+ 
 const int MXN = 1e6 + 1;
 int PAR[MXN], RAN[MXN];
- 
-ll get(ll k) {
-    if (k == PAR[k]) return k;
-    return PAR[k] = get(PAR[k]);
+
+ll get(ll n) {
+    if (n == PAR[n]) return n;
+    return PAR[n] = get(PAR[n]);
 }
- 
-bool add(ll u, ll v) {
+
+void add(ll u, ll v) {
     u = get(u), v = get(v);
-    
-    if (u == v) return 0;
-    if (RAN[u] < RAN[v]) swap(u, v);
+    if (RAN[u] > RAN[v]) swap(u, v);
     RAN[u] += (RAN[u] == RAN[v]);
 
     PAR[v] = u;
-    return 1;
-}
- 
-void INIT(ll n) {
-    for (int i = 0; i <= n; i++) {
-        RAN[i] = 0;
-        PAR[i] = i;
-    } 
 }
 
+void INIT() {
+    for (int i = 0; i < MXN; i++)
+    {
+        PAR[i] = i;
+        RAN[i] = 0;
+    }
+}
 
 struct edge {
     ll u, v, w;
@@ -63,44 +58,40 @@ struct edge {
     }
 };
 
-vi Prime_MST(vector<edge> E, ll n) {
-    
+vector<edge> MST_Kruskal(vector<edge> E, ll n) {
+    vector<edge> TOK;
+    sort(E.rbegin(), E.rend());
+
+    for (auto e : E) {
+        if (get(e.u) != get(e.v)) {
+            add(e.u, e.v);
+            TOK.push_back(e);
+        }
+    }
+
+    return TOK;
 }
 
 void solve(int tc) {
-    ll n, k;
-    cin >> n >> k;
+    ll n;
 
-    priority_queue<pl, vp, greater<>> pq;
-    pq.push({0, 1});
-    vi vis(n + 1);
-    vi Z;
+    cin >> n;
 
-    set<ll> st;
-    for (int i = 0; i < n; i++)
-        st.insert(i + 1);
-    
-    vi dp(n + 1, INT32_MAX);
-    while (!pq.empty())
-    {
-        auto [w, tp] = pq.top();
-        pq.pop();
-        if (vis[tp]) continue;
-        Z.push_back(w);
-        vis[tp] = 1;
-        st.erase(tp);
+    vi X(n + 1);
 
-        for (auto i : st) {
-            ll w = (2019201913ll*min(i,tp)+2019201949ll*max(i,tp)) % 2019201997ll;
-            if (dp[i] > w) {
-                pq.push({w, i});
-                dp[i] = w;
-            }
+    vector<edge> E;
+    for (int i = 1; i <= n; i++) {
+        cin >> X[i];
+        for (int j = 1; j < i; j++)
+        {
+            E.push_back(edge(j, i, X[i] ^ X[j]));
         }
     }
-    sortx(Z);
 
-    cout << Z[n-k+1] << '\n';
+    auto Z = MST_Kruskal(E, n);
+    ll sol = 0;
+    for (auto e : Z) sol += e.w;
+    cout << sol << '\n';
 }
  
 int main()
@@ -108,8 +99,9 @@ int main()
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;
  
-    freopen("walk.in", "r", stdin);
-    freopen("walk.out", "w", stdout);
+    INIT();
+    freopen("superbull.in", "r", stdin);
+    freopen("superbull.out", "w", stdout);
     // cin >> size;
     for (int i = 1; i <= size; i++)
         solve(i);

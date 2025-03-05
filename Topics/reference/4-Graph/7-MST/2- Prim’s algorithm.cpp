@@ -1,3 +1,10 @@
+/**
+ * Prim’s algorithm is a greedy algorithm that finds a minimum spanning tree for a weighted undirected graph.
+ * it uses a Dijkstra approach to find the minimum edge at each step.
+ * 
+ * start from an arbitrary vertex, add the minimum edge to the tree, and continue the process until all vertices are included.
+ * 
+ */
 class Graph {
 public:
     int size;

@@ -63,10 +63,6 @@ struct edge {
     }
 };
 
-vi Prime_MST(vector<edge> E, ll n) {
-    
-}
-
 void solve(int tc) {
     ll n, k;
     cin >> n >> k;

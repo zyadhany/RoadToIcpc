@@ -1,5 +1,5 @@
-ll MXN = 1e6 + 1;
-vi PAR(MXN);
+const int MXN = 1e6 + 1;
+int PAR[MXN];
 vector<set<ll>> ST(MXN);
  
 ll get(ll k) {
