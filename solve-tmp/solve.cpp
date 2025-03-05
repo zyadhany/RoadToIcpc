@@ -25,82 +25,95 @@ const int MODE = 1e9 + 7;
  
 using namespace std;
 
-const ll INF = 1e16;
+vp MonomaticStack(vi& X)
+{
+    ll n = X.size();
+    stack<pair<ll, ll>> s;
+    vp Z(n, {0, n});
 
-const int MXN = 1e6 + 1;
-int PAR[MXN], RAN[MXN];
- 
-ll get(ll k) {
-    if (k == PAR[k]) return k;
-    return PAR[k] = get(PAR[k]);
-}
- 
-bool add(ll u, ll v) {
-    u = get(u), v = get(v);
-    
-    if (u == v) return 0;
-    if (RAN[u] < RAN[v]) swap(u, v);
-    RAN[u] += (RAN[u] == RAN[v]);
-
-    PAR[v] = u;
-    return 1;
-}
- 
-void INIT(ll n) {
-    for (int i = 0; i <= n; i++) {
-        RAN[i] = 0;
-        PAR[i] = i;
-    } 
-}
-
-
-struct edge {
-    ll u, v, w;
-    edge(){}
-    edge(ll u, ll v, ll w) : u(u), v(v), w(w) {}
-    bool operator<(edge &e) {
-        return w < e.w;
+    for (int i = 1; i < n; i++) {
+        while (!s.empty() && s.top().first > X[i]) {
+            Z[s.top().second].second = i;
+            s.pop();
+        }
+        s.push({ X[i] , i });
     }
-};
+    while (!s.empty()) s.pop();
+    for (int i = n; i >= 1; i--) {
+        while (!s.empty() && s.top().first >= X[i]) {
+            Z[s.top().second].first = i;
+            s.pop();
+        }
+        s.push({ X[i] , i });
+    }
 
-vi Prime_MST(vector<edge> E, ll n) {
-    
+    return (Z);
+}
+
+ll summtion(ll n) {
+    return (n * (n + 1) / 2) % MODE;
 }
 
 void solve(int tc) {
-    ll n, k;
-    cin >> n >> k;
+    ll n, m;
 
-    priority_queue<pl, vp, greater<>> pq;
-    pq.push({0, 1});
-    vi vis(n + 1);
-    vi Z;
+    cin >> n >> m;
 
-    set<ll> st;
+    vii XG(n, vi(m));
+
     for (int i = 0; i < n; i++)
-        st.insert(i + 1);
-    
-    vi dp(n + 1, INT32_MAX);
-    while (!pq.empty())
     {
-        auto [w, tp] = pq.top();
-        pq.pop();
-        if (vis[tp]) continue;
-        Z.push_back(w);
-        vis[tp] = 1;
-        st.erase(tp);
-
-        for (auto i : st) {
-            ll w = (2019201913ll*min(i,tp)+2019201949ll*max(i,tp)) % 2019201997ll;
-            if (dp[i] > w) {
-                pq.push({w, i});
-                dp[i] = w;
-            }
+        for (int j = 0; j < m; j++)
+        {
+            cin >> XG[i][j];
         }
     }
-    sortx(Z);
+    
+    vii YG(n, vi(m, 1));
+    for (int i = 1; i < n; i++)
+        for (int j = 0; j < m; j++)
+            if (XG[i][j] == XG[i-1][j]) YG[i][j] += YG[i-1][j];
+    
+    ll sol = 0;
 
-    cout << Z[n-k+1] << '\n';
+    for (int row = 0; row < n; row++)
+    {
+        vi dp(m);
+        vi &X = XG[row];
+        vi &Y = YG[row];
+        
+        if (row == 2) {
+            for (auto a : Y) cout << a << ' ';
+            cout << '\n';
+        }
+
+        ll chn = -1;
+        stack<ll> st;
+        for (int i = 0; i < m; i++)
+        {
+            if (i && X[i] != X[i-1]) {
+                chn = i - 1;
+                while (!st.empty()) st.pop();
+            }
+        
+            ll &re = dp[i];
+            re = 0;
+
+            while (!st.empty() && Y[st.top()] > Y[i]) {
+                st.pop();
+            }   
+            
+            ll ls = chn;
+            if (!st.empty()) sol += dp[st.top()], ls = st.top();
+            re += (i - ls) * Y[i];
+            st.push(i);
+
+            cout << row << ' ' << i << ' ' << st.empty() << endl;
+            sol += re;
+        }
+    }
+
+    cout << sol << '\n';
 }
  
 int main()
@@ -108,9 +121,9 @@ int main()
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;
  
-    freopen("walk.in", "r", stdin);
-    freopen("walk.out", "w", stdout);
-    // cin >> size;
+    // freopen("dishes.in", "r", stdin);
+    // freopen("dishes.out", "w", stdout);
+    cin >> size;
     for (int i = 1; i <= size; i++)
         solve(i);
 }
