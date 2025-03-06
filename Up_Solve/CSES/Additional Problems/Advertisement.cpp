@@ -2,7 +2,7 @@
 #include <bits/stdc++.h>
 #include <unordered_map>
 #include <unordered_set>
-
+ 
 #define ll long long
 #define ld long double
 #define pl pair<ll, ll>
@@ -20,71 +20,67 @@
 #define YES {cout << "YES\n"; return;}
 #define NO {cout << "NO\n"; return;}
 #define MUN {cout << "-1\n"; return;}
-
+ 
 const int MODE = 1e9 + 7;
-
+ 
 using namespace std;
 
-// Get all median for prefix of array
-vector<ll> getMedian(vector<ll> &X)
+const ll INF = 1e16;
+
+vp MonomaticStack(vi& X)
 {
-    priority_queue<ll> L;
-    priority_queue<ll, vector<ll>, greater<ll>> R;
-    vector<ll> res;
+    ll n = X.size();
+    stack<pair<ll, ll>> s;
+    vp Z(n, {-1, n});
 
-    for (int i = 0; i < X.size(); i++)
-    {
-        if (!L.empty() && X[i] > L.top())
-            R.push(X[i]);
-        else
-            L.push(X[i]);
-    
-        while (L.size() > R.size() + 1)
-        {
-            R.push(L.top());
-            L.pop();
+    for (int i = 0; i < n; i++) {
+        while (!s.empty() && s.top().first > X[i]) {
+            Z[s.top().second].second = i;
+            s.pop();
         }
-
-        while (R.size() > L.size())
-        {
-            L.push(R.top());
-            R.pop();
-        }
-
-        res.push_back(L.top());
+        s.push({ X[i] , i });
     }
-
-    return (res);
+    while(!s.empty()) s.pop();
+    for (int i = n - 1; i >= 0; i--) {
+        while (!s.empty() && s.top().first > X[i]) {
+            Z[s.top().second].first = i;
+            s.pop();
+        }
+        s.push({ X[i] , i });
+    }
+    return (Z);
 }
 
-void solve(int tc) {
-    ll n, k;
 
-    cin >> n >> k;
+void solve(int tc) {
+    ll n;
+
+    cin >> n;
 
     vi X(n);
 
     for (int i = 0; i < n; i++)
-    {
         cin >> X[i];
+    
+    vp Z = MonomaticStack(X);
+
+    ll mx = 0;
+
+    for (int i = 0; i < n; i++)
+    {
+        mx = max(mx, X[i] * (Z[i].second - Z[i].first - 1));
     }
     
-    auto res = getMedian(X);
-
-    for (auto x : res)
-    {
-        cout << x << " ";
-    }
-    cout << ln;
+    cout << mx << '\n';
 }
-
+ 
 int main()
 {
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;
-
-    // freopen("hayfeast.in", "r", stdin);
-    // freopen("hayfeast.out", "w", stdout);
+ 
+    // freopen("walk.in", "r", stdin);
+    // freopen("walk.out", "w", stdout);
     // cin >> size;
     for (int i = 1; i <= size; i++)
         solve(i);
