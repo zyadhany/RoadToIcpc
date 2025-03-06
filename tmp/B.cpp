@@ -11,8 +11,7 @@
 #define vc vector<char>
 #define vcc vector<vc>
 #define vp vector<pl>
-#define mi map<ll,ll
-
+#define mi map<ll,ll>
 #define mc map<char,int>
 #define sortx(X) sort(X.begin(),X.end());
 #define all(X) X.begin(),X.end()
@@ -26,36 +25,59 @@ const int MODE = 1e9 + 7;
 
 using namespace std;
 
+void req(vii &adj, vi &Z, vi &X, ll n) {
+    Z[n] += X[n];
+    for (auto neg : adj[n]) {
+        req(adj, Z, X, neg);
+        Z[n] += Z[neg];
+    }
+}
+
+ll getsol(vii &adj, vi &dp, vi &Z, vi &P, ll n, ll x) {
+    ll &res = dp[n];
+    if (res != -1) return res;
+    if (Z[P[n]] >= x) return res = P[n];
+    return res = getsol(adj, dp, Z, P, P[n], x);
+}
+
+ll summ(ll n) {
+    return n * (n + 1) / 2;
+}
 
 void solve(int tc) {
-    string s;
-    
-    cin >> s;
-    
-    ll n = 0;
-    mc Y;
-    for (auto c : s) if (!Y.count(c))
-        Y[c] = n++;
+    ll n, x, k;
 
-    vii adj(n, vi(n));
-    for (int i = 1; i < s.size(); i++)
-        adj[Y[s[i-1]]][Y[s[i]]]++;
-    
-    vi perm(n);
+    cin >> n >> x >> k;
+
+    vi Y(n);
     for (int i = 0; i < n; i++)
     {
-        perm[i] = i;
+        ll a; cin >> a; Y.push_back(a);
     }
     
-    ll ans = INT32_MAX;
-    do {
-        ll sol = 1;
-        for (int i = 0; i < n; i++)
-            for (int j = 0; j <= i; j++)
-                sol += adj[i][j];
-        ans = min(ans, sol);        
-    } while (next_permutation(all(perm)));
-    cout << ans << '\n';
+    for (int i = n; i < x; i++)
+    {
+        Y.push_back(0);
+    }
+    
+    vi X(x);
+    for (int i = 0; i < x; i++)
+    {
+        cin >> X[i];
+    }
+
+    sort(X.rbegin(), X.rend());
+    sort(Y.rbegin(), Y.rend());
+
+    for (auto a : X) {
+        if (Y.back() < a) {
+            k -= summ(a) - summ(Y.back());
+        }
+        Y.pop_back();
+    }
+
+    if (k >= 0) YES;
+    NO;
 }
 
 int main()
@@ -63,10 +85,10 @@ int main()
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;
 
-    // freopen("movie.in", "r", stdin);
-    // freopen("movie.out", "w", stdout);
+    // freopen("248.in", "r", stdin);
+    // freopen("248.out", "w", stdout);
 
     // cin >> size;
     for (int i = 1; i <= size; i++)
-        solve(i);
+        solve(i);   
 }

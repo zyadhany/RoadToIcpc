@@ -21,51 +21,64 @@
 #define NO {cout << "NO\n"; return;}
 #define MUN {cout << "-1\n"; return;}
 
-const int MODE = 998244353;
+const int MODE = 1e9 + 7;
 
 using namespace std;
 
-ll req(vii &dp, vii &adj, ll l, ll r) {
-    if (r < l) return 0;
-    if (l == r) return 1;
-    ll &res = dp[l][r];
-    if (res != -1) return res;
-    res = r - l + 1;
-
-    for (int i = 0; i < 26; i++)
-    {
-        ll a = lower_bound(all(adj[i]), l) - adj[i].begin();
-        ll b = upper_bound(all(adj[i]), l) - adj[i].begin();
-        for (int j = a; j < b; j++)
-        {
-            for (int h = a; h <= j; h++)
-            {
-                ll ans = req(dp, adj, l, adj[i][h]-1);
-                ans += req(dp, adj, adj[i][j]+1, r);
-                ans += req(dp, adj, adj[i][h]+1, adj[i][j]-1);
-                res = min(res, ans);
-            }
-        }
-        
-    }
+void req(vp &adj, vector<set<pl>> &st, vi &at, vi &H, ll n, ll h) {
+    if (!n) return;
+    H[n] = h;
+    if (h == st.size()) st.push_back(set<pl>({{0, n}})), at[n]=0;
+    else at[n]=st[h].size(), st[h].insert({st[h].size(), n});
     
-    return res;
+    req(adj, st, at, H, adj[n].first, h + 1);
+    req(adj, st, at, H, adj[n].second, h + 1);
+}
+
+
+void rem(vp &adj, vi &vis, vi &at, set<ll> &sl, vector<set<pl>> &st, ll n, ll h) {
+    if (vis[n]) return;
+    vis[n] = 1;
+    if (!n) return;
+    
+    sl.erase(prev(st[h].end())->second);
+    // for (auto a : st[h]) cout << a.first << ' ' << a.second << "|\n";
+    // cout << n << ' ' << at[n] << " ";
+    st[h].erase({at[n], n});
+    // cout << st[h].size() << "|\n";
+    if (!st[h].empty()) sl.insert(prev(st[h].end())->second);    
+
+    rem(adj, vis, at, sl, st, adj[n].first, h+1);
+    rem(adj, vis, at, sl, st, adj[n].second, h+1);
 }
 
 void solve(int tc) {
-    ll n;
-    string s;
+    ll n, q;
 
-    cin >> s;
+    cin >> n >> q;
 
-    n = s.size();
-    vii adj(26);
-    vii dp(n, vi(n, -1));
+    vp X(n + 1);
 
-    for (int i = 0; i < n; i++)
-        adj[s[i]-'a'].push_back(i);    
+    for (int i = 1; i <= n; i++)
+    {
+        cin >> X[i].first >> X[i].second;
+    }
 
-    cout << req(dp, adj, 0, n-1);
+    vector<set<pl>> st;
+    vi at(n + 1);
+    vi H(n + 1);
+    req(X, st, at, H, 1, 0);
+
+    vi vis(n + 1);
+    set<ll> sl;
+    for (auto a : st) sl.insert(prev(a.end())->second);
+    while (q--)
+    {
+        ll x; cin >> x;
+        rem(X, vis, at, sl, st, x, H[x]);
+        cout << *prev(sl.end()) << '\n';
+    }
+     
 }
 
 int main()
@@ -73,10 +86,10 @@ int main()
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;
 
-    // freopen("movie.in", "r", stdin);
-    // freopen("movie.out", "w", stdout);
+    // freopen("248.in", "r", stdin);
+    // freopen("248.out", "w", stdout);
 
     // cin >> size;
     for (int i = 1; i <= size; i++)
-        solve(i);
+        solve(i);   
 }
