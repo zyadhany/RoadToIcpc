@@ -25,6 +25,7 @@ const int MODE = 1e9 + 7;
 
 using namespace std;
 
+<<<<<<< HEAD
 void req(vp &adj, vector<set<pl>> &st, vi &at, vi &H, ll n, ll h) {
     if (!n) return;
     H[n] = h;
@@ -79,6 +80,59 @@ void solve(int tc) {
         cout << *prev(sl.end()) << '\n';
     }
      
+=======
+// Get all median for prefix of array
+vector<ll> getMedian(vector<ll> &X)
+{
+    priority_queue<ll> L;
+    priority_queue<ll, vector<ll>, greater<ll>> R;
+    vector<ll> res;
+
+    for (int i = 0; i < X.size(); i++)
+    {
+        if (!L.empty() && X[i] > L.top())
+            R.push(X[i]);
+        else
+            L.push(X[i]);
+    
+        while (L.size() > R.size() + 1)
+        {
+            R.push(L.top());
+            L.pop();
+        }
+
+        while (R.size() > L.size())
+        {
+            L.push(R.top());
+            R.pop();
+        }
+
+        res.push_back(L.top());
+    }
+
+    return (res);
+}
+
+void solve(int tc) {
+    ll n, k;
+
+    cin >> n >> k;
+
+    vi X(n);
+
+    for (int i = 0; i < n; i++)
+    {
+        cin >> X[i];
+    }
+    
+    auto res = getMedian(X);
+
+    for (auto x : res)
+    {
+        cout << x << " ";
+    }
+    cout << ln;
+>>>>>>> 7c98745ffc5c36ae65546af4db35cf289014e9db
 }
 
 int main()
@@ -86,9 +140,14 @@ int main()
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;
 
+<<<<<<< HEAD
     // freopen("248.in", "r", stdin);
     // freopen("248.out", "w", stdout);
 
+=======
+    // freopen("hayfeast.in", "r", stdin);
+    // freopen("hayfeast.out", "w", stdout);
+>>>>>>> 7c98745ffc5c36ae65546af4db35cf289014e9db
     // cin >> size;
     for (int i = 1; i <= size; i++)
         solve(i);   

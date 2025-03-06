@@ -1,4 +1,11 @@
 
+/*
+    Count indegree of each node and push nodes with indegree 0 into queue.
+    Then, pop the front of the queue and push it into the answer vector.
+    For each node that is connected to the popped node, decrease its indegree by 1.
+    If the indegree of the connected node becomes 0, push it into the queue.
+    Repeat until the queue is empty.
+*/
 vi TopologicalSort() {
     vi X, Z(size + 1);
     queue<ll> que;

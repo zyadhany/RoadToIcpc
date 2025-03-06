@@ -31,7 +31,6 @@
         "*.tcc": "cpp",
         "bitset": "cpp",
         "cmath": "cpp",
-<<<<<<< HEAD
         "iomanip": "cpp",
         "ios": "cpp",
         "algorithm": "cpp",
@@ -101,8 +100,6 @@
         "xmemory": "cpp",
         "xstddef": "cpp",
         "xtr1common": "cpp"
-=======
-        "limits": "cpp"
->>>>>>> 9e4143b8634f4fabb3d6049a61eba0c5f9335767
-    }
+    },
+    "editor.wordWrap": "on"
 }
