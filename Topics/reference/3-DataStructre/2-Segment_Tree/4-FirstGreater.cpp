@@ -1,10 +1,10 @@
+
+const long long INF = 1e18;
 struct item
 {
-    vi arr, pref;
+    multiset<ll> st;
 
     item() {
-        arr.assign(0, 0);
-        pref.assign(1, 0);
     }
 };
 
@@ -14,6 +14,10 @@ public:
 
     ll getrange(int l, int r, ll k) {
         return (getrange(0, 0, size - 1, l, r, k));
+    }
+
+    void set(int ind, ll val) {
+        set(0, 0, size - 1, ind, val);
     }
 
     void build(vi& X) {
@@ -27,28 +31,30 @@ public:
 private:
     int size;
     vector<item> tree;
-    vector<long long> lazy;
 
     ll getitemval(item& a, ll k) {
-        ll l;
-        l = lower_bound(all(a.arr), k) - a.arr.begin();
-        return (a.pref[l]);
+        auto it = a.st.lower_bound(k);
+        if (it == a.st.end()) return (INF);
+        return (*it);
     }
 
     item merge(item& a, item& b) {
         item res = a;
-        for (int i = 0; i < b.arr.size(); i++)
-            res.arr.push_back(b.arr[i]);
-        sortx(res.arr);
-
-        res.pref.assign(res.arr.size() + 1, 0);
-
-        for (int i = 1; i <= res.arr.size(); i++)
-            res.pref[i] = res.pref[i - 1] + res.arr[i - 1];
-
+        b.st.insert(all(b.st));
         return (res);
     }
 
+    void set(int m, int lx, int rx, int ind, ll val) {
+        if (lx <= ind && ind <= rx) {
+            tree[m].st.erase(tree[m].st.find(val));
+            tree[m].st.insert(val);
+        }
+        if (lx == rx) return;
+        if (ind <= (lx + rx) / 2)
+            set(m * 2 + 1, lx, (lx + rx) / 2, ind, val);
+        else
+            set(m * 2 + 2, (lx + rx) / 2 + 1, rx, ind, val);
+    }
 
     ll getrange(int m, int lx, int rx, int l, int r, ll k) {
         if (rx < l || r < lx) return (0);
@@ -66,7 +72,7 @@ private:
     void build(vi& X, int m, int lx, int rx) {
         if (lx == rx) {
             if (lx < X.size())
-                tree[m].arr.push_back(X[lx]), tree[m].pref.push_back(X[lx]);
+                tree[m].st.insert(X[lx]);
             return;
         }
 

@@ -1,3 +1,5 @@
+// It work in 1-index
+
 ll rangequery(const vi& Z, ll l, ll r) {
 	ll summ = 0;
 
@@ -18,6 +20,14 @@ void updatepoint(vi& Z, ll n, ll at) {
 		Z[i] += n - summ;
 }
 
+// Construct fenwick tree from array in O(n)
+FenwickTree(vector<int> const &a) : FenwickTree(a.size()){
+    for (int i = 0; i < n; i++) {
+        bit[i] += a[i];
+        int r = i | (i + 1);
+        if (r < n) bit[r] += bit[i];
+    }
+}
 
 // To fenwik of 2d array we nested loop it to get summ of squir
 for (int x; x > 0; x -= x & -x)
