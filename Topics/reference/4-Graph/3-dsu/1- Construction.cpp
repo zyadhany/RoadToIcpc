@@ -69,3 +69,28 @@ private:
 		/*any oppration you want*/
 	}
 };
+
+/** NO Class **/
+const int MXN = 1e6 + 1;
+int PAR[MXN];
+int RAN[MXN];
+
+ll get(ll k) {
+    if (k == PAR[k]) return k;
+    return PAR[k] = get(PAR[k]);
+}
+ 
+void add(ll u, ll v) {
+    u = get(u), v = get(v);
+    if (u == v) return;
+    if (RAN[u] < RAN[v]) swap(u, v);
+    if (RAN[u] == RAN[v]) RAN[u]++;
+    PAR[v] = u;    
+}
+ 
+void INIT() {
+    for (int i = 0; i < MXN; i++) {
+        PAR[i] = i;
+        RAN[i] = 0;
+    } 
+}
