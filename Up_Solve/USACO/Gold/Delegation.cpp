@@ -21,42 +21,47 @@
 #define NO {cout << "NO\n"; return;}
 #define MUN {cout << "-1\n"; return;}
 
+const int MODE = 1e9 + 7;
 
 using namespace std;
 
-void dfs(vii &adj, vp &dp, ll n, ll p) {
-    dp[n] = {0,0};
+ll req(vii &adj, vi &dp, ll n, ll p, ll k) {
+    mi Y;
+    ll re = 0;
     for (auto neg : adj[n]) if (neg != p) {
-        dfs(adj, dp, neg, n);
-        ll len = dp[neg].first + 1;
-        if (len > dp[n].first) {
-            dp[n].second = dp[n].first;
-            dp[n].first = len;
-        } else if (len > dp[n].second) {
-            dp[n].second = len;
+        ll a = req(adj, dp, neg, n, k);
+        if (!a) return 0;
+        if (dp[neg]+1==k) continue;
+        Y[dp[neg]+1]++;
+    }
+    
+    for (auto &p : Y) {
+        while (p.second && Y[k-p.first])
+        {
+            if (p.first == k-p.first) {
+                p.second %= 2;
+                break;
+            }
+            Y[k-p.first]--;
+            p.second--;
+        }
+        
+        if (p.second) {
+            if (re || p.second > 1) return 0;
+            re = p.first;
         }
     }
-}
-
-void dfs2(vii &adj, vp &dp, vi &sol, ll n, ll p, ll tp) {
-    ll &res = sol[n];
-    res = max(tp+1, dp[n].first);
-    for (auto neg : adj[n]) if (neg != p) {
-        ll len = dp[neg].first;
-        if (len + 1 == dp[n].first) {
-            dfs2(adj, dp, sol, neg, n, max(tp+1, dp[n].second));
-        } else {
-            dfs2(adj, dp, sol, neg, n, max(tp+1, dp[n].first));
-        }
-    }
+    dp[n] = re;
+    return 1;
 }
 
 void solve(int tc) {
     ll n;
-    cin >> n;
 
+    cin >> n;
+    
     vii adj(n + 1);
-    for (int i = 0; i < n - 1; i++)
+    for (int i = 0; i < n-1; i++)
     {
         ll u, v; cin >> u >> v;
         adj[u].push_back(v);
@@ -64,12 +69,19 @@ void solve(int tc) {
     }
     
     vi res(n + 1);
-    vp dp(n + 1);
-    dfs(adj, dp, 1, 0);
-    dfs2(adj, dp, res, 1, 0, -1);
+    for (int i = 1; i < n; i++)
+    {
+        if ((n - 1) % i) continue;
+        vi dp(n + 1);
+        ll re = req(adj, dp, 1, 0, i);
+        res[i] = (re && dp[1] == 0);
+    }
 
-    for (int i = 1; i <= n; i++)
-        cout << res[i] << ' ';
+    for (int i = 1; i < n; i++)
+    {
+        cout << res[i];
+    }
+    cout << '\n';
 }
 
 int main()
@@ -77,8 +89,8 @@ int main()
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;
 
-    // freopen("deleg.in", "r", stdin);
-    // freopen("deleg.out", "w", stdout);
+    freopen("deleg.in", "r", stdin);
+    freopen("deleg.out", "w", stdout);
 
     // cin >> size;
     for (int i = 1; i <= size; i++)

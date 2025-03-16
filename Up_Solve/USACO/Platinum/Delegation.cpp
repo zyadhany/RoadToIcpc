@@ -21,55 +21,63 @@
 #define NO {cout << "NO\n"; return;}
 #define MUN {cout << "-1\n"; return;}
 
+const int MODE = 1e9 + 7;
 
 using namespace std;
 
-void dfs(vii &adj, vp &dp, ll n, ll p) {
-    dp[n] = {0,0};
+ll req(vii &adj, vi &dp, ll n, ll p, ll k) {
+    multiset<ll> st;
+    ll &re = dp[n];
     for (auto neg : adj[n]) if (neg != p) {
-        dfs(adj, dp, neg, n);
-        ll len = dp[neg].first + 1;
-        if (len > dp[n].first) {
-            dp[n].second = dp[n].first;
-            dp[n].first = len;
-        } else if (len > dp[n].second) {
-            dp[n].second = len;
-        }
+        ll a = req(adj, dp, neg, n, k);
+        if (!a) return 0;
+        st.insert(abs(dp[neg])+1);
     }
-}
+    ll mx = 0;
+    while (!st.empty())
+    {
+        ll at = *st.begin();
+        st.erase(st.begin());
+        if (at >= k) {mx = at; continue;}
 
-void dfs2(vii &adj, vp &dp, vi &sol, ll n, ll p, ll tp) {
-    ll &res = sol[n];
-    res = max(tp+1, dp[n].first);
-    for (auto neg : adj[n]) if (neg != p) {
-        ll len = dp[neg].first;
-        if (len + 1 == dp[n].first) {
-            dfs2(adj, dp, sol, neg, n, max(tp+1, dp[n].second));
-        } else {
-            dfs2(adj, dp, sol, neg, n, max(tp+1, dp[n].first));
+        auto it = st.lower_bound(k-at);
+        if (it == st.end()) {
+            if (re) return 0;
+            re = at;
+            continue;
         }
+        if (*it >= k) mx = at;
+        st.erase(it);
     }
+
+    if (!re) re=-mx;
+    return 1;
 }
 
 void solve(int tc) {
     ll n;
-    cin >> n;
 
+    cin >> n;
+    
     vii adj(n + 1);
-    for (int i = 0; i < n - 1; i++)
+    for (int i = 0; i < n-1; i++)
     {
         ll u, v; cin >> u >> v;
         adj[u].push_back(v);
         adj[v].push_back(u);
     }
-    
-    vi res(n + 1);
-    vp dp(n + 1);
-    dfs(adj, dp, 1, 0);
-    dfs2(adj, dp, res, 1, 0, -1);
 
-    for (int i = 1; i <= n; i++)
-        cout << res[i] << ' ';
+    ll l = 1, r = n - 1;
+    while (l < r)
+    {
+        ll mid = (l + r+1) / 2;
+        vi dp(n + 1);
+        ll re = req(adj, dp, 1, 0, mid);
+        if (re && dp[1] <= 0) l = mid;
+        else r = mid - 1;
+    }
+    
+    cout << l << '\n';
 }
 
 int main()
@@ -77,8 +85,8 @@ int main()
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;
 
-    // freopen("deleg.in", "r", stdin);
-    // freopen("deleg.out", "w", stdout);
+    freopen("deleg.in", "r", stdin);
+    freopen("deleg.out", "w", stdout);
 
     // cin >> size;
     for (int i = 1; i <= size; i++)
