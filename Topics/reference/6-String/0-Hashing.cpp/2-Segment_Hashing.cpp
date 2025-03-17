@@ -1,6 +1,6 @@
 const int HASED = 2;
-const vi MODHS = {1000000007, 1000000009};
-const vi P = {31, 37};
+const int MODHS[2] = {1000000007, 1000000009};
+const int P[2] = {31, 37};
 const int N = 1e6;
 vii pw(2, vi(N)), pwinv(2, vi(N));
 

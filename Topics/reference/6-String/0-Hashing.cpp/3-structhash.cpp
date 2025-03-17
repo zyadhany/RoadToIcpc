@@ -1,34 +1,3 @@
-#define _CRT_SECURE_NO_WARNINGS
-#include <bits/stdc++.h>
-#include <random>
-#include <chrono>
-#include <unordered_map>
-#include <unordered_set>
- 
-#define ll long long
-#define ld long double
-#define pl pair<ll, ll>
-#define vi vector<ll>
-#define vii vector<vi>
-#define vc vector<char>
-#define vcc vector<vc>
-#define vp vector<pl>
-#define mi map<ll,ll>
-#define mc map<char,int>
-#define sortx(X) sort(X.begin(),X.end());
-#define all(X) X.begin(),X.end()
-#define allr(X) X.rbegin(),X.rend()
-#define ln '\n'
-#define YES {cout << "YES\n"; return;}
-#define NO {cout << "NO\n"; return;}
-#define MUN {cout << "-1\n"; return;}
-
-const int MODE = 1e9 + 9;
-
-
-using namespace std;
-
-
 class HashedString {
   public:
 	// change M and B if you want
@@ -73,35 +42,4 @@ ll inv(ll base, ll MOD) {
 		base = mod_mul(base, base);
 	}
 	return ans;
-}
-
-
-void solve(int tc) {
-    string s, t;
-    cin >> s >> t;
-
-    HashedString HS(s), HT(t);
-    ll ht = HT.get_hash(0, t.size()-1);
-    ll cnt = 0;
-
-    for (int i = 0; i + t.size() <= s.size(); i++)
-    {
-        if (ht == HS.get_hash(i, i + t.size()-1)) cnt++;
-    }
-    
-    cout << cnt << '\n';
-}   
- 
-
-int main()
-{
-    ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
-    int size = 1;
-
-    // freopen("censor.in", "r", stdin);
-    // freopen("censor.out", "w", stdout);
- 
-    // cin >> size;
-    for (int i = 1; i <= size; i++)
-        solve(i);
 }
