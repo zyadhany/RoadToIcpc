@@ -30,36 +30,35 @@ using namespace std;
 ll MXN = 1e6+1;
 
 void solve(int tc) {
-    ll n, q;
+    ll n, k;
+    n = 100;
+    cin >> k;
+    
+    vii X(n,vi(n));
 
-    cin >> n >> q;
-
-    vector<queue<ll>> X(n + 1);
-    queue<pl> que;
-
-    ll re = 0;
-    ll cnt = 0;
-    while (q--)
+    for (int i = 1; i < n; i++)
     {
-        ll ty, k; cin >> ty >> k;
-        if (ty == 1) {
-            X[k].push(re);
-            que.push({re, k});
-            re++;
-            cnt++;
-        } else if (ty == 2) {
-            cnt-=X[k].size();
-            while(!X[k].empty())X[k].pop();
-        } else {
-            while (!que.empty() && que.front().first < k) {
-                ll tp = que.front().second;
-                que.pop();
-                if (!X[tp].empty() && X[tp].front() < k) cnt--, X[tp].pop();
-            }
+        ll len = 0;
+        for (int j = i - 1; j >= 0; j--)
+        {
+            if (len > k) break;
+            X[i][j] = X[j][i] = 1;
+            k-=len;
+            len++;
         }
-        
-        cout << cnt << '\n';
     }
+
+
+    cout << n << '\n';
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = 0; j < n; j++)
+        {
+            cout << X[i][j];
+        }
+        cout << '\n';
+    }
+    
 }   
  
 int main()

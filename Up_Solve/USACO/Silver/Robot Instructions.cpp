@@ -5,7 +5,7 @@
 #include <unordered_map>
 #include <unordered_set>
  
-#define ll int
+#define ll long long
 #define ld long double
 #define pl pair<ll, ll>
 #define vi vector<ll>
@@ -27,12 +27,11 @@ const int MODE = 1e9 + 7;
   
 using namespace std;
 
-
 struct hsh {
-   size_t operator()(const pl &p) const {
-       return p.first * 239 + p.second;
-   }
-};
+    size_t operator()(const pl &p) const {
+        return p.first * 239 + p.second;
+    }
+ }; 
 
 void solve(int tc) {
     ll n, x, y;
@@ -45,9 +44,9 @@ void solve(int tc) {
         cin >> X[i].first >> X[i].second;
     }
     
-    vector<map<pl, ll>> F(n + 1);
+    vector<unordered_map<pl, ll, hsh>> F(n + 1);
 
-    ll md = ((n+1) / 2);
+    ll md = (n / 2);
     for (int i = 0; i < (1<<md); i++)
     {
         ll cnt = 0, dx = 0, dy = 0;
@@ -72,16 +71,15 @@ void solve(int tc) {
         ll nx = x-dx, ny = y-dy;
         for (int i = 0; i <= md; i++)
         {
-            // ll l = lower_bound(all(F[i]), pl(nx, ny)) - F[i].begin();
-            // ll r = upper_bound(all(F[i]), pl(nx, ny)) - F[i].begin();
-            res[i+cnt] += F[i][{nx, dy}];
+            auto it = F[i].find({nx, ny});
+            if (it != F[i].end()) res[i+cnt] += it->second;
         }
     }
 
     for (int i = 1; i <= n; i++)
         cout << res[i] << '\n';
 }   
-
+ 
 int main()
 {
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);

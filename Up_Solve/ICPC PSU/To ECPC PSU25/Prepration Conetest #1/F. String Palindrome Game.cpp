@@ -27,38 +27,56 @@ const int MODE = 1e9 + 7;
 
 using namespace std;
 
-ll MXN = 1e6+1;
-
 void solve(int tc) {
     ll n, q;
 
     cin >> n >> q;
 
-    vector<queue<ll>> X(n + 1);
-    queue<pl> que;
+    string s;
 
-    ll re = 0;
-    ll cnt = 0;
+    cin >> s;
+
+    vii Z(n);
+
+    // get all odd plandrom
+    for (ll i = 0; i < n; i++)
+    {
+        for (ll j = 0; j <= min(i, n - i - 1); j++)
+        {
+            if (s[i-j]!=s[i+j]) break;
+            Z[i-j].push_back(j*2+1);
+        }
+    }
+    
+    // get all even plandrom
+    for (ll i = 0; i < n-1; i++)
+    {
+        for (ll j = 0; j <= min(i, n - i - 1); j++)
+        {
+            if (s[i-j]!=s[i+j+1]) break;
+            Z[i-j].push_back((j+1)*2);
+        }
+    }
+
+    for (int i = 0; i < n; i++)
+    {
+        sortx(Z[i]);
+    }
+    
     while (q--)
     {
-        ll ty, k; cin >> ty >> k;
-        if (ty == 1) {
-            X[k].push(re);
-            que.push({re, k});
-            re++;
-            cnt++;
-        } else if (ty == 2) {
-            cnt-=X[k].size();
-            while(!X[k].empty())X[k].pop();
-        } else {
-            while (!que.empty() && que.front().first < k) {
-                ll tp = que.front().second;
-                que.pop();
-                if (!X[tp].empty() && X[tp].front() < k) cnt--, X[tp].pop();
-            }
+        ll l, r; cin >> l >> r;
+        l--, r--;
+
+        ll mx = 0;
+        for (int i = l; i <= r; i++)
+        {
+            ll nd = r - i + 1;
+            ll re = upper_bound(all(Z[i]), nd) - Z[i].begin();
+            if (re) mx = max(mx, Z[i][re-1]);
         }
         
-        cout << cnt << '\n';
+        cout << mx << '\n';
     }
 }   
  
@@ -70,7 +88,7 @@ int main()
     // freopen("cownomics.in", "r", stdin);
     // freopen("cownomics.out", "w", stdout);
  
-    // cin >> size;
+    cin >> size;
     for (int i = 1; i <= size; i++)
         solve(i);
 }

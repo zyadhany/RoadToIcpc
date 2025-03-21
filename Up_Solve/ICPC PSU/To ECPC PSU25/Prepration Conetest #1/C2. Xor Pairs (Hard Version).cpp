@@ -27,39 +27,19 @@ const int MODE = 1e9 + 7;
 
 using namespace std;
 
-ll MXN = 1e6+1;
-
 void solve(int tc) {
-    ll n, q;
+    ll n;
 
-    cin >> n >> q;
+    cin >> n;
 
-    vector<queue<ll>> X(n + 1);
-    queue<pl> que;
-
-    ll re = 0;
     ll cnt = 0;
-    while (q--)
+    for (int i = 0; i < n; i++)
     {
-        ll ty, k; cin >> ty >> k;
-        if (ty == 1) {
-            X[k].push(re);
-            que.push({re, k});
-            re++;
-            cnt++;
-        } else if (ty == 2) {
-            cnt-=X[k].size();
-            while(!X[k].empty())X[k].pop();
-        } else {
-            while (!que.empty() && que.front().first < k) {
-                ll tp = que.front().second;
-                que.pop();
-                if (!X[tp].empty() && X[tp].front() < k) cnt--, X[tp].pop();
-            }
-        }
-        
-        cout << cnt << '\n';
+        ll a; cin >> a;
+        if (a == 0) cnt++;
     }
+    
+    cout << cnt * n << '\n';
 }   
  
 int main()
@@ -70,7 +50,7 @@ int main()
     // freopen("cownomics.in", "r", stdin);
     // freopen("cownomics.out", "w", stdout);
  
-    // cin >> size;
+    cin >> size;
     for (int i = 1; i <= size; i++)
         solve(i);
 }

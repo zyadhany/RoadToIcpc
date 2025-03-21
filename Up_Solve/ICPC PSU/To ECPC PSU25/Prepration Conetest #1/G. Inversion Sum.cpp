@@ -30,35 +30,21 @@ using namespace std;
 ll MXN = 1e6+1;
 
 void solve(int tc) {
-    ll n, q;
+    vi dp(MXN), fac(MXN, 1);
+    dp[1] = 0;
 
-    cin >> n >> q;
-
-    vector<queue<ll>> X(n + 1);
-    queue<pl> que;
-
-    ll re = 0;
-    ll cnt = 0;
-    while (q--)
+    for (ll i = 2; i < MXN; i++)
     {
-        ll ty, k; cin >> ty >> k;
-        if (ty == 1) {
-            X[k].push(re);
-            que.push({re, k});
-            re++;
-            cnt++;
-        } else if (ty == 2) {
-            cnt-=X[k].size();
-            while(!X[k].empty())X[k].pop();
-        } else {
-            while (!que.empty() && que.front().first < k) {
-                ll tp = que.front().second;
-                que.pop();
-                if (!X[tp].empty() && X[tp].front() < k) cnt--, X[tp].pop();
-            }
-        }
-        
-        cout << cnt << '\n';
+        fac[i] = (i * fac[i-1]) % MODE;
+        dp[i] = (fac[i-1] * ((i*(i-1)/2)%MODE)) % MODE;
+        dp[i] = (dp[i] + (dp[i-1]*i)%MODE) % MODE;
+    }
+
+    ll n; cin >> n;
+    while (n--)
+    {
+        ll a; cin >> a;
+        cout << dp[a] << '\n';
     }
 }   
  
