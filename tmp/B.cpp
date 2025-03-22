@@ -5,7 +5,7 @@
 #include <unordered_map>
 #include <unordered_set>
  
-#define ll int
+#define ll long long
 #define ld long double
 #define pl pair<ll, ll>
 #define vi vector<ll>
@@ -24,64 +24,27 @@
 #define MUN {cout << "-1\n"; return;}
  
 const int MODE = 1e9 + 7;
-  
+
 using namespace std;
 
-
-struct hsh {
-   size_t operator()(const pl &p) const {
-       return p.first * 239 + p.second;
-   }
-};
+ll MXN = 1e6+1;
 
 void solve(int tc) {
-    ll n, x, y;
+    ll n, a, b;
 
-    cin >> n >> x >> y;
+    cin >> a >> b >> n;
 
-    vp X(n);
-    for (int i = 0; i < n; i++)
-    {
-        cin >> X[i].first >> X[i].second;
+    ll l = 0, r = 2e18;
+    while (l < r) {
+        ll mid = l + (r - l) / 2;
+        ll cnt = mid / b + 1;
+        cnt += max(0ll, (mid - a) / b);
+        if (cnt >= n) r = mid;
+        else l = mid + 1;
     }
-    
-    vector<map<pl, ll>> F(n + 1);
-
-    ll md = ((n+1) / 2);
-    for (int i = 0; i < (1<<md); i++)
-    {
-        ll cnt = 0, dx = 0, dy = 0;
-        for (int j = 0; j < md; j++)
-        {
-            if (i & (1 << j)) cnt++, dx += X[j].first, dy += X[j].second;
-        }
-        F[cnt][{dx, dy}]++;
-    }
-    
-    vi res(n + 1);
-
-    for (int i = 0; i < (1 << (n - md)); i++)
-    {
-        ll cnt, dx, dy;
-        cnt = dx = dy = 0;
-        for (int j = 0; j < (n - md); j++)
-        {
-            if (i & (1 << j)) cnt++, dx += X[j + md].first, dy += X[j + md].second;
-        }
-        
-        ll nx = x-dx, ny = y-dy;
-        for (int i = 0; i <= md; i++)
-        {
-            // ll l = lower_bound(all(F[i]), pl(nx, ny)) - F[i].begin();
-            // ll r = upper_bound(all(F[i]), pl(nx, ny)) - F[i].begin();
-            res[i+cnt] += F[i][{nx, dy}];
-        }
-    }
-
-    for (int i = 1; i <= n; i++)
-        cout << res[i] << '\n';
+    cout << l << '\n';
 }   
-
+ 
 int main()
 {
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
@@ -90,7 +53,7 @@ int main()
     // freopen("cownomics.in", "r", stdin);
     // freopen("cownomics.out", "w", stdout);
  
-    // cin >> size;
+    cin >> size;
     for (int i = 1; i <= size; i++)
         solve(i);
 }

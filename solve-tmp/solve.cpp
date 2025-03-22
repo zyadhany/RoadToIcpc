@@ -27,40 +27,80 @@ const int MODE = 1e9 + 7;
 
 using namespace std;
 
-ll MXN = 1e6+1;
+vi dx = {0, 0, 1, -1};
+vi dy = {1, -1, 0, 0};
+
+ll req(vii &adj, vi &match, vi &vis, ll n) {
+    if (vis[n]) return 0;
+    vis[n] = 1;
+    
+    for (auto v : adj[n]) {
+        if (match[v] == -1 || (!vis[match[v]] && req(adj, match, vis, match[v]))) {
+            match[n] = v;
+            match[v] = n;
+            return 1;
+        }
+    }
+    return 0;
+}
+
+ll maxMatching(vii &adj, ll sz) {
+    vi match(sz, -1);
+    ll result = 0;
+    
+    for (ll i = 0; i < sz; i++) {
+        vi vis(sz, 0);
+        if (match[i] == -1) result += req(adj, match, vis, i);
+    }
+    
+    return result;
+}
 
 void solve(int tc) {
-    ll n, q;
+    ll n, m;
 
-    cin >> n >> q;
+    cin >> n >> m;
 
-    vector<queue<ll>> X(n + 1);
-    queue<pl> que;
+    ll sz = n* m;
+    vi X(sz);
 
-    ll re = 0;
-    ll cnt = 0;
-    while (q--)
+    for (int i = 0; i < n; i++)
     {
-        ll ty, k; cin >> ty >> k;
-        if (ty == 1) {
-            X[k].push(re);
-            que.push({re, k});
-            re++;
-            cnt++;
-        } else if (ty == 2) {
-            cnt-=X[k].size();
-            while(!X[k].empty())X[k].pop();
-        } else {
-            while (!que.empty() && que.front().first < k) {
-                ll tp = que.front().second;
-                que.pop();
-                if (!X[tp].empty() && X[tp].front() < k) cnt--, X[tp].pop();
+        for (int j = 0; j < m; j++)
+        {
+            char a; cin >> a;
+            if (a == 'G') X[i*m+j] = 1;
+            else if (a == 'W') X[i*m+j] = 2;
+            else X[i*m+j] = 0;
+        }
+    }
+
+    vii adj(sz);
+    vi deg(sz);
+    vi tk(sz);
+
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = 0; j < m; j++)
+        {
+            if (X[i*m+j] != 2) continue;
+            for (int d = 0; d < 4; d++)
+            {
+                ll l = i + dx[d];
+                ll r = j + dy[d];
+                if (l < 0 || r < 0 || l >= n || r >= m) continue;
+                if (X[l*m+r] == 1) {
+                    deg[i*m+j]++;
+                    deg[l*m+r]++;
+                    adj[i*m+j].push_back(l*m+r);
+                    adj[l*m+r].push_back(i*m+j);
+                }
             }
         }
-        
-        cout << cnt << '\n';
     }
-}   
+    
+    cout << maxMatching(adj, sz) << '\n';
+}
  
 int main()
 {
