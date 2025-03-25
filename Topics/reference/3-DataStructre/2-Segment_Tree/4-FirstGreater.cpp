@@ -46,6 +46,7 @@ private:
 
     void set(int m, int lx, int rx, int ind, ll val) {
         if (lx <= ind && ind <= rx) {
+            // wrong you need erase old value
             tree[m].st.erase(tree[m].st.find(val));
             tree[m].st.insert(val);
         }
