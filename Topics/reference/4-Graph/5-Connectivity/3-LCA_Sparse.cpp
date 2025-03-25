@@ -5,7 +5,7 @@ public:
     vii adj, SPT;
 
 
-    void BuildSparse(ll node, ll parent){
+    void BuildSparse(ll node=1, ll parent=0){
         lvl[node] = lvl[parent] + 1;
         SPT[node][0] = parent;
         for (int i = 1; i < SPT[node].size(); i++)
