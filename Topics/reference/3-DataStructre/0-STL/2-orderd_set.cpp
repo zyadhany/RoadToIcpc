@@ -32,6 +32,7 @@ ordered_set orderedSet(vi X) {
     return (ord);
 }
 
+// ord1.swap(ord2) --> for O(1) swap.
 
 /**
  * to make it multiset:

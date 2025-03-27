@@ -22,61 +22,83 @@
 #define YES {cout << "YES\n"; return;}
 #define NO {cout << "NO\n"; return;}
 #define MUN {cout << "-1\n"; return;}
- 
+
 using namespace std;
  
 const int MODE = 998244353;
+
+const int MXN = 2e5+10;
+
+
+int sgsize;
+ll sgtree[MXN * 4];
+
+void update(int idx, int val) {
+    sgtree[idx += sgsize] = val;
+    for (idx /= 2; idx; idx /= 2) sgtree[idx] = max(sgtree[2 * idx], sgtree[2 * idx + 1]);
+}
+
+ll query(int lo, int hi) {
+    ll ra = 0, rb = 0;
+    for (lo += sgsize, hi += sgsize + 1; lo < hi; lo /= 2, hi /= 2) {
+        if (lo & 1) ra = max(ra, sgtree[lo++]);
+        if (hi & 1) rb = max(rb, sgtree[--hi]);
+    }
+    return max(ra, rb);
+}
+
+void build(vi &X) {
+    sgsize = X.size();
+    for (int i = 0; i < sgsize; i++) sgtree[i + sgsize] = X[i];
+    for (int i = sgsize - 1; i > 0; i--) sgtree[i] = max(sgtree[2 * i], sgtree[2 * i + 1]);
+}
+
+struct HLD {
+    int size, timer;
+    vi lvl, par, heavy, head, indeg, sz;
+    vii adj;
  
-class Graph {
-public:
-    int size;
-    vi vis, lvl;
-    vii adj, SPT;
-
-
-    void BuildSparse(ll node, ll parent){
-        lvl[node] = lvl[parent] + 1;
-        SPT[node][0] = parent;
-        for (int i = 1; i < SPT[node].size(); i++)
-            SPT[node][i] = SPT[SPT[node][i - 1]][i - 1];        
-        for (auto neg : adj[node])
-            if (neg != parent) BuildSparse(neg, node);
-    }
-
-    ll getKth(ll u, ll k){
-        for (int i = 0; i < SPT[u].size(); i++)
-            if ((1 << i) & k) u = SPT[u][i];
-        return (u);
-    }
-
-    ll LCA(ll u, ll v) {
-        if (lvl[u] > lvl[v]) swap(u, v);
-        v = getKth(v, lvl[v] - lvl[u]);
-        if (u == v) return (u);
-        for (int i = SPT[u].size() - 1; i >= 0; i--)
-        {
-            if (SPT[u][i] != SPT[v][i]){
-                u = SPT[u][i], v = SPT[v][i];
-            }
+    void dfs(int u, int p) {
+        par[u] = p;
+        sz[u] = 1;
+        for (int v : adj[u]) if (v != p) {
+            lvl[v] = lvl[u] + 1;
+            dfs(v, u);
+            sz[u] += sz[v];
+            if (!heavy[u] || sz[v] > sz[heavy[u]]) heavy[u] = v;
         }
-        return (SPT[u][0]);
     }
-
-    ll dist(ll u, ll v) {
-        ll p = LCA(u , v);
-        return (lvl[u] + lvl[v] - 2 * lvl[p]);
+    
+    void decompose(int u, int p){
+        indeg[u] = timer++;
+        if (heavy[u]) {
+            head[heavy[u]] = head[u];
+            decompose(heavy[u], u);
+        }
+        for (int v : adj[u]) if (v != p && v != heavy[u]) {
+            head[v] = v;
+            decompose(v, u);
+        }
     }
-
-    void addEdge(int u, int v) {
-        adj[u].push_back(v);
+ 
+    HLD(int n, vii &adj) : size(n), lvl(n+1), par(n+1), heavy(n+1), head(n+1), indeg(n+1), adj(adj), sz(n+1) {
+        dfs(1, 0);
+        timer = 1;
+        head[1] = 1;
+        decompose(1, 0);
     }
-
-    Graph(ll n) {
-        size = n;
-        vis.assign(n + 1, 0);
-        lvl.assign(n + 1, 0);
-        adj.resize(n + 1);
-        SPT.resize(n + 1, vi(ceil(log2(n + 1)) + 1));
+ 
+    vp get_path(int u, int v) {
+        vp path;
+        while (head[u] != head[v]) {
+            if (lvl[head[u]] < lvl[head[v]]) swap(u, v);
+            path.push_back({indeg[head[u]], indeg[u]});
+            u = par[head[u]];
+        }
+        if (lvl[u] > lvl[v]) swap(u, v);
+        // u is lca between u and v
+        path.push_back({indeg[u], indeg[v]});
+        return path;
     }
 };
 
@@ -84,19 +106,45 @@ public:
 void solve(ll tc) {
     ll n, q;
 
-    Graph gr(n);
+    cin >> n >> q;
 
-    for (int i = 2; i <= n; i++)
+    vi X(n + 1);
+
+    for (int i = 1; i <= n; i++)
     {
-        ll a; cin >> a;
-        gr.addEdge(a, i);
+        cin >> X[i];
     }
-    gr.BuildSparse(1, 0);
+    
+    vii adj(n + 1);
+
+    for (int i = 0; i < n-1; i++)
+    {
+        ll u, v;
+        cin >> u >> v;
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+    }
+    
+    HLD hld(n, adj);
+
+    vi Z(n + 1);
+    for (int i = 1; i <= n; i++)
+    {
+        Z[hld.indeg[i]] = X[i];
+    }
+    
+    build(Z);
 
     while (q--)
     {
-        ll u, k; cin >> u >> k;
-        cout << gr.getKth(u, k) << ln;
+        ll ty; cin >> ty;
+        if (ty == 1) {
+            ll nd, k; cin >> nd >> k;
+            update(hld.indeg[nd], k);
+        } else {
+            ll u, v; cin >> u >> v;
+            cout << hld.get_path(u, v) << ' ';
+        }
     }
     
 }
@@ -106,9 +154,9 @@ int main()
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;
  
-    //freopen("input.txt", "r", stdin   );
-    //freopen("output.txt", "w", stdout);
-    //cin >> size;
+    // freopen("disrupt.in", "r", stdin   );
+    // freopen("disrupt.out", "w", stdout);
+    // cin >> size;
     for (int tc = 1; tc <= size; tc++){
         solve(tc);
        // if (tc != size) cout << '\n';

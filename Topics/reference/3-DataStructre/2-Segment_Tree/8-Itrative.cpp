@@ -1,27 +1,23 @@
-template <class T> class MinSegmentTree {
-  private:
-	const T DEFAULT = std::numeric_limits<T>().max();
+const int MXN = 2e5+10;
+int sgsize;
+ll sgtree[MXN * 4];
 
-	vector<T> segtree;
-	int len;
+void update(int idx, int val) {
+	sgtree[idx += sgsize] = val;
+	for (idx /= 2; idx; idx /= 2) sgtree[idx] = max(sgtree[2 * idx], sgtree[2 * idx + 1]);
+}
 
-  public:
-	MinSegmentTree(int len) : len(len), segtree(len * 2, DEFAULT) {}
-
-	void set(int ind, T val) {
-		ind += len;
-		segtree[ind] = val;
-		for (; ind > 1; ind /= 2) {
-			segtree[ind / 2] = std::min(segtree[ind], segtree[ind ^ 1]);
-		}
+int query(int lo, int hi) {
+	int ra = 0, rb = 0;
+	for (lo += sgsize, hi += sgsize + 1; lo < hi; lo /= 2, hi /= 2) {
+		if (lo & 1) ra = max(ra, sgtree[lo++]);
+		if (hi & 1) rb = max(rb, sgtree[--hi]);
 	}
+	return max(ra, rb);
+}
 
-	T range_min(int start, int end) {
-		T min = DEFAULT;
-		for (start += len, end += len; start < end; start /= 2, end /= 2) {
-			if (start % 2 == 1) { min = std::min(min, segtree[start++]); }
-			if (end % 2 == 1) { min = std::min(min, segtree[--end]); }
-		}
-		return min;
-	}
-};
+void build(vi &X) {
+    sgsize = X.size();
+    for (int i = 0; i < sgsize; i++) sgtree[i + sgsize] = X[i];
+    for (int i = sgsize - 1; i > 0; i--) sgtree[i] = max(sgtree[2 * i], sgtree[2 * i + 1]);
+}

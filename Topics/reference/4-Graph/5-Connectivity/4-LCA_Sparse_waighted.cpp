@@ -23,7 +23,7 @@ public:
     }
 
     pair<ll, item> getKth(ll u, ll k){
-        item res = INT32_MAX;
+        item res = item();
         for (int i = 0; i < SPT[u].size(); i++)
             if ((1 << i) & k) {
                 res = SPTMarge(res, SPT[u][i].second);
@@ -45,9 +45,9 @@ public:
         return (SPT[u][0].first);
     }
 
-    ll dist(ll u, ll v) {
+    item dist(ll u, ll v) {
         ll p = LCA(u , v);
-        ll a, b;
+        item a, b;
         a = getKth(u, lvl[u] - lvl[p]).second;
         b = getKth(v, lvl[v] - lvl[p]).second;
  
