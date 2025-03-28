@@ -22,60 +22,40 @@
 #define YES {cout << "YES\n"; return;}
 #define NO {cout << "NO\n"; return;}
 #define MUN {cout << "-1\n"; return;}
- 
+
 using namespace std;
  
-set<ll> req(vii & adj, vii &X, vi &dp, ll u, ll p) {
-    set<ll> st(all(X[u]));
+const int MODE = 998244353;
 
-    for (auto neg : adj[u]) if (neg != p) {
-        auto st2 = req(adj, X, dp, neg, u);
-        if (st2.size() > st.size()) swap(st, st2);
+const int MXN = 2e5+10;
+int sz[MXN];
 
-        for (auto x : st2) {
-            if (st.count(x)) {
-                st.erase(x);
-                dp[u]++;
-            } else {
-                st.insert(x);
-            }
-        }
+void dfs(vii &adj, ll n, ll p) {
+    sz[n] = 1;
+    for (auto neg : adj[n]) if (neg != p ){
+        dfs(adj, neg, n); sz[n] += sz[neg];
     }
-
-    dp[u] += st.size();
-    return st;
 }
- 
-void solve(ll tc) {
-    ll n, m;
 
-    cin >> n >> m;
+ll req(vii &adj, ll n, ll p) {
+    for (auto neg : adj[n]) if (neg != p) if (sz[neg] > (adj.size()-1)/2) {
+        return req(adj, neg, n);
+    }
+    return n;
+}
+
+void solve(ll tc) {
+    ll n; cin >> n;
 
     vii adj(n + 1);
-    for (int i = 0; i < n - 1; i++)
+
+    for (int i = 0; i < n-1; i++)
     {
         ll u, v; cin >> u >> v;
-        adj[u].push_back(v);
-        adj[v].push_back(u);
+        adj[u].push_back(v), adj[v].push_back(u);
     }
-    
-    vii X(n + 1);
-    vi dp(n + 1);
-
-    for (int i = 0; i < m; i++)
-    {
-        ll u, v; cin >> u >> v;
-        if (u == v) dp[u]++;
-        else X[u].push_back(i), X[v].push_back(i);
-    }
-    
-    req(adj, X, dp, 1, 0);
-
-    for (int i = 0; i < n; i++)
-    {
-        cout << dp[i + 1] << ' ';
-    }
-    cout << '\n';
+    dfs(adj, 1, 0);
+    cout << req(adj, 1, 0) << '\n';
 }
  
 int main()

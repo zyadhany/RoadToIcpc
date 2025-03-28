@@ -38,6 +38,7 @@ struct HLD {
         vp path;
         while (head[u] != head[v]) {
             if (lvl[head[u]] < lvl[head[v]]) swap(u, v);
+            // if cost in edges not node let indeg[head[u]] + 1. and edge cost get down to child node.
             path.push_back({indeg[head[u]], indeg[u]});
             u = par[head[u]];
         }

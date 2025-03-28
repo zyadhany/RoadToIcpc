@@ -8,23 +8,22 @@ class Graph {
 public:
     int size, SPSIZE;
     vi vis, Indeg, lvl;
-    vii adj;
     vp Trav;
     vector<vp> table;
 
-    void dfs(int n, int p, ll deep) {
+    void dfs( const vii &adj, int n, int p, ll deep) {
         lvl[n] = deep;
         Indeg[n] = Trav.size();
         Trav.push_back({deep, n});
         for (auto neg : adj[n]) {
             if (neg == p) continue;
-            dfs(neg, n, deep + 1);
+            dfs(adj, neg, n, deep + 1);
             Trav.push_back({deep, n});
         }
     }
 
-    void BuildLCA() {
-        dfs(1, 0, 1);
+    void BuildLCA(const vii &adj) {
+        dfs(adj, 1, 0, 1);
         ll n = Trav.size();
         SPSIZE = ceil(log2(n));
         table.resize(n, vp(SPSIZE + 1));
@@ -47,15 +46,11 @@ public:
         return lvl[a] + lvl[b] - 2 * lvl[LCA(a, b)];
     }
 
-    void addEdge(int u, int v) {
-        adj[u].push_back(v);
-    }
-
-    Graph(ll n) {
+    Graph(ll n, const vii &adj) {
         size = n;
         lvl.resize(n + 1, 0);
         Indeg.assign(n + 1, 0);
         vis.assign(n + 1, 0);
-        adj.resize(n + 1);
+        BuildLCA(adj);
     }
 };
