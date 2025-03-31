@@ -103,4 +103,4 @@ int32_t main()
         solve(tc);
        // if (tc != size) cout << '\n';
     }
-}   
+}
