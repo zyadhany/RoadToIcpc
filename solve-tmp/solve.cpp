@@ -26,61 +26,32 @@ using namespace std;
 
 const int MODE = 998244353;
 
-ll n, q;
-
-ll cycleft(ll x) {
-    ll re = (x & 1);
-    x <<= 1;
-    if (x & (1<<n)) x ^= (1 << n) ^ 1;
-    return x;
-}
 
 void solve(ll tc) {
-    cin >> q >> n;
+    ll n; cin >> n;
 
-    vi rep(1 << n, -1);
-    for (int i = 0; i < (1<<n); i++)
-    {
-        ll j = i;
-        while (rep[j]==-1) {
-            rep[j]=i;
-            j = cycleft(j);
-        }
-    }
-    
-    vector<vector<bool>> can(3*n+1, vector<bool>(1<<n));
-    can[0][0] = 1;
-    ll cur = 0;
-    for (int i = 1; i < can.size(); i++)
-    {
-        cur ^= (1 << ((i-1)%n));
-        for (int j = 0; j < (1 << n); j++)
-        {
-            if (can[i-1][rep[j]]) can[i][rep[j^cur]] = 1;
-        }
-    }
-    
-    while (q--)
-    {
-        string s, t;
-        cin >> s >> t;
+    vi X(n), Y(n), dp(n);
 
-        ll a = 0, b = 0;
-        for (int i = 0; i < n; i++) if (s[i]=='1') a |= (1 << i);
-        for (int i = 0; i < n; i++) if (t[i]=='1') b |= (1 << i);
-        
-        for (int i = 0; i < can.size(); i++)
+    for (int i = 0; i < n; i++)
+    {
+        cin >> X[i];
+    }
+    for (int i = 0; i < n; i++)
+    {
+        cin >> Y[i];
+    }
+    
+    for (int i = 0; i < n; i++)
+    {
+        dp[i] = 1;
+        for (int j = 0; j < i; j++)
         {
-            if (can[i][rep[a]]) {
-                cout << i << '\n';
-                break;
-            }
-            a ^= b;
-            b = cycleft(b);
-            // cout << i << ' ' << b << "|\n";
+            if (__builtin_popcount(X[i]&X[j]) == Y[i]) dp[i] = max(dp[i], dp[j]+1);
         }
     }
     
+
+    cout << *max_element(all(dp));
 }
  
 int32_t main()
