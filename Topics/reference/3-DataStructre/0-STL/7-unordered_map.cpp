@@ -1,5 +1,5 @@
 struct hsh {
-    size_t operator()(const p   l &p) const {
+    size_t operator()(const pl &p) const {
         return p.first * 239 + p.second;
     }
 }; 
