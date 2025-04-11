@@ -64,7 +64,7 @@ private:
     vector<item> tree;
     vector<long long> lazy;
 
-    item merge(item a, item b) {
+    item merge(item &a, item &b) {
         item res;
         return (res);
     }

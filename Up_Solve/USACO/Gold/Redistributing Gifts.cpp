@@ -31,18 +31,51 @@ void solve(ll tc) {
 
     cin >> n;
 
-    vii X(n, vi(n));
+    vi adj(n);
 
     for (int i = 0; i < n; i++)
     {
+        vi X(n);
         for (int j = 0; j < n; j++)
         {
-            cin >> X[i][j];
+            cin >> X[j]; X[j]--;
+        }
+        
+        for (int j = 0; j < n; j++)
+        {
+            adj[i] |= (1 << X[j]);
+            if (X[j] == i) break;
         }
     }
 
-    vi dp(1 << n);
+    vi ans(1 << n);
+    vii dp(1 << n, vi(n));
 
+    ans[0] = 1;
+    for (int i = 0; i < n; i++) dp[1 << i][i] = 1;  
+    
+    for (int i = 0; i < n; i++)
+    {
+        for (int mask = 1<<i; mask < (1 << i+1); mask++)
+        {
+            for (int ls = 0; ls <= i; ls++)
+                if (mask & (1 << ls)) { 
+                    ll v = dp[mask][ls];
+                    for (int k = 0; k < i; k++)
+                        if(!(mask & (1 << k)) && (adj[ls] & (1 << k))) {
+                            dp[mask ^ (1 << k)][k] += v;
+                        }
+                    
+                    if (adj[ls] & (1 << i)) ans[mask] += v; 
+                }      
+
+            // new cycle
+            for (int j = i + 1; j < n; j++)
+                dp[mask^(1<<j)][j] += ans[mask];
+        }
+        
+    }
+    
     ll q; cin >> q;
     while (q--)
     {
@@ -50,11 +83,11 @@ void solve(ll tc) {
         ll l = 0, r = 0;
         for (int i = 0; i < n; i++)
         {
-            if (s[i] == 'H') l |= (1 << i);
-            else r |= (1 << i);
+            if (s[i] == 'H') l ^= (1 << i);
+            else r ^= (1 << i);
         }
 
-        cout << dp[l] * dp[r] << '\n';
+        cout << ans[l] * ans[r] << '\n';
     }
 }
  
