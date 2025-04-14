@@ -24,60 +24,167 @@
 #define MUN {cout << "-1\n"; return;}
 using namespace std;
 
-const int MODE = 998244353;
+const int MODE = 1e9+7;
 
-ll n, q;
 
-ll cycleft(ll x) {
-    ll re = (x & 1);
-    x <<= 1;
-    if (x & (1<<n)) x ^= (1 << n) ^ 1;
-    return x;
-}
-
-void solve(ll tc) {
-    cin >> q >> n;
-
-    vi rep(1 << n, -1);
-    for (int i = 0; i < (1<<n); i++)
-    {
-        ll j = i;
-        while (rep[j]==-1) {
-            rep[j]=i;
-            j = cycleft(j);
+struct Matrix {
+    ll a[2][2]={0};
+    Matrix(){
+        a[0][0] = a[1][0] = a[1][1] = a[0][1] = 0;
+    }
+    Matrix operator*(const Matrix &b) const {
+        Matrix c;
+        for (int i = 0; i < 2; i++) {
+            for (int j = 0; j < 2; j++) {
+                for (int k = 0; k < 2; k++) {
+                    c.a[i][j] = (c.a[i][j] + a[i][k] * b.a[k][j]) % MODE;
+                }
+            }
         }
+        return c;
     }
     
-    vector<vector<bool>> can(3*n+1, vector<bool>(1<<n));
-    can[0][0] = 1;
-    ll cur = 0;
-    for (int i = 1; i < can.size(); i++)
-    {
-        cur ^= (1 << ((i-1)%n));
-        for (int j = 0; j < (1 << n); j++)
-        {
-            if (can[i-1][rep[j]]) can[i][rep[j^cur]] = 1;
-        }
+    pl operator*(const pl &b) const {
+        return {(b.first * a[0][0]+ b.second * a[0][1])%MODE,
+        (b.first * a[1][0]+ b.second * a[1][1])%MODE};
     }
+};  
+
+Matrix matrixpower(Matrix a, ll n) {
+    Matrix res;
+    for (int i = 0; i < 2; i++)
+    {
+        res.a[i][i] = 1;
+    }
+        
+    while (n) {
+        if (n & 1) res = res * a;
+        a = a * a;
+        n >>= 1;
+    }
+    return res;
+}
+
+Matrix fibbase;
+const pl fibzer = {0, 1};
+typedef pl item;
+class SegmentTree
+{
+public:
+    void set(int l, int r, int value) {
+        set(0, 0, size - 1, l, r, value);
+    }
+ 
+    item getrange(int l, int r) {
+        return (getrange(0, 0, size - 1, l, r));
+    }
+ 
+    void build(vector<ll>& X) {
+        size = 1;
+        while (size < X.size())
+        size *= 2;
+        tree.assign(size * 2, item());
+        lazy.assign(size * 2, 0);
+        
+        build(X, 0, 0, size - 1);
+    }
+ 
+private:
+    int size;
+    vector<item> tree;
+    vector<long long> lazy;
+    
+    item merge(item &a, item &b) {
+        item res = {(a.first + b.first)%MODE, (a.second + b.second)%MODE};
+        return (res);
+    }
+ 
+    void checkLazy(int m, int lx, int rx) {
+        if (!lazy[m]) return;
+        tree[m] = matrixpower(fibbase, lazy[m]) * (tree[m]);
+        
+        if (lx != rx) {
+            lazy[2 * m + 1] += lazy[m];
+            lazy[2 * m + 2] += lazy[m];
+        }
+        
+        lazy[m] = 0;
+    }
+    
+    void set(int m, int lx, int rx, int l, int r, int val) {
+        checkLazy(m, lx, rx);
+        if (rx < l || r < lx) return;
+        if (l <= lx && rx <= r)
+        {
+            lazy[m] = val;
+            checkLazy(m, lx, rx);
+            return;
+        }
+        
+        int mid = (lx + rx) / 2;
+        
+        set(m * 2 + 1, lx, mid, l, r, val);
+        set(m * 2 + 2, mid + 1, rx, l, r, val);
+        
+        tree[m] = merge(tree[m * 2 + 1], tree[m * 2 + 2]);
+    }
+    
+    item getrange(int m, int lx, int rx, int l, int r) {
+        checkLazy(m, lx, rx);
+        if (rx < l || r < lx) return (item());
+        if (l <= lx && rx <= r) return (tree[m]);
+        
+        int mid = (lx + rx) / 2;
+ 
+        item s1 = getrange(m * 2 + 1, lx, mid, l, r);
+        item s2 = getrange(m * 2 + 2, mid + 1, rx, l, r);
+        
+        return merge(s1, s2);
+    }
+    
+    void build(vector<ll>& X, int m, int lx, int rx) {
+        if (lx == rx) {
+            if (lx < X.size()) {
+                tree[m] = matrixpower(fibbase, X[lx]-1)*fibzer;
+            }
+            return;
+        }
+ 
+        int mid = (lx + rx) / 2;
+ 
+        build(X, m * 2 + 1, lx, mid);
+        build(X, m * 2 + 2, mid + 1, rx);
+        tree[m] = merge(tree[m * 2 + 1], tree[m * 2 + 2]);
+    }
+};
+
+void solve(ll tc) {
+    ll n, q;
+
+    cin >> n >> q;
+
+    vi X(n);
+
+    for (int i = 0; i < n; i++)
+    {
+        cin >> X[i];
+    }
+    
+    fibbase.a[1][0] = fibbase.a[1][1] = fibbase.a[0][1] = 1;
+    SegmentTree sg;
+    sg.build(X);
+
     
     while (q--)
     {
-        string s, t;
-        cin >> s >> t;
-
-        ll a = 0, b = 0;
-        for (int i = 0; i < n; i++) if (s[i]=='1') a |= (1 << i);
-        for (int i = 0; i < n; i++) if (t[i]=='1') b |= (1 << i);
-        
-        for (int i = 0; i < can.size(); i++)
-        {
-            if (can[i][rep[a]]) {
-                cout << i << '\n';
-                break;
-            }
-            a ^= b;
-            b = cycleft(b);
-            // cout << i << ' ' << b << "|\n";
+        ll ty; cin >> ty;
+        if(ty == 1) {
+            ll l, r, k; cin >> l >> r >> k; l--, r--;
+            sg.set(l, r, k);
+        } else {
+            ll l, r; cin >> l >> r; l--, r--;
+            auto re = sg.getrange(l, r);
+            cout << re.second << '\n';
         }
     }
     

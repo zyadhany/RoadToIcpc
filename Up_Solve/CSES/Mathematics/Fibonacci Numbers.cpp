@@ -24,37 +24,50 @@
 #define MUN {cout << "-1\n"; return;}
 using namespace std;
 
-const int MODE = 998244353;
+const int MODE = 1e9+7;
+
+struct Matrix {
+    ll a[2][2];
+    Matrix() {
+        a[0][0] = a[0][1] = a[1][0] = a[1][1] = 0;
+    }
+    Matrix operator*(const Matrix &b) const {
+        Matrix c;
+        for (int i = 0; i < 2; i++) {
+            for (int j = 0; j < 2; j++) {
+                for (int k = 0; k < 2; k++) {
+                    c.a[i][j] = (c.a[i][j] + a[i][k] * b.a[k][j]) % MODE;
+                }
+            }
+        }
+        return c;
+    }
+};
+
+Matrix matrixpower(Matrix a, ll n) {
+    Matrix res;
+    for (int i = 0; i < 2; i++) res.a[i][i] = 1;
+    
+    while (n) {
+        if (n & 1) res = res * a;
+        a = a * a;
+        n >>= 1;
+    }
+    return res;
+}
 
 void solve(ll tc) {
     ll n;
-
     cin >> n;
-
-    vii X(n, vi(n));
-
-    for (int i = 0; i < n; i++)
-    {
-        for (int j = 0; j < n; j++)
-        {
-            cin >> X[i][j];
-        }
-    }
-
-    vi dp(1 << n);
-
-    ll q; cin >> q;
-    while (q--)
-    {
-        string s; cin >> s;
-        ll l = 0, r = 0;
-        for (int i = 0; i < n; i++)
-        {
-            if (s[i] == 'H') l |= (1 << i);
-            else r |= (1 << i);
-        }
-
-        cout << dp[l] * dp[r] << '\n';
+    
+    if (n == 0) cout << "0\n";
+    else if (n <= 2) cout << "1\n";
+    else {
+        Matrix a;
+        a.a[1][1] = a.a[0][1] = a.a[1][0] = 1;
+        a.a[0][0] = 0;
+        Matrix re = matrixpower(a, n);
+        cout << re.a[1][0] << '\n';
     }
 }
  

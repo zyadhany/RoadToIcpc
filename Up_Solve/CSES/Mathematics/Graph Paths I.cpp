@@ -24,38 +24,51 @@
 #define MUN {cout << "-1\n"; return;}
 using namespace std;
 
-const int MODE = 998244353;
+const int MODE = 1e9+7;
+
+struct Matrix {
+    ll n;
+    vii a;
+    Matrix(ll n) : n(n), a(n, vi(n)) {}
+    Matrix operator*(const Matrix &b) const {
+        Matrix c(n);
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                for (int k = 0; k < n; k++) {
+                    c.a[i][j] = (c.a[i][j] + a[i][k] * b.a[k][j]) % MODE;
+                }
+            }
+        }
+        return c;
+    }
+};
+
+Matrix matrixpower(Matrix a, ll n) {
+    Matrix res(a.n);
+    for (int i = 0; i < res.n; i++) res.a[i][i] = 1;
+    while (n) {
+        if (n & 1) res = res * a;
+        a = a * a;
+        n >>= 1;
+    }
+    return res;
+}
 
 void solve(ll tc) {
-    ll n;
+    ll n, m, k;
 
-    cin >> n;
+    cin >> n >> m >> k;
 
-    vii X(n, vi(n));
+    Matrix X(n);
 
-    for (int i = 0; i < n; i++)
+    for (int i = 0; i < m; i++)
     {
-        for (int j = 0; j < n; j++)
-        {
-            cin >> X[i][j];
-        }
+        ll u, v; cin >> u >> v; u--, v--;
+        X.a[u][v]++;
     }
+    X = matrixpower(X, k);
 
-    vi dp(1 << n);
-
-    ll q; cin >> q;
-    while (q--)
-    {
-        string s; cin >> s;
-        ll l = 0, r = 0;
-        for (int i = 0; i < n; i++)
-        {
-            if (s[i] == 'H') l |= (1 << i);
-            else r |= (1 << i);
-        }
-
-        cout << dp[l] * dp[r] << '\n';
-    }
+    cout << X.a[0][n-1] << '\n';
 }
  
 int32_t main()
