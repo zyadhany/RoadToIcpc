@@ -40,29 +40,46 @@ void solve(ll tc) {
     ll n;
 
     cin >> n;
-
-    vector<bitset<3000>> bt(n);
+    vp X(n);
 
     for (int i = 0; i < n; i++)
     {
-        string s; cin >> s;
+        cin >> X[i].first >> X[i].second;
+    }
+    
+    vector<vector<bitset<300>>> bt(n, vector<bitset<300>>(n, bitset<300>()));
+
+    for (int i = 0; i < n; i++)
+    {
         for (int j = 0; j < n; j++)
         {
-            bt[i][j] = (s[j] == '1');
+            for (int k = 0; k < n; k++)
+            {
+                if (i != j && i != k && j != k)
+                bt[i][j][k] = PointLocation(X[i], X[j], X[k]);
+            }
         }
     }
 
-    ll cnt = 0;
-
+    vi res(n-2);
     for (int i = 0; i < n; i++)
     {
-        for (int j = i + 1; j < n; j++)
+        for (int j = i+1; j < n; j++)
         {
-            cnt += (bt[i]&bt[j]).count();
+            for (int k = j+1; k < n; k++)
+            {
+                vector<int> t = {i, j, k};
+                if (!PointLocation(X[t[0]], X[t[1]], X[t[2]])) swap(t[1], t[2]);
+				auto z = bt[t[0]][t[1]] & bt[t[1]][t[2]] & bt[t[2]][t[0]];
+				res[z.count()]++;
+            }
         }
     }
 
-    cout << cnt / 4<< '\n';
+    for (int i = 0; i < n-2; i++)
+    {
+        cout << res[i] << '\n';
+    }
 }
  
 int32_t main()
@@ -70,8 +87,8 @@ int32_t main()
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;   
 
-    // freopen("triangles.in", "r", stdin   );
-    // freopen("triangles.out", "w", stdout);
+    freopen("triangles.in", "r", stdin   );
+    freopen("triangles.out", "w", stdout);
     // cin >> size;
     for (int tc = 1; tc <= size; tc++){
         solve(tc);

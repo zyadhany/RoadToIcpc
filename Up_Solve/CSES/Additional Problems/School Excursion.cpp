@@ -26,43 +26,57 @@ using namespace std;
 
 const int MODE = 1e9+7;
 
-ll CrossPrduct(pl a, pl b) {
-    return a.first * b.second - a.second * b.first;
-}
+const int MXN = 1e5 + 1;
+int PAR[MXN];
+int VAL[MXN];
 
-int PointLocation(pl a, pl b, pl c) {
-    ll res = CrossPrduct({c.first-a.first, c.second-a.second}, {c.first-b.first, c.second-b.second});
-    if (res > 0) return 1; // LEFT
-    else return 0;// right
+ll get(ll k) {
+    if (k == PAR[k]) return k;
+    return PAR[k] = get(PAR[k]);
+}
+ 
+void add(ll u, ll v) {
+    u = get(u), v = get(v);
+    if (u == v) return;
+    if (VAL[u] < VAL[v]) swap(u, v);
+    VAL[u] += VAL[v];
+    PAR[v] = u;    
+}
+ 
+void INIT() {
+    for (int i = 0; i < MXN; i++) {
+        PAR[i] = i;
+        VAL[i] = 1;
+    } 
 }
 
 void solve(ll tc) {
-    ll n;
+    ll n, m;
 
-    cin >> n;
+    cin >> n >> m;
 
-    vector<bitset<3000>> bt(n);
+    vii adj(n + 1);
 
-    for (int i = 0; i < n; i++)
+    for (int i = 0; i < m; i++)
     {
-        string s; cin >> s;
-        for (int j = 0; j < n; j++)
-        {
-            bt[i][j] = (s[j] == '1');
-        }
+        ll u, v; cin >> u >> v;
+        add(u, v);
     }
 
-    ll cnt = 0;
-
-    for (int i = 0; i < n; i++)
+    vi X;
+    for (int i = 1; i <= n; i++)
     {
-        for (int j = i + 1; j < n; j++)
-        {
-            cnt += (bt[i]&bt[j]).count();
-        }
+        ll re = VAL[get(i)];
+        if (re) X.push_back(re);
+        VAL[get(i)] = 0;
     }
-
-    cout << cnt / 4<< '\n';
+    
+    bitset<MXN> bt;
+    bt[0] = 1;
+    
+    for (auto a : X) bt |= (bt << a);
+    for (int i = 1; i <= n; i++) cout << bt[i];
+    cout << '\n';
 }
  
 int32_t main()
@@ -70,8 +84,9 @@ int32_t main()
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;   
 
-    // freopen("triangles.in", "r", stdin   );
-    // freopen("triangles.out", "w", stdout);
+    INIT();
+    // freopen("disrupt.in", "r", stdin   );
+    // freopen("disrupt.out", "w", stdout);
     // cin >> size;
     for (int tc = 1; tc <= size; tc++){
         solve(tc);
