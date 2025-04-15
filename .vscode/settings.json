@@ -99,7 +99,20 @@
         "xloctime": "cpp",
         "xmemory": "cpp",
         "xstddef": "cpp",
-        "xtr1common": "cpp"
+        "xtr1common": "cpp",
+        "any": "cpp",
+        "barrier": "cpp",
+        "expected": "cpp",
+        "memory_resource": "cpp",
+        "source_location": "cpp",
+        "latch": "cpp",
+        "numbers": "cpp",
+        "semaphore": "cpp",
+        "spanstream": "cpp",
+        "stacktrace": "cpp",
+        "stdfloat": "cpp",
+        "syncstream": "cpp",
+        "variant": "cpp"
     },
     "editor.wordWrap": "on"
 }
