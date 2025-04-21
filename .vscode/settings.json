@@ -114,5 +114,11 @@
         "syncstream": "cpp",
         "variant": "cpp"
     },
-    "editor.wordWrap": "on"
+    "editor.wordWrap": "on",
+    "github.copilot.enable": {
+        "*": true,
+        "plaintext": false,
+        "markdown": false,
+        "scminput": false
+    }
 }

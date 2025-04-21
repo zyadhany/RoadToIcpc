@@ -1,8 +1,8 @@
 const int HASED = 2;
-const vi MODHS = {1000000007, 1000000009};
-const vi P = {31, 37};
+const int MODHS = {1000000007, 1000000009};
+const int P[] = {31, 37};
 const int N = 1e6;
-vii pw(2, vi(N)), pwinv(2, vi(N));
+int pw[2][N], pwinv[2][N];
 
 ll fpowr(ll b, ll exp, ll mod)
 {
@@ -13,7 +13,7 @@ ll fpowr(ll b, ll exp, ll mod)
     return (ret % mod);
 }
 
-vi HashVal(vii &pref, ll l, ll r) {
+pl HashVal(vii &pref, ll l, ll r) {
     vi ans(HASED);
     for (int hs = 0; hs < HASED; hs++)
     {
@@ -21,8 +21,8 @@ vi HashVal(vii &pref, ll l, ll r) {
         if (l) ans[hs] = (ans[hs] - pref[hs][l - 1] + MODHS[hs]) % MODHS[hs];
         ans[hs] = (1ll * ans[hs] * pwinv[hs][l]) % MODHS[hs];
     }
-    
-    return (ans);
+   
+    return (pl(ans[0], ans[1]));
 }
 
 vii HashPrefix(string &s) {
