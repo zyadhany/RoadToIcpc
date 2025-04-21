@@ -20,61 +20,31 @@
 
 using namespace std;
 
-vii maketree(ll n) {
-    vi ND(n-1);
-    for (int i = 0; i < n-1; i++)
-    {
-        ND[i] = i+1;
-    }
-    shuffle(ND.begin(), ND.end());
-    
-    vi AV(1, 0);
+int M;
 
-    vii adj(n);
-
-    for (auto x : ND)
-    {
-        ll p = AV[rnd.next(0,(int)AV.size()-1)];
-        adj[p].push_back(x);
-        adj[x].push_back(p);
-        AV.push_back(x);
-    }
-}
-
-void writeTest(ll n, ll m) {
-    cout << n << '\n';
-
-    auto adj = maketree(n);
-    for (int i = 0; i < n; i++) {
-        cout << adj[i].size();
-        for (auto x : adj[i]) {
-            cout << ' ' << x + 1;
-        }
-        cout << '\n';
-    }
-    
-    cout << m << '\n';
-
-    adj = maketree(m);
-    for (int i = 0; i < m; i++) {
-        cout << adj[i].size();
-        for (auto x : adj[i]) {
-            cout << ' ' << x + 1;
-        }
-        cout << '\n';
-    }
+ll n = 1, l = 2;
+void writeTest(int test) {
+    cout << n << ' ' << l << '\n';
+    l += n/60;
+    n%=60;
+    n++;
 }
 
 int main(int argc, char *argv[]) {
     registerGen(argc, argv, 1);
 
-    int TEST = 100;
-
-    auto VN = rnd.partition(TEST, 100'000, 1);
-    auto VM = rnd.partition(TEST, 100'000, 1);
+    int TEST = 1;
+    TEST = 10'000;
+    // M = opt<int>("m");
+    // TEST = 100, 1000 / M;
     
     cout << TEST << '\n';
     for (int i = 1; i <= TEST; i++)
-        writeTest(VN[i-1], VM[i-1]);
+        writeTest(i);
 }
 
+/*
+<#list 1..10 as i >
+     igen --m 10 ${i} > $ 
+</#list>
+*/
