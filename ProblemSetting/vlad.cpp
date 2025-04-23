@@ -22,4 +22,6 @@ int main(int argc, char *argv[]) {
         setTestCase(i);
         solve();
     }
+    inf.readEof();
+    return 0;
 }

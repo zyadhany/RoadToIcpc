@@ -1,6 +1,7 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include <bits/stdc++.h>
 #include <unordered_map>
-#include "testlib.h"
+#include <unordered_set>
 
 #define ll long long
 #define ld long double
@@ -14,39 +15,83 @@
 #define mc map<char,int>
 #define sortx(X) sort(X.begin(),X.end());
 #define all(X) X.begin(),X.end()
+#define allr(X) X.rbegin(),X.rend()
 #define ln '\n'
 #define YES {cout << "YES\n"; return;}
 #define NO {cout << "NO\n"; return;}
+#define MUN {cout << "-1\n"; return;}
+
+const int MODE = 1e9 + 7;
 
 using namespace std;
 
-int M;
+const int MXN = 1e6+10;
 
-ll n = 1, l = 2;
-void writeTest(int test) {
-    cout << n << ' ' << l << '\n';
-    l += n/60;
-    n%=60;
-    n++;
-}
+void solve(int tc) {
+    ll n, m;
+    cin >> n >> m;
+    vii X(n, vi(m));
 
-int main(int argc, char *argv[]) {
-    registerGen(argc, argv, 1);
-
-    ll TEST = 1;
-    TEST = 10'000;
-    M = opt<ll>("m", 0);
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = 0; j < m; j++)
+        {
+            string s; cin >> s;
+            pl at = {i, j};
+            for (auto c : s) {
+                if (c == 'N') at.first--;
+                else if (c == 'S') at.first++;
+                else if (c == 'E') at.second++;
+                else if (c == 'W') at.second--;  
+            }
+            X[i][j] = at.first * m + at.second;
+        }
+    }
     
-    l = (TEST*M)/60 + 2;
-    n = (TEST*M)%60+1;
+    vii SPT(n*m, vi(30));
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = 0; j < m; j++)
+        {
+            SPT[i*m + j][0] = X[i][j];
+        }
+    }
+    for (int j = 1; j < 30; j++)
+    {
+        for (int i = 0; i < n*m; i++)
+        {
+            SPT[i][j] = SPT[SPT[i][j-1]][j-1];
+        }
+    }
 
-    cout << TEST << '\n';
-    for (int i = 1; i <= TEST; i++)
-        writeTest(i);
+    ll q; cin >> q;
+    while (q--)
+    {
+        ll x, y, k;
+        cin >> x >> y >> k;
+        x--; y--;
+        ll at = x * m + y;
+        for (int j = 0; j < 32; j++)
+        {
+            if (k & (1 << j)) {
+                at = SPT[at][j];
+            }
+        }
+        ll ans_x = at / m;
+        ll ans_y = at % m;
+        cout << ans_x + 1 << " " << ans_y + 1 << '\n';
+    }
 }
 
-/*
-<#list 1..10 as i >
-     igen --m 10 ${i} > $ 
-</#list>
-*/
+int main()
+{
+    ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
+    int size = 1;
+
+    //freopen("input.txt", "r", stdin);
+    //freopen("output.txt", "w", stdout);
+
+    cin >> size;
+    for (int i = 1; i <= size; i++)
+        solve(i);
+}
