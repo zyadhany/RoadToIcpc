@@ -20,16 +20,42 @@
 
 using namespace std;
 
+void req(vii &TES, vi &X, int n, int m) {
+    if (m == n) {
+        TES.push_back(X);
+        return;
+    }
+
+    for (int i = 0; i <= 5; i++)
+    {
+        X.push_back(i);
+        req(TES, X, n, m + 1);
+        X.pop_back();
+    }
+    
+}
+
 int main(int argc, char *argv[]) {
     registerGen(argc, argv, 1);
 
-    int TEST = 10'000;
+    vii TES;
 
-    cout << TEST << '\n';
-    for (int i = 0; i < TEST; i++)
+    for (int i = 1; i <= 5; i++)
     {
-        ll a = 1e9-i;
-        cout << a << '\n';
+        vi X;
+        req(TES, X, i, 0);
+    }
+    
+
+    cout << TES.size() << '\n';
+    for (auto X : TES) {
+        cout << X.size() << '\n';
+        for (int i = 0; i < X.size(); i++)
+        {
+            cout << X[i];
+            if (i != X.size() - 1) cout << ' ';
+        }
+        cout << '\n';
     }
 }
 

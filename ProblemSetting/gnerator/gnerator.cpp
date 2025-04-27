@@ -44,9 +44,7 @@ int main(int argc, char *argv[]) {
     registerGen(argc, argv, 1);
 
     int TEST = 1;
-    TEST = rnd.next(1, 10'000);
-    // M = opt<int>("m");
-    // TEST = 100, 1000 / M;
+    TEST = opt<int>("t", 10'000);
     
     cout << TEST << '\n';
     for (int i = 1; i <= TEST; i++)

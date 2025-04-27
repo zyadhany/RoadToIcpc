@@ -25,21 +25,27 @@ const int MODE = 1e9 + 7;
 
 using namespace std;
 
-long long computeSum(long long n) {
-    long long m = (n - 1) / 2;
-    long long a = m * (m + 1);
-    long long b = 2 * m + 1;
-    long long sum = (m + 1) * (n * n - n) - 2 * n * a + (2 * a * b) / 3 + a;
-    return sum;
-}
+
+const int MXN = 1e6;
+ll dp[MXN + 10] = {0};
 
 void solve(int tc) {
-    ll n;
-    cin >> n;
 
-    ll res = n * (n + 1) / 2 + computeSum(n-1);
-    cout << res << ln;
-
+    dp[1] = 1;
+    dp[2] = 2;
+    for (ll i = 3; i < MXN; i++)
+    {
+        dp[i] = (i - 1) * (dp[i - 1]) + 1;
+        dp[i] %= MODE;
+    }
+    
+    ll n; cin >> n;
+    while (n--)
+    {
+        ll a; cin >> a;
+        cout << dp[a] << '\n';
+    }
+    
 }
 
 int main()
@@ -50,7 +56,7 @@ int main()
     //freopen("input.txt", "r", stdin);
     //freopen("output.txt", "w", stdout);
 
-    cin >> size;
+    // cin >> size;
     for (int i = 1; i <= size; i++)
         solve(i);
 }

@@ -12,7 +12,7 @@ public class tet {
             this.speed = speed;
         }
 
-        private int getSpeed() {
+        private int getSpeed()10 {
             return speed;
         }
 

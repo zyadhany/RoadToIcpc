@@ -21,43 +21,70 @@
 #define NO {cout << "NO\n"; return;}
 #define MUN {cout << "-1\n"; return;}
 
+const int MODE = 1e9 + 7;
+
 using namespace std;
 
-const int MODE = 1e9 + 9;
+ll MSB(ll n) {
+    ll i = 0;
+    while (n > 1) {
+        n /= 2;
+        i++;
+    }
+    return i;
+}
+
+ll sol(vi &X) {
+    if (X.size() == 1) return 0;
+    vii Z(32);
+
+    ll cnt = 0;
+    for (auto a : X) {
+        if (!a) {
+            cnt++;
+            continue;
+        }
+        ll i = MSB(a);
+        Z[i].push_back(a ^ (1 << i));
+    }
+
+    ll summ = 0;
+    ll suff = 0;
+    
+    for (int i = 32 - 1; i >= 0; i--)
+    {
+        if (Z[i].empty()) continue;
+        summ += sol(Z[i]);
+        
+        summ += suff * Z[i].size();
+        suff += Z[i].size() * i;
+    }
+    summ += cnt * suff;
+
+    return summ;
+}
 
 void solve(int tc) {
     ll n;
 
     cin >> n;
 
-    vi X(n), Y(n);
-
-    for (int i = 0; i < n; i++)
-        cin >> X[i];
-    for (int i = 0; i < n; i++)
-        cin >> Y[i];
-
-    ll amm = -1;
-    ll mn = INT32_MAX;
+    vi X(n);
     for (int i = 0; i < n; i++)
     {
-        if (X[i] < Y[i]) {
-            if (amm != -1) NO;
-            amm = Y[i] - X[i];
-        } else mn = min(mn, X[i] - Y[i]);
+        cin >> X[i];
     }
-
-    if (amm <= mn) YES;
-    NO;
+    
+    cout << sol(X) << '\n';
 }
 
 int main()
 {
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;
-
-    // freopen("team.in", "r", stdin);
-    // freopen("team.out", "w", stdout);
+    
+    //freopen("input.txt", "r", stdin);
+    //freopen("output.txt", "w", stdout);
 
     cin >> size;
     for (int i = 1; i <= size; i++)
