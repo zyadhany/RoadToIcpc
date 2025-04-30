@@ -17,3 +17,7 @@ bool comp(string a, string b) {
     if (a.size() != b.size()) return a.size() < b.size();
     return a < b;
 }
+
+sort(E.begin(), E.end(), [&](edg &a, edg &b) {
+    return a.a * b.b > a.b * b.a;
+});

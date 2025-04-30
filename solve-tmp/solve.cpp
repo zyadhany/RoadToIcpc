@@ -3,7 +3,7 @@
 #include <unordered_map>
 #include <unordered_set>
 
-#define ll long long
+#define ll int
 #define ld long double
 #define pl pair<ll, ll>
 #define vi vector<ll>
@@ -25,20 +25,11 @@ const int MODE = 1e9 + 7;
 
 using namespace std;
 
-long long computeSum(long long n) {
-    long long m = (n - 1) / 2;
-    long long a = m * (m + 1);
-    long long b = 2 * m + 1;
-    long long sum = (m + 1) * (n * n - n) - 2 * n * a + (2 * a * b) / 3 + a;
-    return sum;
-}
+const int INF = 1e6;
+int dx[] = {1, -1, 0, 0};
+int dy[] = {0, 0, 1, -1};
 
 void solve(int tc) {
-    ll n;
-    cin >> n;
-
-    ll res = n * (n + 1) / 2 + computeSum(n-1);
-    cout << res << ln;
 
 }
 
@@ -47,10 +38,10 @@ int main()
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;
 
-    //freopen("input.txt", "r", stdin);
-    //freopen("output.txt", "w", stdout);
+    // freopen("island.in", "r", stdin);
+    // freopen("island.out", "w", stdout);
 
-    cin >> size;
+    // cin >> size;
     for (int i = 1; i <= size; i++)
         solve(i);
 }

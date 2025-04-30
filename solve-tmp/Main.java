@@ -22,12 +22,14 @@
 #define MUN {cout << "-1\n"; return;}
 
 const int MODE = 1e9 + 7;
+
 using namespace std;
+
 
 struct Matrix {
     ll n;
-    int a[20][20]={0};
-    Matrix(ll n) : n(n) {}
+    vii a;
+    Matrix(ll n) : n(n), a(n, vi(n)) {}
     Matrix operator*(const Matrix &b) const {
         Matrix c(n);
         for (int i = 0; i < n; i++) {
@@ -52,59 +54,64 @@ Matrix matrixpower(Matrix a, ll n) {
     return res;
 }
 
-const int MXN = 1e5 + 200;
-vector<int> divs[MXN];
+ll getpa(Matrix &adj, ll n) {
+    auto dd = matrixpower(adj, n);
+    ll summ = 0;
+    for (auto a : dd.a) for (auto b : a) summ = (summ + b) % MODE;
+    return summ;
+}
+
+ll gcdExtended(ll a, ll b, ll* x, ll* y)
+{
+    if (a == 0) {
+        *x = 0, *y = 1;
+        return b;
+    }
+    ll x1, y1;
+    ll gcd = gcdExtended(b % a, a, &x1, &y1);
+    *x = y1 - (b / a) * x1;
+    *y = x1;
+    return gcd;
+}
+
+ll modeenv(ll n) {
+    ll x, y;
+    gcdExtended(n, MODE, &x, &y);
+    return (x + MODE) % MODE;
+}
+
 
 void solve(int tc) {
-    ll n, q; cin >> n >> q;
+    ll m, k;
 
-    Matrix adj(n);
+    cin >> m >> k;
 
+    ll n = 100;
+    Matrix matt(n);
+    matt.a[0][1] = k;
+    matt.a[1][1] = 1;
+    matt.a[2][3] = MODE-2;
+    matt.a[3][3] = 1;
+
+
+    assert(getpa(matt, m) == k);
+
+    cout << n << '\n';
+   
     for (int i = 0; i < n; i++)
     {
         for (int j = 0; j < n; j++)
         {
-            cin >> adj.a[i][j];
+            cout << matt.a[i][j] << ' ';
         }
-    }
-
-    while (q--)
-    {
-        ll ty, u, v; cin >> ty >> u >> v;
-        u--, v--;
-
-        if (ty == 1) adj.a[u][v]++;
-        else if(ty == 2) adj.a[u][v]--;
-        else {
-            ll sol = 0;
-            ll k; cin >> k;
-            for (auto d : divs[k])
-            {
-                sol += getpa(adj, d);
-            }
-            sol %= MODE;
-            cout << sol << '\n';
-        }
-    }
+        cout << '\n';
+    }    
 }
 
-int main()
-{
+int main() {
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;
 
-    for (int i = 1; i < MXN; i++)
-    {
-        for (int j = 1; j * j <= i; j++)
-        {
-            if (i % j == 0)
-            {
-                divs[i].push_back(j);
-                if (j * j != i) divs[i].push_back(i / j);
-            }
-        }
-    }
-    
     //freopen("input.txt", "r", stdin);
     //freopen("output.txt", "w", stdout);
 

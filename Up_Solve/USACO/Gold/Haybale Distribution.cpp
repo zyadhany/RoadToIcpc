@@ -25,43 +25,12 @@ const int MODE = 1e9 + 7;
 
 using namespace std;
 
-ll MSB(ll n) {
-    ll i = 0;
-    while (n > 1) {
-        n /= 2;
-        i++;
-    }
-    return i;
-}
-
-ll sol(vi &X) {
-    if (X.size() == 1) return 0;
-    vii Z(32);
-
-    ll cnt = 0;
-    for (auto a : X) {
-        if (!a) {
-            cnt++;
-            continue;
-        }
-        ll i = MSB(a);
-        Z[i].push_back(a ^ (1 << i));
-    }
-
-    ll summ = 0;
-    ll suff = 0;
+ll F(vi &pref, vi &X, ll k, ll a, ll b) {
+    ll ind = upper_bound(all(X), k) - X.begin()-1;
     
-    for (int i = 32 - 1; i >= 0; i--)
-    {
-        if (Z[i].empty()) continue;
-        summ += sol(Z[i]);
-        
-        summ += suff * Z[i].size();
-        suff += Z[i].size() * i;
-    }
-    summ += cnt * suff;
-
-    return summ;
+    ll res = a * (ind*k - pref[ind]);
+    res += b * (pref.back() - pref[ind] - (X.size()-ind-1)*k);
+    return res;
 }
 
 void solve(int tc) {
@@ -69,24 +38,48 @@ void solve(int tc) {
 
     cin >> n;
 
-    vi X(n);
+    vi X(n+1, INT32_MIN);
     for (int i = 0; i < n; i++)
     {
         cin >> X[i];
     }
+    sortx(X);
+    vi pref(n + 1);
+    for (int i = 1; i <= n; i++)
+    {
+        pref[i] = pref[i-1] + X[i];
+    }
     
-    cout << sol(X) << '\n';
+    ll q; cin >> q;
+    while (q--)
+    {
+        ll a, b; cin >> a >> b;
+
+        ll l = -10;
+        ll r = 1e7;
+        while (l < r)
+        {
+            ll mid = (l + r + 1) / 2;
+            ll v1 = F(pref, X, mid-1, a, b);
+            ll v2 = F(pref, X, mid, a, b);
+            
+            if (v1 < v2) r = mid-1;
+            else l = mid;
+        }
+        
+        cout << F(pref, X, l, a, b) << '\n';
+    }
 }
 
 int main()
 {
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;
-    
-    //freopen("input.txt", "r", stdin);
-    //freopen("output.txt", "w", stdout);
 
-    cin >> size;
+    // freopen("dirtraverse.in", "r", stdin);
+    // freopen("dirtraverse.out", "w", stdout);
+
+    // cin >> size;
     for (int i = 1; i <= size; i++)
         solve(i);
 }
