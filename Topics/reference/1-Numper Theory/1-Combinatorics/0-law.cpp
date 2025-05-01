@@ -20,6 +20,7 @@ f(n, k) = C(n - k + 1, k)
 
 /* Multinomial Coefficient */
 // Equals the number of ways we can divide n elements into subsets of sizes k1, k2, ..., km, where k1 + k2 + ... + km = n.
+// num of way to shuffel array
 = n! / (k1! * k2! * k3! * ... * km!)
 
 /* Catalan Numbers */
