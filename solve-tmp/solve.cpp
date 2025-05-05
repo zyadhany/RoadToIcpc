@@ -6,7 +6,7 @@
 #define ll long long
 #define ld long double
 #define pl pair<ll, ll>
-#define vi vector<ll>
+#define vi vector<long long>
 #define vii vector<vi>
 #define vc vector<char>
 #define vcc vector<vc>
@@ -20,28 +20,38 @@
 #define YES {cout << "YES\n"; return;}
 #define NO {cout << "NO\n"; return;}
 #define MUN {cout << "-1\n"; return;}
-
-const int MODE = 1e9 + 7;
-
 using namespace std;
 
-void solve(int tc) {
-    ll n;
+vi kmp(string &s)  {
+    ll n = s.size();
+    vi Z(n);
+    
+    for (int i = 1; i < n; i++)
+    {
+        ll j = Z[i-1];
+        while (j && s[j] != s[i])
+        {
+            j = Z[j-1];
+        }
+        Z[i] == j + (s[j] == s[i]);        
+    }
 
-    cin >> n;
-
-    cout << n * 10 << '\n';
+    return Z;
 }
 
-int main()
+void solve(int tc)  {
+
+}
+
+signed main()
 {
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;
-
-    // freopen("differences.in", "r", stdin);
-    // freopen("island.out", "w", stdout);
+ 
+    // freopen("dec.in", "r", stdin);
+    // freopen("dec.out", "w", stdout);
 
     // cin >> size;
     for (int i = 1; i <= size; i++)
         solve(i);
-} 
+}

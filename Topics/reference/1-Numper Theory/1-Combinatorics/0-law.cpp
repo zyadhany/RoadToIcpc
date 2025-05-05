@@ -18,6 +18,9 @@ f(n, k) = C(n + k - 1, k)
 // Put k balls in n boxes such that no two adjacent boxes contain a ball.
 f(n, k) = C(n - k + 1, k)
 
+// number of way we build array of leanght l with summ x
+nCr(x-l + l-1, l-1) = nCr(x-1, l-1)
+
 /* Multinomial Coefficient */
 // Equals the number of ways we can divide n elements into subsets of sizes k1, k2, ..., km, where k1 + k2 + ... + km = n.
 // num of way to shuffel array
