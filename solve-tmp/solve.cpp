@@ -3,7 +3,7 @@
 #include <unordered_map>
 #include <unordered_set>
 
-#define ll int
+#define ll long long
 #define ld long double
 #define pl pair<ll, ll>
 #define vi vector<long long>
@@ -22,73 +22,108 @@
 #define MUN {cout << "-1\n"; return;}
 using namespace std;
 
-const int MODE = 1e9+7;
-
-vector<int> BuildLPS(string &s) {
+vector<int> manacher_odd(vp &s) {
     int n = s.size();
-    vector<int> LPS(n, 0);
-
-    for (int i = 1; i < n; i++)
-    {
-        int j = LPS[i - 1];
-        while (j && s[i] != s[j])
-            j = LPS[j - 1];
-        LPS[i] = j + (s[j] == s[i]);
-    }
-    
-    return (LPS);
-}
-
-vi sol(string s, string t, bool rev = 0) {
-    ll n = s.size(), m = t.size();
-
-    vi res(3);
-    for (int i = 0; i < n; i++)
-        for (int j = 0; j < m; j++)
-            if (s[i] == t[j]) res = {1, i, j};
-    
-    for (int i = 1; i < n; i++)
-    {
-        string s1 = s.substr(0, i), s2 = s.substr(i, n - i);
-        string t2 =t;
-
-        reverse(all(s1)); reverse(all(t2));
-        s1 += "#" + t2;
-        s2 += "#" + t;
-        auto dp1 = BuildLPS(s1);
-        auto dp2 = BuildLPS(s2);
-        for (int j = 0; j < m-1; j++)
-        {
-            ll a = dp2[n-i+1 + j];
-            ll b = dp1[i + m-1-j];
-            
-            vi re = {a+b, i-b, j+1 - a};
-            if (rev) re[2] = m-1-j-b;
-            res = max(re, res);
+    vector<int> p(n);
+    int l = 0, r = 1;
+    for(int i = 1; i <= n; i++) {
+        p[i] = max(0, min(r - i, p[l + (r - i)]));
+        while(s[i - p[i]] == s[i + p[i]]) {
+            p[i]++;
+        }
+        if (s[i].first <= -6) p[i] = 0, l = i+1, r = i+2, i++;
+        else 
+        if(i + p[i] > r) {
+            l = i - p[i], r = i + p[i];
         }
     }
-
-    return res;
+    return vector<int>(begin(p) + 1, end(p) - 1);
 }
 
+vector<int> manacher(vp&s) {
+    vp t;
+    t.push_back(pl(-1,-1));
+    for(auto &v: s) {
+        t.push_back(pl(-3,-3));
+        t.push_back(v);
+    }
+    t.push_back(pl(-3,-3));
+    t.push_back(pl(-2,-2));
+    auto res = manacher_odd(t);
+    for (int i = 0; i < res.size(); i++)
+    {
+        res[i]--;
+    }
+    return vector<int>(begin(res) + 1, end(res));
+}
+const int MODE = 1e9+7;
+const int p = 31;
+const int MODE2 = 1e9+9;
+const int p2 = 37;
+ 
 void solve(int tc)  {
-    string s, t;
-    cin >> s >> t;
+    ll n, m;
 
-    auto re = sol(s, t);
-    reverse(all(t));
-    re = max(re, sol(s, t, 1));
+    cin >> n >> m;
 
+    vector<string> X(n);
+    for (int i = 0; i < n; i++)
+    {
+        cin >> X[i];
+    }
 
-    cout << re[0] << '\n';
-    cout << re[1] << ' ' << re[2] << '\n';
+    vi pw(300, 1);
+    vi pwpr(300, 1);
+    for (int i = 1; i < pw.size(); i++)
+    {
+        pw[i] = (pw[i-1]*p) % MODE;
+        pwpr[i] = (pw[i]+pwpr[i-1]) % MODE;
+    }
+    vi pw2(300, 1);
+    vi pwpr2(300, 1);
+    for (int i = 1; i < pw2.size(); i++)
+    {
+        pw2[i] = (pw2[i-1]*p2) % MODE2;
+        pwpr2[i] = (pw2[i]+pwpr2[i-1]) % MODE2;
+    }
+    
+    ll cnt = 0;
+    vp frq(n);
+    for (int i = 0; i < m; i++)
+    {
+        vii pr(n, vi(26));
+        for (int j = i; j < m; j++)
+        {
+            for (int h = 0; h < n; h++)
+            {
+                pr[h][X[h][j]-'a']++;
+                pl re = {0,0};
+                ll cnod = 0;
+                for (int c = 0; c < 26; c++)
+                {
+                    int cpr = pr[h][c];
+                    cnod += cpr%2;
+                    if (!cpr) continue;
+                    re.first = (re.first *pw[cpr] + (c+1)*pwpr[cpr-1])%MODE;
+                    re.second = (re.second *pw2[cpr] + (c+1)*pwpr2[cpr-1])%MODE2;
+                }
+                frq[h] = re;
+                if (cnod >= 2) frq[h] = {-10-h, -10-h};
+            }
+
+            auto res = manacher(frq);
+            for (auto a: res) cnt += (a+1)/2;
+        }        
+    }
+    
+    cout << cnt << '\n';
 }
 
 signed main()
 {
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
-    int size = 1;
- 
+    int size = 1;    
+
     // freopen("dec.in", "r", stdin);
     // freopen("dec.out", "w", stdout);
 
