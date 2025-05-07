@@ -1,8 +1,2 @@
-7 7
-xwwwvvv
-xwwwvvv
-xwwwvvv
-xwwwvvv
-xwwwvvv
-xwwwvvv
-xwwwvvv
+4
+1 2 3 4

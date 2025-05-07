@@ -22,101 +22,70 @@
 #define MUN {cout << "-1\n"; return;}
 using namespace std;
 
-vector<int> manacher_odd(vp &s) {
-    int n = s.size();
-    vector<int> p(n);
-    int l = 0, r = 1;
-    for(int i = 1; i <= n; i++) {
-        p[i] = max(0, min(r - i, p[l + (r - i)]));
-        while(s[i - p[i]] == s[i + p[i]]) {
-            p[i]++;
-        }
-        if (s[i].first <= -6) p[i] = 0, l = i+1, r = i+2, i++;
-        else 
-        if(i + p[i] > r) {
-            l = i - p[i], r = i + p[i];
-        }
-    }
-    return vector<int>(begin(p) + 1, end(p) - 1);
-}
 
-vector<int> manacher(vp&s) {
-    vp t;
-    t.push_back(pl(-1,-1));
-    for(auto &v: s) {
-        t.push_back(pl(-3,-3));
-        t.push_back(v);
-    }
-    t.push_back(pl(-3,-3));
-    t.push_back(pl(-2,-2));
-    auto res = manacher_odd(t);
-    for (int i = 0; i < res.size(); i++)
-    {
-        res[i]--;
-    }
-    return vector<int>(begin(res) + 1, end(res));
-}
+
 const int MODE = 1e9+7;
-const int p = 31;
-const int MODE2 = 1e9+9;
-const int p2 = 37;
- 
+
+struct trie_node
+{
+    ll val;
+    int next[2];
+
+    trie_node() {
+        val = 0;
+        next[0]=next[1]=-1;
+    }
+};
+
+class Trie
+{
+public:
+    ll get(ll n) {return (get(0, n, SIZE - 1));}
+    void add(ll n, ll v) {add(0, n, SIZE - 1, v);} // To remove add with v=-1.
+    Trie() {tree.resize(1, trie_node());}
+private:
+    int SIZE = 32;
+    vector<trie_node> tree;
+
+    ll get(ll m, ll k, ll idx) {
+        if (idx == -1) return (0);
+        int re =  (k >> idx) & 1;
+        if (tree[m].next[re] != -1 && tree[tree[m].next[re]].val)
+           return get(tree[m].next[re], k, idx - 1);
+        return get(tree[m].next[!re], k, idx - 1) | (1ll << idx);
+    }
+
+    void add(ll m, ll n, ll idx, ll v) {
+        tree[m].val += v;
+        if (idx == -1) return;
+        int re = (n >> idx) & 1;
+        if (tree[m].next[re] == -1) {
+            tree[m].next[re] = tree.size();
+            tree.push_back(trie_node());
+        }
+        add(tree[m].next[re], n, idx - 1, v);
+    }
+};
+
+
 void solve(int tc)  {
-    ll n, m;
+    ll n;
 
-    cin >> n >> m;
+    cin >> n;
 
-    vector<string> X(n);
-    for (int i = 0; i < n; i++)
-    {
-        cin >> X[i];
-    }
+    ll res = 0;
+    Trie tr;
 
-    vi pw(300, 1);
-    vi pwpr(300, 1);
-    for (int i = 1; i < pw.size(); i++)
+    ll a; cin >> a;
+    tr.add(a, 1);
+    for (int i = 1; i < n; i++)
     {
-        pw[i] = (pw[i-1]*p) % MODE;
-        pwpr[i] = (pw[i]+pwpr[i-1]) % MODE;
-    }
-    vi pw2(300, 1);
-    vi pwpr2(300, 1);
-    for (int i = 1; i < pw2.size(); i++)
-    {
-        pw2[i] = (pw2[i-1]*p2) % MODE2;
-        pwpr2[i] = (pw2[i]+pwpr2[i-1]) % MODE2;
+        ll a; cin >> a;
+        res += tr.get(a);
+        tr.add(a, 1);
     }
     
-    ll cnt = 0;
-    vp frq(n);
-    for (int i = 0; i < m; i++)
-    {
-        vii pr(n, vi(26));
-        for (int j = i; j < m; j++)
-        {
-            for (int h = 0; h < n; h++)
-            {
-                pr[h][X[h][j]-'a']++;
-                pl re = {0,0};
-                ll cnod = 0;
-                for (int c = 0; c < 26; c++)
-                {
-                    int cpr = pr[h][c];
-                    cnod += cpr%2;
-                    if (!cpr) continue;
-                    re.first = (re.first *pw[cpr] + (c+1)*pwpr[cpr-1])%MODE;
-                    re.second = (re.second *pw2[cpr] + (c+1)*pwpr2[cpr-1])%MODE2;
-                }
-                frq[h] = re;
-                if (cnod >= 2) frq[h] = {-10-h, -10-h};
-            }
-
-            auto res = manacher(frq);
-            for (auto a: res) cnt += (a+1)/2;
-        }        
-    }
-    
-    cout << cnt << '\n';
+    cout << res << '\n';
 }
 
 signed main()
