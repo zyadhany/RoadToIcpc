@@ -6,7 +6,7 @@ public:
         ll val; 
         int next[26];
         trie_node() {
-            val = -1;
+            val = 0;
             memset(next, -1, sizeof(next));
         }
     };
