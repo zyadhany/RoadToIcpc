@@ -16,6 +16,11 @@ ll CrossPrduct(pl a, pl b) {
     return a.first * b.second - a.second * b.first;
 }
 
+// shortest angle between a and b.
+ld angleBetweenPoint(pl a, pl b) {
+    return atan2(CrossPrduct(a, b), a.first * b.first + a.second * b.second) * 180 / PI;
+}
+
 /*
 Point Location:
 line from A to B, point C

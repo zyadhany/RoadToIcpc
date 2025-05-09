@@ -24,68 +24,81 @@ using namespace std;
  
 const int MODE = 1e9+7;
 
-struct trie_node
-{
-    ll val;
-    int next[2];
-
-    trie_node() {
-        val = 0;
-        next[0]=next[1]=-1;
-    }
-};
-
-class Trie
-{
-public:
-    ll get(ll n) {return (get(0, n, SIZE - 1));}
-    void add(ll n, ll v) {add(0, n, SIZE - 1, v);} // To remove add with v=-1.
-    Trie() {tree.resize(1, trie_node());}
-private:
-    int SIZE = 32;
-    vector<trie_node> tree;
-
-    ll get(ll m, ll k, ll idx) {
-        if (idx == -1) return (0);
-        int re =  (k >> idx) & 1;
-        if (tree[m].next[!re] != -1 && tree[tree[m].next[!re]].val)
-           return get(tree[m].next[!re], k, idx - 1) | (1ll << idx);
-        return get(tree[m].next[re], k, idx - 1);
-    }
-
-    void add(ll m, ll n, ll idx, ll v) {
-        tree[m].val += v;
-        if (idx == -1) return;
-        int re = (n >> idx) & 1;
-        if (tree[m].next[re] == -1) {
-            tree[m].next[re] = tree.size();
-            tree.push_back(trie_node());
+struct Matrix {
+    ll n, m;
+    vector<vector<ld>> a;
+    Matrix(ll n) : n(n), m(n), a(n, vector<ld>(n, 0)) {}
+    Matrix(ll n, ll m) : n(n), m(m), a(n, vector<ld>(m, 0)) {}
+    Matrix operator*(const Matrix &b) const {
+        Matrix c(n, b.m);
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < b.m; j++) {
+                for (int k = 0; k < m; k++) {
+                    c.a[i][j] += a[i][k] * b.a[k][j];
+                }
+            }
         }
-        add(tree[m].next[re], n, idx - 1, v);
+        return c;
     }
 };
+
+Matrix matrixpower(Matrix a, ll n) {
+    Matrix res(a.n);
+    for (int i = 0; i < a.n; i++) res.a[i][i] = 1;
+    while (n) {
+        if (n & 1) res = res * a;
+        a = a * a;
+        n >>= 1;
+    }
+    return res;
+}
 
 
 void solve(int tc)  {
-    ll n; cin >> n;
+    ll n, m, k; cin >> n >> m >> k;
 
-    vi X(n + 1);
-    for (int i = 1; i <= n; i++)
+    vector<ld> X(n);
+    Matrix Y(n, 1);
+    for (int i = 0; i < n; i++)
     {
-        cin >> X[i];
-        X[i] ^= X[i-1];
+        ll a; cin >> a;
+        X[i] = (a <= m);
+        Y.a[i][0] = X[i];
+    }
+
+    Matrix mt(n);
+    ll cnt = 0;
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = i; j < n; j++)
+        {
+            cnt++;
+            for (int h = i; h <= j; h++)
+            {
+                mt.a[h][j+i-h]++;
+            }
+            for (int h = 0; h < i; h++) mt.a[h][h]++;
+            for (int h = j+1; h < n; h++) mt.a[h][h]++;            
+        }
+        
     }
     
-    Trie tr;
-    tr.add(0, 1);
-    ll mx = 0;
-    for (int i = 1; i <= n; i++)
+    for (int i = 0; i < n; i++)
     {
-        mx = max(mx, tr.get(X[i]));
-        tr.add(X[i], 1);
+        for (int j = 0; j < n; j++)
+        {
+            mt.a[i][j] /= cnt;
+        }
     }
-    
-    cout << mx << '\n';
+
+    mt = matrixpower(mt, k);
+    auto res = mt * Y;
+
+    for (int i = 0; i < n; i++)
+    {
+        cout << fixed << setprecision(7) << res.a[i][0] << ' ';
+    }
+    cout << '\n';
 }
  
 signed main()
@@ -93,8 +106,8 @@ signed main()
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;    
  
-    // freopen("dec.in", "r", stdin);
-    // freopen("dec.out", "w", stdout);
+    freopen("exam.in", "r", stdin);
+    // freopen("phosphate.out", "w", stdout);
  
     // cin >> size;
     for (int i = 1; i <= size; i++) solve(i);
