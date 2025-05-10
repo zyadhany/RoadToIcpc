@@ -9,3 +9,10 @@ vi DataCompress(vi &X) {
         M[i] = Y[X[i]];
     return (M);
 }
+
+// ----------
+sort(begin(coords), end(coords));
+	coords.erase(unique(begin(coords), end(coords)), end(coords));
+	const auto id = [&](int x) -> int {
+		return lower_bound(begin(coords), end(coords), x) - begin(coords);
+	};

@@ -61,6 +61,7 @@ void solve(ll tc) {
  * 0 8 0 6 0 
  * 0 0 9 0 0 
  */
+// another approch to convert (i,j) => (i-j,i+j).
 vii ConverDiamondToMatix(vii &X) {
     ll n = X.size();
     vii Z(n * 2 - 1, vi(2 * n - 1));

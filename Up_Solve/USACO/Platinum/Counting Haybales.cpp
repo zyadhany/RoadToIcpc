@@ -1,39 +1,43 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <bits/stdc++.h>
+#include <unordered_map>
+#include <unordered_set>
+ 
+#define ll long long
+#define ld long double
+#define pl pair<ll, ll>
+#define vi vector<long long>
+#define vii vector<vi>
+#define vc vector<char>
+#define vcc vector<vc>
+#define vp vector<pl>
+#define mi map<ll,ll>
+#define mc map<char,int>
+#define sortx(X) sort(X.begin(),X.end());
+#define all(X) X.begin(),X.end()
+#define allr(X) X.rbegin(),X.rend()
+#define ln '\n'
+#define YES {cout << "YES\n"; return;}
+#define NO {cout << "NO\n"; return;}
+#define MUN {cout << "-1\n"; return;}
+using namespace std;
+ 
+const int MODE = 1e9+7;
 
-/**
- * usage:-
- * creat tree element.
- * SegmentTree sg;
- * 
- * Functions you can use:
- * @set: set index or range to value.
- * @geteange: get value of given range.
- * @build: build tree with given vector or size.
- * 
- * make sure to look at item typedef.
- * you can change merge function to change it's oppration.
- * it you want to make change to segment work in checkLazy().
-*/
-
-typedef long long item;
-/*
-struct item
-{
-    int val;
-
+struct item {
+    ll sum, mn;
     item(){
-        val = 0;
+        sum = 0, mn = INT32_MAX;
+    }
+    item(ll n){
+        sum = mn = n;
     }
 };
-*/
 
 class SegmentTree
 {
 public:
-
-    void set(int index, ll value) {
-        set(0, 0, size - 1, index, value);
-    }
-    void set(int l, int r, ll value) {
+    void set(int l, int r, int value) {
         set(0, 0, size - 1, l, r, value);
     }
 
@@ -66,12 +70,15 @@ private:
 
     item merge(item &a, item &b) {
         item res;
+        res.sum = a.sum + b.sum;
+        res.mn = min(a.mn, b.mn);
         return (res);
     }
 
     void checkLazy(int m, int lx, int rx) {
         if (!lazy[m]) return;
-        tree[m] += lazy[m];
+        tree[m].sum += lazy[m] * (rx-lx+1);
+        tree[m].mn += lazy[m];
         
         if (lx != rx) {
             lazy[2 * m + 1] += lazy[m];
@@ -81,26 +88,7 @@ private:
         lazy[m] = 0;
     }
 
-    void set(int m, int lx, int rx, int pos, ll val) {
-        checkLazy(m, lx, rx);
-        if (pos < lx || rx < pos) return;
-        if (lx == rx && lx == pos)
-        {
-            tree[m] = val;
-            return;
-        }
-
-        int mid = (lx + rx) / 2;
-        item s1, s2;
-
-        set(m * 2 + 1, lx, mid, pos, val);
-        set(m * 2 + 2, mid + 1, rx, pos, val);
-        s1 = tree[m * 2 + 1], s2 = tree[m * 2 + 2];
-
-        tree[m] = merge(s1, s2);
-    }
-
-    void set(int m, int lx, int rx, int l, int r, ll val) {
+    void set(int m, int lx, int rx, int l, int r, int val) {
         checkLazy(m, lx, rx);
         if (rx < l || r < lx) return;
         if (l <= lx && rx <= r)
@@ -122,7 +110,7 @@ private:
 
     item getrange(int m, int lx, int rx, int l, int r) {
         checkLazy(m, lx, rx);
-        if (rx < l || r < lx) return (0);
+        if (rx < l || r < lx) return item();
         if (l <= lx && rx <= r) return (tree[m]);
 
         int mid = (lx + rx) / 2;
@@ -150,3 +138,45 @@ private:
         tree[m] = merge(s1, s2);
     }
 };
+
+
+void solve(int tc) {
+    ll n, q;
+
+    cin >> n >> q;
+
+    vi X(n);
+    for (int i = 0; i < n; i++)
+    {
+        cin >> X[i];
+    }
+    
+    SegmentTree sg;
+    sg.build(X);
+
+    while (q--)
+    {
+        char ty; cin >> ty;
+        ll l, r; cin >> l >> r; l--, r--;
+
+        if (ty == 'M') cout << sg.getrange(l, r).mn << '\n';
+        else if (ty == 'S') cout << sg.getrange(l, r).sum << '\n';
+        else {
+            ll k; cin >> k;
+            sg.set(l, r, k);
+        }
+    }
+}
+ 
+signed main()
+{
+    ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
+    int size = 1;    
+ 
+    freopen("haybales.in", "r", stdin);
+    freopen("haybales.out", "w", stdout);
+ 
+    // cin >> size;
+    for (int i = 1; i <= size; i++) solve(i);
+    return 0;
+}
