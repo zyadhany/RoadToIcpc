@@ -20,6 +20,7 @@ void build(int l, int r, int lev) {
     build(m + 1, r, lev + 1);
 }
 
+// we count number of trailling zeros in (mask[a] ^ mask[b])
 int query(int a, int b) {
     if (a == b) return x[a];
     int bits = __builtin_ctz(mask[a] ^ mask[b]);
