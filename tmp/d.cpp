@@ -2,7 +2,7 @@
 #include <bits/stdc++.h>
 #include <unordered_map>
 #include <unordered_set>
-
+ 
 #define ll long long
 #define ld long double
 #define pl pair<ll, ll>
@@ -21,27 +21,63 @@
 #define NO {cout << "NO\n"; return;}
 #define MUN {cout << "-1\n"; return;}
 using namespace std;
+ 
+const int MODE = 998244353;
 
-const int MODE = 1e9+7;
+ll nor(ll a, ll b, ll k) {
+    ll re = 0;
+    for (int i = 0; i < k; i++)
+    {
+        ll l = (a >> i) & 1;
+        ll r = (b >> i) & 1;
+        if (!l && !r) re |= (1<<i);
+    }
+    return re;
+}
 
-void solve(int tc)  {
-    ll x, y, z, l, r;
-    cin >> x >> y >> z >> l >> r;
+void solve(int tc) {
+    ll n, k;
 
-    ll g = gcd(gcd(x,y), z);
+    cin >> n >> k;
 
-        
+    vi X(n);
+    vii IND(k);
+    for (int i = 0; i < n; i++)
+    {
+        cin >> X[i];
+        for (int j = 0; j < k; j++)
+        {
+            if (X[i] & (1<<j)) IND[j].push_back(i);
+        }
+    }
+
+    vp Y;
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = 0; j < k; j++)
+        {
+            ll re = upper_bound(all(IND[j]), i) - IND[j].begin() - 1;
+            if (re != -1) {
+                Y.push_back({IND[j][re], i});
+                Y.push_back({IND[j][re]+1, i});
+            }
+        }
+        Y.push_back({i, i});
+        Y.push_back({0, i});
+    }
+
 }
 
 signed main()
 {
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;    
-
-    // freopen("dec.in", "r", stdin);
-    // freopen("dec.out", "w", stdout);
-
+  
+    // INIT();
+    // freopen("lazy.in", "r", stdin);
+    // freopen("lazy.out", "w", stdout);
+ 
     cin >> size;
-    for (int i = 1; i <= size; i++)
-        solve(i);
+    for (int i = 1; i <= size; i++) solve(i);
+    return 0;
 }

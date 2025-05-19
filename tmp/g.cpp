@@ -2,7 +2,7 @@
 #include <bits/stdc++.h>
 #include <unordered_map>
 #include <unordered_set>
-
+ 
 #define ll long long
 #define ld long double
 #define pl pair<ll, ll>
@@ -20,41 +20,64 @@
 #define YES {cout << "YES\n"; return;}
 #define NO {cout << "NO\n"; return;}
 #define MUN {cout << "-1\n"; return;}
-
 using namespace std;
+ 
+const int MODE = 998244353;
 
-void solve(int tc)  {
-    int n,m; cin>>n>>m;
-    vi v(m);
-    int cnt[1000005]{};
-    int res[n+1]{};
-    for(int i = 0 ; i < m ; i++) cin>>v[i],cnt[v[i]]++;
-    sort(all(v));
-    v.erase(unique(all(v)), v.end());
-    for(auto it : v){
-        for(int i = it ; i <= n ; i+=it){
-            res[i]+=cnt[it];
-        }
+ll nor(ll a, ll b, ll k) {
+    ll re = 0;
+    for (int i = 0; i < k; i++)
+    {
+        ll l = (a >> i) & 1;
+        ll r = (b >> i) & 1;
+        if (!l && !r) re |= (1<<i);
     }
-    res[0] = 1;
-    int ans = 0;
-    for(int i = 0  ;i  < n; i ++){
-        cout<<i<<" "<<res[i]<<" "<<n-i<<" "<<res[n-i]<<"\n";
-        ans += res[i] * res[n-i];
-    }
-    ans/=2;
-    cout<<ans<<"\n";
+    return re;
 }
 
-int main()
+void solve(int tc) {
+    ll n, k;
+
+    cin >> n >> k;
+
+    vi X(n);
+    for (int i = 0; i < n; i++) cin >> X[i];
+
+    vi res(all(X));
+
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = i; j < n; j++)
+        {
+            ll re = X[i];
+            for (int h = i+1; h <= j; h++)
+            {
+                re = nor(re, X[h], k);
+            }
+            for (int h = i; h <= j; h++)
+            {
+                res[h] = max(res[h], re);
+            }
+            
+        }
+        
+    }
+    
+
+    for (auto a : res) cout << a << ' ';
+    cout << '\n';
+}
+
+signed main()
 {
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
-    int size = 1;
-
-    // freopen("tree.in", "r", stdin);
-    // freopen("island.out", "w", stdout);
-
-     cin >> size;
-    for (int i = 1; i <= size; i++)
-        solve(i);
+    int size = 1;    
+  
+    // INIT();
+    // freopen("lazy.in", "r", stdin);
+    // freopen("lazy.out", "w", stdout);
+ 
+    cin >> size;
+    for (int i = 1; i <= size; i++) solve(i);
+    return 0;
 }
