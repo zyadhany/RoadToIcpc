@@ -37,7 +37,6 @@ public:
             res.push_back(Y);
         }
         
-        for (int i = 1; i <= size; i++) dfs(adj, visited, nodeOrder, i);        
         return (res);
     }
 

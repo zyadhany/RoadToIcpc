@@ -62,94 +62,42 @@ public:
             dfs(radj, visited, Y, ind);
             res.push_back(Y);
         }
+        
+        for (int i = 1; i <= size; i++) dfs(adj, visited, nodeOrder, i);        
         return (res);
     }
 
-    Graph(ll n, vii &adj): adj(adj) {
+    Graph(ll n) {
         size = n;
         vis.assign(n + 1, 0);
         adj.resize(n + 1);
         radj.resize(n + 1);
-        for (int i = 0; i <= n; i++)
-        {
-            for (auto a : adj[i]) radj[a].push_back(i);
-        }
-        
     }
 };
 
-const int MXN = 1e5;
-ll SUM[MXN];
-ll PRF[MXN];
-
-ll getval(ll n) {
-    ll ind = upper_bound(SUM, SUM+MXN, n) - SUM - 1;
-    ll res = (ind+1)*n - PRF[ind];
-    return res;
-}
-
-
-ll st, vst;
-
-pair<vector<vp>, vi> DAG(vector<vp> &adj, vii &cc, ll n) {
-    ll m = cc.size();
-    vi C(n+1), Z(m + 1);
-    for (int i = 0; i < cc.size(); i++)
-        for (auto a : cc[i]) {
-            if (a == st)vst = i + 1;
-            C[a] = i+1;
-        }
-    
-    vector<vp> nadj(m+1);
-    for (int i = 0; i <= n; i++)
-        for (auto [neg, w] : adj[i]) 
-        if (C[i] == C[neg]) Z[C[i]] += getval(w);
-        else nadj[C[i]].push_back({C[neg], w});
-    
-    for (int i = 0; i < nadj.size(); i++)
-    {
-        vp Y; Y.reserve(nadj[i].size());
-        sortx(nadj[i]);
-        for (auto p : nadj[i]) {
-            if (Y.empty() || Y.back().first != p.first) Y.push_back(p);
-            else Y.back().second = max(Y.back().second, p.second);
-        }
-        swap(nadj[i], Y);
-    }
-
-    return {nadj, Z};    
-}
-
-ll req(vector<vp> &adj, vi &Z, vi &dp, ll n) {
-    ll &res = dp[n];
-    if (res != -1) return res;
-    res = Z[n];
-    for (auto [neg, w] : adj[n]) res = max(res, req(adj, Z, dp, neg) + Z[n] + w);
-    return res;
-}
 
 void solve(int tc) {
     ll n, m;
     cin >> n >> m;
 
-    vii adj(n + 1);
-    vector<vp> adjw(n + 1);
+    Graph gr(n);
     for (int i = 0; i < m; i++)
     {
-        ll u, v, w; cin >> u >> v >> w;
-        adj[u].push_back(v);
-        adjw[u].push_back({v, w});
+        ll u, v; cin >> u >> v;
+        gr.addEdge(u, v);
     }
-
-    cin >> st;
-
-    Graph gr(n, adj);
-    auto cc = gr.stronglyConnectedComponents();
-    auto [nadj, Z] = DAG(adjw, cc, n);
     
-    vi dp(cc.size() + 1, -1);
-  
-    cout << req(nadj, Z, dp, vst) << '\n';
+    auto Z = gr.stronglyConnectedComponents();
+    
+    vi X(n+1);
+    for (int i = 0; i < Z.size(); i++)
+    {
+        for (auto a : Z[i]) X[a] = i + 1;
+    }
+    
+    cout << Z.size() << '\n';
+    for (int i = 1; i <= n; i++) cout << X[i] << ' ';
+    cout << '\n';
 }
 
 signed main()
@@ -157,13 +105,7 @@ signed main()
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;    
   
-    SUM[0] = 0;
-    PRF[0] = 0;
-    for (int i = 1; i < MXN; i++) {
-        SUM[i] = i + SUM[i-1];
-        PRF[i] = PRF[i-1] + SUM[i];
-    }
-
+    // INIT();
     // freopen("lazy.in", "r", stdin);
     // freopen("lazy.out", "w", stdout);
 
