@@ -43,3 +43,20 @@ int b = 0;
 do {
     // process subset b
 } while (b=(b-x)&x);
+
+
+
+// sand[i]: count of element y such that (i&y)=y (ie. i|y=i).
+vector<int> sor(all(frq));
+for (int i = 0; i < m; i++) {
+    for (int x = 0; x < (1 << m); x++) {
+        if (x & (1 << i)) { sor[x] += sor[x ^ (1 << i)]; }
+    }
+}
+
+vector<int> sand(all(frq));
+for (int i = m-1; i >= 0; i--) {
+    for (int x = (1 << m)-1; x > 0; x--) {
+        if ((x & (1 << i))==0) { sand[x] += sand[x ^ (1 << i)]; }
+    }
+}

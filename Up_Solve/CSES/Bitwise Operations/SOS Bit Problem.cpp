@@ -54,13 +54,11 @@ void solve(int tc) {
         }
     }
 
-    // 
     for (int i = 0; i < n; i++)
     {
         cout << sor[X[i]] << ' ' << sand[X[i]] << ' ' << n - sor[((1<<m)-1)^X[i]]<< '\n';
     }    
 }
-
 
 signed main()
 {
