@@ -24,41 +24,83 @@ using namespace std;
  
 const int MODE = 1e9+7;
 
+vi suffixarray(string &s) {
+    s += '$';
+    ll n = s.size();
+    vi suff(n), P(n);
+    vp V(n);
+    for (int i = 0; i < n; i++) suff[i]=i, V[i] = {s[i]-'a', s[i]-'a'};
+    
+    auto comp = [&](int i, int j) {
+        if (V[i].first != V[j].first) return V[i].first < V[j].first;
+        return V[i].second < V[j].second;
+    };
+    sort(all(suff), comp);
+    
+    vi tmp(n), frq(n), C(n);
+    for (int k = 1; k < n; k*=2)
+    {
+        C[0] = frq[0] = P[suff[0]] = 0;
+        for (int i = 1; i < n; i++) P[suff[i]] = P[suff[i-1]] + (V[suff[i]] != V[suff[i-1]]), frq[i] = 0;
+        for (int i = 0; i < n; i++) V[i] = {P[i], P[(i+k)%n]}, suff[i] = (suff[i] - k + n) % n, frq[P[i]]++;
+        for (int i = 1; i < n; i++) C[i] = C[i-1] + frq[i-1];
+        for (int i = 0; i < n; i++) tmp[C[V[suff[i]].first]] = suff[i], C[V[suff[i]].first]++;
+        swap(suff, tmp);
+    }
 
+    return suff;
+}
 
 void solve(int tc) {
-    ll n, m = 20;
+    string s; cin >> s;
 
-    cin >> n;
+    auto X = suffixarray(s);
 
-    vi X(n);
-    vi frq(1<<m);
-    for (int i = 0; i < n; i++)
+    ll q; cin >> q;
+    while (q--)
     {
-        cin >> X[i];
-        frq[X[i]]++;
-    }
-    
-    // sand[i]: count of element y such that (i&y)=y (ie. i|y=i).
-    vector<int> sor(all(frq));
-    for (int i = 0; i < m; i++) {
-        for (int x = 0; x < (1 << m); x++) {
-            if (x & (1 << i)) { sor[x] += sor[x ^ (1 << i)]; }
-        }
-    }
+        string t; cin >> t;
+        ll l = 0, r = X.size()-1;
+        ll st = 0;
+        while (l <= r)
+        {
+            ll mid = (l + r) / 2;
+            int comp;
 
-    vector<int> sand(all(frq));
-    for (int i = m-1; i >= 0; i--) {
-        for (int x = (1 << m)-1; x > 0; x--) {
-            if ((x & (1 << i))==0) { sand[x] += sand[x ^ (1 << i)]; }
-        }
-    }
+            ll ls = 0;
+            while (ls < t.size() && s[X[mid]+ls]==t[ls])ls++;
 
-    // 
-    for (int i = 0; i < n; i++)
-    {
-        cout << sor[X[i]] << ' ' << sand[X[i]] << ' ' << n - sor[((1<<m)-1)^X[i]]<< '\n';
-    }    
+            
+            if (ls == t.size()) comp = 0;
+            else if (t[ls] < s[X[mid]+ls]) comp = -1;
+            else comp = 1;
+
+            if (comp == 0) st = mid;
+            if (comp > 0) l = mid + 1;
+            else r = mid - 1;
+        }
+        
+        l = 0, r = X.size()-1;
+        ll en = -1;
+        while (l <= r)
+        {
+            ll mid = (l + r) / 2;
+            int comp;
+
+            ll ls = 0;
+            while (ls < t.size() && s[X[mid]+ls]==t[ls])ls++;
+            
+            if (ls == t.size()) comp = 0;
+            else if (t[ls] < s[X[mid]+ls]) comp = -1;
+            else comp = 1;
+
+            if (comp == 0) en = mid;
+            if (comp >= 0) l = mid + 1;
+            else r = mid - 1;
+        }
+
+        cout << en - st + 1 << '\n';
+    }
 }
 
 
