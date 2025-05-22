@@ -31,7 +31,7 @@ void suff(vector<int>& X, vector<int>& Z, ll k) {
     if (k * 2 < Z.size()) suff(X, K, k * 2);
 }
 
-vector<int> suffix(string s) {
+vector<int> suffix(string &s) {
     s += '$';
     int n = s.size();
     vector<int> Z(n), X(n);

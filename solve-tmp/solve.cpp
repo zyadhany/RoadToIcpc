@@ -6,7 +6,7 @@
 #define ll long long
 #define ld long double
 #define pl pair<ll, ll>
-#define vi vector<long long>
+#define vi vector<ll>
 #define vii vector<vi>
 #define vc vector<char>
 #define vcc vector<vc>
@@ -24,12 +24,11 @@ using namespace std;
  
 const int MODE = 1e9+7;
 
-vi suffixarray(string &s) {
-    s += '$';
-    ll n = s.size();
-    vi suff(n), P(n);
-    vp V(n);
-    for (int i = 0; i < n; i++) suff[i]=i, V[i] = {s[i]-'a', s[i]-'a'};
+vector<int> suffixarray(string &s) {
+    int n = s.size();
+    vector<int> suff(n), P(n);
+    vector<pair<int, int>> V(n);
+    for (int i = 0; i < n; i++) suff[i]=i, V[i] = {s[i], s[i]};
     
     auto comp = [&](int i, int j) {
         if (V[i].first != V[j].first) return V[i].first < V[j].first;
@@ -37,7 +36,7 @@ vi suffixarray(string &s) {
     };
     sort(all(suff), comp);
     
-    vi tmp(n), frq(n), C(n);
+    vector<int> tmp(n), frq(n), C(n);
     for (int k = 1; k < n; k*=2)
     {
         C[0] = frq[0] = P[suff[0]] = 0;
@@ -51,56 +50,98 @@ vi suffixarray(string &s) {
     return suff;
 }
 
-void solve(int tc) {
-    string s; cin >> s;
-
-    auto X = suffixarray(s);
-
-    ll q; cin >> q;
-    while (q--)
+pair<vi, vi> LCP(vector<int> &suff, string &s) {
+    ll n = s.size();
+    vi ind(n), lcp(n-1); // -1 for $ char
+    for (int i = 0; i < n; i++) ind[suff[i]] = i;
+    
+    int ls = 0;
+    for (int i = 0; i < n-1; i++)
     {
-        string t; cin >> t;
-        ll l = 0, r = X.size()-1;
-        ll st = 0;
-        while (l <= r)
-        {
-            ll mid = (l + r) / 2;
-            int comp;
-
-            ll ls = 0;
-            while (ls < t.size() && s[X[mid]+ls]==t[ls])ls++;
-
-            
-            if (ls == t.size()) comp = 0;
-            else if (t[ls] < s[X[mid]+ls]) comp = -1;
-            else comp = 1;
-
-            if (comp == 0) st = mid;
-            if (comp > 0) l = mid + 1;
-            else r = mid - 1;
-        }
-        
-        l = 0, r = X.size()-1;
-        ll en = -1;
-        while (l <= r)
-        {
-            ll mid = (l + r) / 2;
-            int comp;
-
-            ll ls = 0;
-            while (ls < t.size() && s[X[mid]+ls]==t[ls])ls++;
-            
-            if (ls == t.size()) comp = 0;
-            else if (t[ls] < s[X[mid]+ls]) comp = -1;
-            else comp = 1;
-
-            if (comp == 0) en = mid;
-            if (comp >= 0) l = mid + 1;
-            else r = mid - 1;
-        }
-
-        cout << en - st + 1 << '\n';
+        int prv = suff[ind[i]-1];
+        while (s[i+ls]==s[prv+ls])ls++;
+        lcp[ind[i]-1] = ls, ls = max(0, ls-1);
     }
+    
+    return {lcp, ind};
+}
+
+vii buildSparseTable(vi &X)
+{
+    ll n, m;
+    n = X.size(); m = ceil(log2(n));
+    vii table(n, vi(m + 1));
+    for (int i = 0; i < n; i++)
+        table[i][0] = X[i];
+ 
+    for (int j = 1; j <= m; j++)
+        for (int i = 0; i <= n - (1 << j); i++)
+            table[i][j] = min(table[i][j - 1],
+               table[i + (1 << (j - 1))][j - 1]);
+
+    return (table);
+}
+
+long long query(vii &table, int L, int R) 
+{ 
+    int j = (int)log2(R - L + 1); 
+    return min (table[L][j], table[R - (1 << j) + 1][j]);
+}
+
+vi MonomaticStack(vi& X)
+{
+    ll n = X.size();
+    stack<pair<ll, ll>> s;
+    vi Z(n, n);
+
+    for (int i = 0; i < n; i++) {
+        while (!s.empty() && s.top().first > X[i]) {
+            Z[s.top().second] = i;
+            s.pop();
+        }
+        s.push({ X[i] , i });
+    }
+
+    return (Z);
+}
+vi MonomaticStackLEFT(vi& X)
+{
+    ll n = X.size();
+    stack<pair<ll, ll>> s;
+    vi Z(n, -1);
+
+    for (int i = n-1; i >= 0; i--) {
+        while (!s.empty() && s.top().first >= X[i]) {
+            Z[s.top().second] = i;
+            s.pop();
+        }
+        s.push({ X[i] , i });
+    }
+
+    return (Z);
+}
+
+
+void solve(int tc) {
+    string s;
+    
+    cin >> s;
+    
+    ll n = s.size();
+    s += '\0';
+    auto suff = suffixarray(s);
+    auto [lcp, ind] = LCP(suff, s);
+
+    ll sol = n * (n + 1) / 2;
+    auto L = MonomaticStackLEFT(lcp);
+    auto R = MonomaticStack(lcp);
+
+    for (int i = 0; i < lcp.size(); i++)
+    {
+        sol += (R[i]-L[i]-1)*lcp[i];
+    }    
+
+    cout << sol << '\n';
 }
 
 

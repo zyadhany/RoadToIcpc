@@ -1,9 +1,9 @@
-vi suffixarray(string s) {
+vector<int> suffixarray(string &s) {
     s += '$';
-    ll n = s.size();
-    vi suff(n), P(n);
-    vp V(n);
-    for (int i = 0; i < n; i++) suff[i]=i, V[i] = {s[i]-'a', s[i]-'a'};
+    int n = s.size();
+    vector<int> suff(n), P(n);
+    vector<pair<int, int>> V(n);
+    for (int i = 0; i < n; i++) suff[i]=i, V[i] = {s[i], s[i]};
     
     auto comp = [&](int i, int j) {
         if (V[i].first != V[j].first) return V[i].first < V[j].first;
@@ -11,7 +11,7 @@ vi suffixarray(string s) {
     };
     sort(all(suff), comp);
     
-    vi tmp(n), frq(n), C(n);
+    vector<int> tmp(n), frq(n), C(n);
     for (int k = 1; k < n; k*=2)
     {
         C[0] = frq[0] = P[suff[0]] = 0;
