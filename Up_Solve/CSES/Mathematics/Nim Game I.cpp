@@ -2,7 +2,7 @@
 #include <bits/stdc++.h>
 #include <unordered_map>
 #include <unordered_set>
-
+ 
 #define ll long long
 #define ld long double
 #define pl pair<ll, ll>
@@ -21,52 +21,28 @@
 #define NO {cout << "NO\n"; return;}
 #define MUN {cout << "-1\n"; return;}
 using namespace std;
-
+ 
 const int MODE = 1e9+7;
-
-ll dp[16][16];
-ll grundy(ll x, ll y) {
-    if (x <= 0 || x > 15 || y <= 0 || y > 15) return INT32_MAX;
-    ll &res = dp[x][y];
-    if (res != -1) return res;
-
-    vi X = {grundy(x-2,y-1), grundy(x-2,y+1), grundy(x-1, y-2), grundy(x+1,y-2)};
-    sortx(X);
-    X.erase(unique(all(X)), X.end());
-    for (int i = 0; i < X.size(); i++)
-        if (i != X[i]) return res = i;    
-    return res = X.size();
-}
 
 void solve(int tc) {
     ll n;
     cin >> n;
-
-    ll v = 0;
+    ll x = 0;
     for (int i = 0; i < n; i++)
     {
-        ll x, y; cin >> x >> y;
-        v ^= grundy(x, y);
+        ll a; cin >> a; x ^= a;
     }
     
-    if (!v) cout << "Second\n";
-    else cout << "First\n";
+    if (x == 0) cout << "second\n";
+    else cout << "first\n";
 }
+
 
 signed main()
 {
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;    
-
-    for (int i = 0; i < 16; i++)
-    {
-        for (int j = 0; j < 16; j++)
-        {
-            dp[i][j] = -1;
-        }
-    }
-    
-
+  
     // freopen("lazy.in", "r", stdin);
     // freopen("lazy.out", "w", stdout);
 
