@@ -3,7 +3,7 @@
 #include <unordered_map>
 #include <unordered_set>
 
-#define ll long long
+#define ll int
 #define ld long double
 #define pl pair<ll, ll>
 #define vi vector<ll>
@@ -24,33 +24,84 @@ using namespace std;
 
 const int MODE = 1e9+7;
 
-ll dp[16][16];
-ll grundy(ll x, ll y) {
-    if (x <= 0 || x > 15 || y <= 0 || y > 15) return INT32_MAX;
-    ll &res = dp[x][y];
-    if (res != -1) return res;
+const int dx[] = {1, -1, 0, 0};
+const int dy[] = {0, 0, 1, -1};
 
-    vi X = {grundy(x-2,y-1), grundy(x-2,y+1), grundy(x-1, y-2), grundy(x+1,y-2)};
-    sortx(X);
-    X.erase(unique(all(X)), X.end());
-    for (int i = 0; i < X.size(); i++)
-        if (i != X[i]) return res = i;    
-    return res = X.size();
-}
+const int MXN = 1010;
+int dist[MXN][MXN][40];
+int X[MXN][MXN];
+int adj[40][40];
 
 void solve(int tc) {
-    ll n;
-    cin >> n;
+    ll n, m, k;
 
-    ll v = 0;
+    cin >> n >> m >> k;
+
+    for (int i = 0; i < n; i++)
+        for (int j = 0; j < m; j++)
+            for (int h = 0; h < k; h++)
+                dist[i][j][h] = n * m + 10;
+    for (int i = 0; i < k; i++)
+        for (int j = 0; j < k; j++)
+            adj[i][j] = n*m + 10;
+    
+
     for (int i = 0; i < n; i++)
     {
-        ll x, y; cin >> x >> y;
-        v ^= grundy(x, y);
+        for (int j = 0; j < m; j++)
+        {
+            cin >> X[i][j];
+            X[i][j]--;
+        }
     }
     
-    if (!v) cout << "Second\n";
-    else cout << "First\n";
+    for (int h = 0; h < k; h++)
+    {
+        queue<pl> q;
+        for (int i = 0; i < n; i++)
+        {
+            for (int j = 0; j < m; j++)
+            {
+                if (X[i][j] == h) {
+                    q.push({i, j});
+                    dist[i][j][h] = 0;
+                }
+            }
+        }
+
+        while (!q.empty())
+        {
+            auto [x, y] = q.front(); q.pop();
+            for (int i = 0; i < 4; i++)
+            {
+                ll nx = dx[i] + x;
+                ll ny = dy[i] + y;
+                if (nx < 0 || nx >= n || ny < 0 || ny >= m) continue;
+                ll nw = dist[x][y][h]+1;
+                if (dist[nx][ny][h] > nw) {
+                    dist[nx][ny][h] = nw;
+                    q.push({nx, ny});
+                }
+            }
+        }
+    }
+        
+    ll q; cin >> q;
+    while (q--)
+    {
+        ll a, b, c, d; cin >> a >> b >> c >> d;
+        a--, b--, c--, d--;
+        ll sol = abs(c - a) + abs(d - b);
+        
+        for (int i = 0; i < k; i++)
+        {
+            ll re = dist[a][b][i] + dist[c][d][i] + 1;
+            sol = min(sol, re);
+        }        
+    
+        cout << sol << '\n';
+    }
+        
 }
 
 signed main()
@@ -58,19 +109,10 @@ signed main()
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;    
 
-    for (int i = 0; i < 16; i++)
-    {
-        for (int j = 0; j < 16; j++)
-        {
-            dp[i][j] = -1;
-        }
-    }
-    
-
     // freopen("lazy.in", "r", stdin);
     // freopen("lazy.out", "w", stdout);
 
-    cin >> size;
+    // cin >> size;
     for (int i = 1; i <= size ; i++) solve(i);
     return 0;
 }
