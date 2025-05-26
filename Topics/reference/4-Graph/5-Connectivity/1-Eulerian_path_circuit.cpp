@@ -1,3 +1,16 @@
+/*
+eulerian circuit: that path start and end at the same vertex and visits every edge exactly once.
+eulerian path: that path may start and end at different vertices and visits every edge exactly once.
+
+in an undirected graph:
+- an eulerian circuit exists if and only if every vertex has even degree and the graph is connected.
+- an eulerian path if it's eulerian circuit or if it has exactly two vertices with odd degree and the graph is connected.
+
+in directed graph:
+- an eulerian circuit exists if and only if every vertex has equal in-degree and out-degree and the graph is strongly connected.
+- an eulerian path exists if it has exactly one vertex with (out-degree - in-degree) = 1, exactly one vertex with (in-degree - out-degree) = 1, and all other vertices have equal indegree and out-degree.
+
+*/
 class Graph {
 public:
     int size;

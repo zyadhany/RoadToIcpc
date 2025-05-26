@@ -35,7 +35,7 @@ void solve(int tc) {
     {
         cin >> X[i].first >> X[i].second;
     }
-    
+
     ll m = 0;
     vi dis(n);
     ll summ = 0;
@@ -60,10 +60,11 @@ void solve(int tc) {
             else if (x < px && ny > y) degree = 90;
             else if (x > px && ny < y) degree = 90;
             else degree = 270;
-            Y[i] += '#' + to_string(degree) + '#';
+            Y[i] += '$' + to_string(degree) + '$';
             dis[i] = abs(x-px);
         }
     }
+
 
     vi dp(n), prf(dis);
     prf.push_back(dis[0]);
@@ -87,7 +88,7 @@ void solve(int tc) {
         {
 			ll at = (i+j)%n;
             if (at == 0) break;
-            t += Y[at];
+            t += Y[(at-1+n)%n];
             HS[t]++;
 			t += to_string(dis[at]);
 			HS[t]++;
@@ -102,10 +103,9 @@ void solve(int tc) {
         for (int j = 1; j <= n-1; j++)
         {
             ll at = (i+j)%n;
-            t += Y[at];
+            t += Y[(at-1+n)%n];
 			
 			bool found = (at == 0);
-			
 			
 			if (!found) {
 				if (HS[t] == 1) {
@@ -119,10 +119,6 @@ void solve(int tc) {
 			}
 
 			if (found) {
-                if (d + dp[at]-dp[i] == 8066) cout << i << ' ' << at << "|\n";
-                // d-= dis[cor];
-                // at = cor;
-                // cout << i << ' ' << at << ' ' << d << ' ' << dp[at] << ' ' << prf[i] << '\n';
                 mx = max(mx, d + dp[at] - dp[i]);
                 break;
             }
@@ -137,8 +133,8 @@ signed main()
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;    
 
-    // freopen("lightsout.in", "r", stdin);
-    // freopen("lightsout.out", "w", stdout);
+    freopen("lightsout.in", "r", stdin);
+    freopen("lightsout.out", "w", stdout);
 
     // cin >> size;
     for (int i = 1; i <= size ; i++) solve(i);

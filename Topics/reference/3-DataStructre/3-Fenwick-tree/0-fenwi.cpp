@@ -1,23 +1,22 @@
 // It work in 1-index
 
-ll rangequery(const vi& Z, ll l, ll r) {
+ll rangequery(const vi& BIT, ll l, ll r) {
 	ll summ = 0;
 
 	for (int i = r; i > 0; i -= i & -i)
-		summ += Z[i];
+		summ += BIT[i];
 
 	for (int i = l - 1; i > 0; i -= i & -i)
-		summ -= Z[i];
+		summ -= BIT[i];
 
 	return summ;
 }
 
-void updatepoint(vi& Z, ll n, ll at) {
+void updatepoint(vi& BIT, ll idx, ll val) {
 	ll summ = 0;
-	//sum = rangequery(Z, at, at)
-
-	for (int i = at; i < Z.size(); i += i & -i)
-		Z[i] += n - summ;
+	//sum = rangequery(BIT, at, at)
+	for (int i = idx; i < BIT.size(); i += i & -i)
+		BIT[i] += val - summ;
 }
 
 // Construct fenwick tree from array in O(n)

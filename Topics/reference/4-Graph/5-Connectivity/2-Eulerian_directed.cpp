@@ -82,13 +82,13 @@ public:
 	}
 
     void addEdge(int u, int v) {
-		EIN = EOUT = -1;
-        adj[u].push_back(v);
+		adj[u].push_back(v);
 		indegree[v]++;
 	}
-
+	
     Graph(ll n) {
-        size = n;
+		EIN = EOUT = -1;
+		size = n;
         adj.resize(n + 1);
         indegree.resize(n + 1);
     }
