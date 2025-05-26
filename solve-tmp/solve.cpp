@@ -22,84 +22,61 @@
 #define MUN {cout << "-1\n"; return;}
 using namespace std;
 
-const int MAXSZ = 1e7 + 1;
-int prime[MAXSZ] = {0};
-vi primes;
- 
-void INIT() {
-    for (int i = 0; i < MAXSZ; i++) prime[i] = i;
-    for (int i = 2; i * i < MAXSZ; ++i) if (prime[i] == i)
-        for (int j = i; j < MAXSZ; j += i) prime[j] = i;
-    for (int i = 2; i < MAXSZ; i++) if(prime[i] == i) primes.push_back(i);
-}
 
-vp factorizationCnt(int n) {
-    if (n == 1) return {};
-    vi fac;
-    while(n > 1) fac.push_back(prime[n]), n /= prime[n];
-    vp faccnt;
-    pl re = {fac[0], 1};
-    for (int i = 1; i < fac.size(); i++)
-    {
-        if (fac[i] == re.first) re.second++;
-        else faccnt.push_back(re), re = {fac[i], 1};
-    }
-    faccnt.push_back(re);
-    return faccnt;
-}
-
-ll req(vp &X, ll k) {
-	ll cnt = 0;
-	sortx(X);
-
-	ll v = 1;
-	for (auto [p, frq] : X) {
-		while (frq--)
-		{
-			if (v * p <= k) {
-				v *= p;
-			} else v = p, cnt++;
-		}
-	}
-	if (v != 1) cnt++;
-
-	return cnt;
+ll req(ll n) {
+	if (n % 2) return 1;
+	return 2 * req(n / 2);
 }
 
 void solve(int tc) {
-	ll x, y, k;
+	ll n, k;
+	cin >> n >> k;
 
-	cin >> x >> y >> k;
+	vi X(n+10);
 
-	auto X = factorizationCnt(x);
-	auto Y = factorizationCnt(y);
+	ll summ = 0;
+
+	for (int i = 1; i <= n; i++)
+	{
+		cin >> X[i];
+		summ += req(X[i]);
+	}
 	
-	mi mx, my;
-	for (auto &p : X) mx[p.first] = p.second;
-	for (auto &p : Y) my[p.first] = p.second;
+	vi dpl(n+10), dpr(n+10);
 
-	vp add, rem;
-
-	for (auto p : mx) {
-		ll re = my[p.first] - p.second;
-		if (re==0) continue;
-		if (p.first > k) MUN;
-		if (re > 0) add.push_back({p.first, re});
-		else rem.push_back({p.first, -re});
+	for (int i = 2; i <= n; i++)
+	{
+		ll nv = 1;
+		ll x = X[i];
+		while (x % 2 == 0 && x/2 != X[i-1])
+		{
+			nv *= 2;
+			x /= 2;
+		}
+		dpr[i] = req(X[i]) - nv + dpr[i-1];
+	}
+	
+	for (int i = n-1; i >= 1; i--)
+	{
+		ll nv = 1;
+		ll x = X[i];
+		while (x % 2 == 0 && x/2 != X[i+1])
+		{
+			nv *= 2;
+			x /= 2;
+		}
+		dpl[i] = req(X[i]) - nv + dpl[i+1];
 	}
 
-	for (auto p : my) {
-		if (mx.find(p.first) != mx.end()) continue;
-		if (p.first > k) MUN;
-		add.push_back({p.first, p.second});
+	ll mn = INT32_MAX;
+	for (int i = 1; i <= n; i++) {
+		cout << dpl[i] << " " << dpr[i] << ln;
+		mn = min(mn, dpl[i-1] + dpr[i+1]);
 	}
 
-	for (auto p : add) cout << p.first << ' ' << p.second << '\n';
-	cout << "||\n";
-	for (auto p : rem) cout << p.first << ' ' << p.second << '\n';
-
-	ll cnt = req(add, k) + req(rem, k);
-	cout << cnt << '\n';
+	summ -= mn;
+	if (summ >= k) YES;
+	NO;
 }
 
 signed main()
@@ -107,7 +84,6 @@ signed main()
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;    
 
-	INIT();
     // freopen("lightsout.in", "r", stdin);
     // freopen("lightsout.out", "w", stdout);
 
