@@ -104,7 +104,7 @@ void solve(int tc) {
 			HX[i][j] = H[j].get_hash(i, i+m-1);
 			vector<HashedString> HR;
 	cout << "|" << endl;
-	for (int i = 0; i < M; i++)
+	for (int i = 0; i < m; i++)
 		HR.push_back(HashedString(HX[i]));	
 	
 	
