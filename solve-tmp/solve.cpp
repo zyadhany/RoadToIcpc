@@ -24,68 +24,96 @@ using namespace std;
 
 
 const int MODE = 998244353;
+const int MXN =	1e6+10;
+const int lg = 63;
+int dp[MXN][lg];
+
 
 void solve(int tc) {
-	ll n;
+	ll n, k, m;
 
-	cin >> n;
-	vi X(n + 1);
+	cin >> n >> k >> m;
 
-	for (int i = 1; i <= n; i++)
+	vi X(n), Z(n);
+	for (int i = 0; i < n; i++)
 	{
 		cin >> X[i];
 	}
-	sortx(X);
 
-	vi prf(X);
-	for (int i = 1; i <= n; i++)
+	for (int i = 0; i < n; i++)
 	{
-		prf[i] += prf[i - 1];
+		ll l = 0, r = i - 1;
+		while (l <= r)
+		{
+			ll mid = (l + r) / 2;
+			ll cnt = i - mid + 1;
+			
+			ll la = i, ra = n-1;
+			while (la < ra)
+			{
+				ll ma = (la + ra + 1) / 2;
+				if (X[ma]-X[i]<X[i]-X[mid]) la = ma;
+				else ra = ma - 1;
+			}
+			cnt += la-i;
+
+			if (cnt == k-1) Z[i]=mid;
+			if (cnt < k) r = mid - 1;
+			else l = mid + 1;
+		}
+	}
+	reverse(all(X));
+	for (int i = 0; i < n; i++)
+	{
+		ll l = 0, r = i - 1;
+		while (l <= r)
+		{
+			ll mid = (l + r) / 2;
+			ll cnt = i - mid + 1;
+			
+			ll la = i, ra = n-1;
+			while (la < ra)
+			{
+				ll ma = (la + ra + 1) / 2;
+				if (X[ma]-X[i]<=X[i]-X[mid]) la = ma;
+				else ra = ma - 1;
+			}
+			cnt += la-i;
+
+			if (cnt == k-1) Z[i]=n-mid-1;
+			if (cnt < k) r = mid - 1;
+			else l = mid + 1;
+		}
+	}
+	
+	
+
+	for (int i = 0; i < n; i++) dp[i][0] = Z[i];
+	for (int j = 1; j < lg; j++)
+	{
+		for (int i = 0; i < n; i++)
+		{
+			dp[i][lg] = dp[dp[i][lg-1]][lg-1];
+		}
+	}
+	
+	vi res(n);
+
+	for (int i = 0; i < n; i++)
+	{
+		ll at = i;
+		for (ll j = 0; j < lg; j++)
+		{
+			if (m & (1ll<<j)) {
+				at = dp[at][j];
+			}
+		}
+		
+		res[i] = at + 1;
 	}
 	
 
-	ll ind=1, sz=1;
-	ld val = -1;
-	auto f = [&](ll i, ll k) -> ld {
-		ll sz = k*2+1;
-		ld summ = prf[n]-prf[n-k] + prf[i]-prf[i-1-k];
-		summ /= sz;
-		return summ - X[i];
-	};
-
-	for (int i = 1; i <= n; i++)
-	{
-		ll l = 0, r = min(i-1ll, n - i);
-		while (r - l > 3) {
-			int m1 = l + (r - l) / 3;
-			int m2 = r - (r - l) / 3;
-			f(i, m1) < f(i, m2) ? l = m1 : r = m2;
-		}
-
-		int res = l;
-		for (int j = l+1; j <= r; j++) {
-			if (f(i, j) > f(i, res)) { res = j; }
-		}
-
-		if (f(i, res) > val) {
-			val = f(i, res);
-			ind = i;
-			sz = 2*res+1;
-		}
-	}
-	
-	vi res;
-	res.push_back(X[ind]);
-	for (int i = 0; i < sz/2; i++)
-	{
-		res.push_back(X[n-i]);
-		res.push_back(X[ind-i-1]);
-	}
-
-	sortx(res);
-	cout << res.size() << '\n';
-	for (auto a : res) cout << a << ' ';
-	cout << '\n';
+	for (auto a : res) cout << a << '\n';
 }
 
 signed main()
