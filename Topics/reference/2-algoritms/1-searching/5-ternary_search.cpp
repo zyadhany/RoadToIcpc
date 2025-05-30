@@ -1,3 +1,18 @@
+template <typename F> int find_min(int l, int r, const F &f) {
+	while (r - l > 3) {
+		int m1 = l + (r - l) / 3;
+		int m2 = r - (r - l) / 3;
+		f(m1) > f(m2) ? l = m1 : r = m2;
+	}
+
+	int res = l;
+	for (int i = l + 1; i <= r; i++) {
+		if (f(i) < f(res)) { res = i; }
+	}
+
+	return res;
+}
+
 // we can speed up by storing the value of f(m1) and f(m2).
 // better with double than binery search
 double ternary_search(double l, double r) {

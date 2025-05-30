@@ -40,7 +40,7 @@ ll catalan(int n)
 ll catalan(int n)
 {
     ll res = fac[2 * n];
-    res *= modeenv((fac[n + 1] * fac[n]) % MODE);
+    res *= (facinv[n+1] * facinv[n]) % MODE;
     return (res) % MODE;
 }
 

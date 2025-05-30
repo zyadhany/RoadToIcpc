@@ -23,126 +23,69 @@
 using namespace std;
 
 
-class HashedString {
-  public:
-	// change M and B if you want
-	static const ll M = (1LL << 61) - 1;
-	static const ll B;
-	static __int128 mul(ll a, ll b) { return (__int128)a * b; }
-	static ll mod_mul(ll a, ll b) { return mul(a, b) % M; }
-
-  private:
-	// pow[i] contains P^i % M
-	static vector<ll> pow;
-	// p_hash[i] is the hash of the first i characters of the given string
-	vector<ll> p_hash;
-  public:
-	HashedString(const string &s) : p_hash(s.size() + 1) {
-		while (pow.size() < s.size()) { pow.push_back(mod_mul(pow.back(), B)); }
-		p_hash[0] = 0;
-		for (int i = 0; i < s.size(); i++) {
-			p_hash[i + 1] = (mul(p_hash[i], B) + s[i]) % M;
-		}
-	}
-	HashedString(const vi &s) : p_hash(s.size() + 1) {
-		while (pow.size() < s.size()) { pow.push_back(mod_mul(pow.back(), B)); }
-		p_hash[0] = 0;
-		for (int i = 0; i < s.size(); i++) {
-			p_hash[i + 1] = (mul(p_hash[i], B) + s[i]) % M;
-		}
-	}
-
-	ll get_hash(int start, int end) {
-		ll raw_val = p_hash[end + 1] - mod_mul(p_hash[start], pow[end - start + 1]);
-		return (raw_val + M) % M;
-	}
-};
-mt19937 rng((uint32_t)chrono::steady_clock::now().time_since_epoch().count());
-vector<ll> HashedString::pow = {1};
-const ll HashedString::B = uniform_int_distribution<ll>(0, M - 1)(rng);
-// EndCodeSnip
-
-const auto M = HashedString::M;
-const auto B = HashedString::B;
-const auto mul = HashedString::mul;
-const auto mod_mul = HashedString::mod_mul;
-ll inv(ll base, ll MOD) {
-	ll ans = 1, expo = MOD - 2;
-	while (expo) {
-		if (expo & 1) { ans = mod_mul(ans, base); }
-		expo >>= 1;
-		base = mod_mul(base, base);
-	}
-	return ans;
-}
+const int MODE = 998244353;
 
 void solve(int tc) {
-	ll n, m;
+	ll n;
 
-	cin >> n >> m;
+	cin >> n;
+	vi X(n + 1);
 
-	vector<string> X(n);
-	for (int i = 0; i < n; i++)
+	for (int i = 1; i <= n; i++)
 	{
 		cin >> X[i];
-		for (auto &c : X[i]) if (c=='.') c = (char)2;
-		else c = (char)1;
 	}
+	sortx(X);
 
-	vector<int> suff(m*n);
-	for (int i = 0; i < n*m; i++) suff[i] = i;
-	vector<HashedString> H;
-
-	for (auto &s : X) {
-		s += s;
-		H.push_back(HashedString(s));	
-	}
-
-	vii HX(m, vi(n));
-	for (int i = 0; i < m; i++)
-		for (int j = 0; j < n; j++)
-			HX[i][j] = H[j].get_hash(i, i+m-1);
-			vector<HashedString> HR;
-	cout << "|" << endl;
-	for (int i = 0; i < m; i++)
-		HR.push_back(HashedString(HX[i]));	
-	
-	
-	auto cmp = [&](ll st, ll en) {
-		ll ir = st/m, in = st%m;
-		ll jr = en/m, jn = en%m;
-
-		ll l = 0, r = n*m;
-		while (l < r)
-		{
-			ll mid = (l + r + 1) / 2;
-	
-			ll hi = (HR[in].get_hash(ir,ir+mid/m-1) * B) % M;
-			hi += H[ir+mid/m].get_hash(in, in+mid%m-1);
-			hi %= M;
-			
-			ll hj = (HR[jn].get_hash(jr,jr+mid/m-1) * B) % M;
-			hj += H[jr+mid/m].get_hash(jn, jn+mid%m-1);
-			hj %= M;
-	
-			if (hi == hj) l = mid;
-			else r = mid - 1;
-		}
-		
-		if (l == n*m) return false;
-		return X[ir+l/m][in+l%m] < X[jr+l/m][jn+l%m];
-	};
-	sort(suff.begin(), suff.end(), cmp);	
-	
-	ll star = suff[0]/m, sh = suff[0]%m;
-	for (int i = 0; i < n; i++)
+	vi prf(X);
+	for (int i = 1; i <= n; i++)
 	{
-		X[i] += X[i].substr(0, sh);
-		X[i] = X[i].substr(sh, m);
-		for (auto &c : X[i]) if (c == 2) c = '.';
-		else c = '*';
+		prf[i] += prf[i - 1];
 	}
-	for (int i = 0; i < n; i++) cout << X[(i+star)%n] << '\n';
+	
+
+	ll ind=1, sz=1;
+	ld val = -1;
+	auto f = [&](ll i, ll k) -> ld {
+		ll sz = k*2+1;
+		ld summ = prf[n]-prf[n-k] + prf[i]-prf[i-1-k];
+		summ /= sz;
+		return summ - X[i];
+	};
+
+	for (int i = 1; i <= n; i++)
+	{
+		ll l = 0, r = min(i-1ll, n - i);
+		while (r - l > 3) {
+			int m1 = l + (r - l) / 3;
+			int m2 = r - (r - l) / 3;
+			f(i, m1) < f(i, m2) ? l = m1 : r = m2;
+		}
+
+		int res = l;
+		for (int j = l+1; j <= r; j++) {
+			if (f(i, j) > f(i, res)) { res = j; }
+		}
+
+		if (f(i, res) > val) {
+			val = f(i, res);
+			ind = i;
+			sz = 2*res+1;
+		}
+	}
+	
+	vi res;
+	res.push_back(X[ind]);
+	for (int i = 0; i < sz/2; i++)
+	{
+		res.push_back(X[n-i]);
+		res.push_back(X[ind-i-1]);
+	}
+
+	sortx(res);
+	cout << res.size() << '\n';
+	for (auto a : res) cout << a << ' ';
+	cout << '\n';
 }
 
 signed main()

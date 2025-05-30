@@ -22,114 +22,76 @@
 #define MUN {cout << "-1\n"; return;}
 using namespace std;
 
-const int MODE = 1e9+7;
-const int p = 31;
+
+const int MODE = 998244353;
 
 void solve(int tc) {
-    ll n;
+	ll n;
 
-    cin >> n;
+	cin >> n;
+	vi X(n + 1);
 
-    vp X(n);
-    for (int i = 0; i < n; i++)
-    {
-        cin >> X[i].first >> X[i].second;
-    }
-    
-    ll m = 0;
-    vi dis(n);
-    ll summ = 0;
-    vector<string> Y(n);
-    for (int i = 0; i < n; i++)
-    {
-        auto [x, y] = X[i];
-        auto [nx, ny] = X[(i+1)%n];
-        auto [px, py] = X[(i+n-1)%n];
-        
-        if (x == px) {
-            ll degree;
-            if (y > py && nx > x) degree = 90;
-            else if (y < py && nx > x) degree = 270;
-            else if (y > py && nx < x) degree = 270;
-            else degree = 90; 
-            Y[i] += '$' + to_string(degree) + '$';
-            dis[i] = abs(y-py);
-        } else {
-            ll degree;
-            if (x > px && ny > y) degree = 270;
-            else if (x < px && ny > y) degree = 90;
-            else if (x > px && ny < y) degree = 90;
-            else degree = 270;
-            Y[i] += '#' + to_string(degree) + '#';
-            dis[i] = abs(x-px);
-        }
-    }
+	for (int i = 1; i <= n; i++)
+	{
+		cin >> X[i];
+	}
+	sortx(X);
 
-    vi dp(n), prf(dis);
-    prf.push_back(dis[0]);
-    prf[0] = 0;
-    for (int i = 1; i <= n; i++)
-    {
-        prf[i] += prf[i-1];
-    }
-    for (int i = 1; i < n; i++)
-    {
-        dp[i] = min(prf[i], prf[n]-prf[i]);
-    }
-    dp[0] = 0;
+	vi prf(X);
+	for (int i = 1; i <= n; i++)
+	{
+		prf[i] += prf[i - 1];
+	}
+	
 
-    
-    map<string, ll> HS;
-    for (int i = 1; i < n; i++)
-    {
-        string t = "";
-        for (int j = 1; j <= n-1; j++)
-        {
-			ll at = (i+j)%n;
-            if (at == 0) break;
-            t += Y[at];
-            HS[t]++;
-			t += to_string(dis[at]);
-			HS[t]++;
-        }
-    }
-    
-    ll mx = 0;
-    for (int i = 1; i < n; i++)
-    {
-        string t = "";
-        ll d = 0;
-        for (int j = 1; j <= n-1; j++)
-        {
-            ll at = (i+j)%n;
-            t += Y[at];
-			
-			bool found = (at == 0);
-			
-			
-			if (!found) {
-				if (HS[t] == 1) {
-					at = (at-1+n)%n;
-					found = true;
-				} else {
-					d += dis[at];
-					t += to_string(dis[at]);
-					if (HS[t] == 1) found = 1;
-				}
-			}
+	ll ind=1, sz=1, val = -1;
 
-			if (found) {
-                if (d + dp[at]-dp[i] == 8066) cout << i << ' ' << at << "|\n";
-                // d-= dis[cor];
-                // at = cor;
-                // cout << i << ' ' << at << ' ' << d << ' ' << dp[at] << ' ' << prf[i] << '\n';
-                mx = max(mx, d + dp[at] - dp[i]);
-                break;
-            }
-        }
-    }
+	auto f = [&](ll j, ll i, ll k) -> ld {
+		ld summ = prf[n]-prf[n-k] + prf[j+i%2]-prf[j-1-k];
+		summ /= i;
+		ld re = X[j];
+		if (i % 2) re = (re + X[j+1])/2.0;
+		summ -= re;
 
-    cout << mx << '\n';
+		return summ;
+	};
+
+	for (int i = 1; i <= n; i++)
+	{
+		ll k = (i+1)/2 - 1;
+		ll l=1+k, r=n-k - i%2;
+
+		while (r - l > 3) {
+			int m1 = l + (r - l) / 3;
+			int m2 = r - (r - l) / 3;
+			f(m1, i, k) < f(m2, i, k) ? l = m1 : r = m2;
+		}
+
+		int res = l;
+		for (int j = l + 1; j <= r; j++) {
+			if (f(j, i, k) > f(res, i, k)) { res = j; }
+		}
+
+		if (f(res, i, k) > val) {
+			val = f(res, i, k);
+			ind = res;
+			sz = i;
+		}
+	}
+	
+	vi res;
+	res.push_back(X[ind]);
+	if (sz%2 == 0) res.push_back(X[ind+1]);
+	for (int i = 0; i < (sz+1)/2 - 1; i++)
+	{
+		res.push_back(X[n-i]);
+		res.push_back(X[ind-i-1]);
+	}
+
+	sortx(res);
+	cout << res.size() << '\n';
+	for (auto a : res) cout << a << ' ';
+	cout << '\n';
 }
 
 signed main()

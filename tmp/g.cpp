@@ -2,11 +2,11 @@
 #include <bits/stdc++.h>
 #include <unordered_map>
 #include <unordered_set>
- 
+
 #define ll long long
 #define ld long double
 #define pl pair<ll, ll>
-#define vi vector<long long>
+#define vi vector<ll>
 #define vii vector<vi>
 #define vc vector<char>
 #define vcc vector<vc>
@@ -21,63 +21,83 @@
 #define NO {cout << "NO\n"; return;}
 #define MUN {cout << "-1\n"; return;}
 using namespace std;
- 
+
+
 const int MODE = 998244353;
 
-ll nor(ll a, ll b, ll k) {
-    ll re = 0;
-    for (int i = 0; i < k; i++)
-    {
-        ll l = (a >> i) & 1;
-        ll r = (b >> i) & 1;
-        if (!l && !r) re |= (1<<i);
-    }
-    return re;
-}
-
 void solve(int tc) {
-    ll n, k;
+	ll n;
 
-    cin >> n >> k;
+	cin >> n;
+	vi X(n + 1);
 
-    vi X(n);
-    for (int i = 0; i < n; i++) cin >> X[i];
+	for (int i = 1; i <= n; i++)
+	{
+		cin >> X[i];
+	}
+	sortx(X);
 
-    vi res(all(X));
+	vi prf(X);
+	for (int i = 1; i <= n; i++)
+	{
+		prf[i] += prf[i - 1];
+	}
+	
 
-    for (int i = 0; i < n; i++)
-    {
-        for (int j = i; j < n; j++)
-        {
-            ll re = X[i];
-            for (int h = i+1; h <= j; h++)
-            {
-                re = nor(re, X[h], k);
-            }
-            for (int h = i; h <= j; h++)
-            {
-                res[h] = max(res[h], re);
-            }
-            
-        }
-        
-    }
-    
+	ll ind=1, sz=1, val = -1;
 
-    for (auto a : res) cout << a << ' ';
-    cout << '\n';
+	auto f = [&](ll i, ll k) -> ld {
+		ll sz = k*2+1;
+		ld summ = prf[n]-prf[n-k] + prf[i]-prf[i-1-k];
+		summ /= sz;
+		return summ - X[i];
+	};
+
+	for (int i = 1; i <= n; i)
+	{
+		ll l = 0, r = min(i-1ll, n - i);
+		while (r - l > 3) {
+			int m1 = l + (r - l) / 3;
+			int m2 = r - (r - l) / 3;
+			f(i, m1) < f(i, m2) ? l = m1 : r = m2;
+		}
+
+		int res = l;
+		for (int j = l+1; j <= r; j++) {
+			if (f(i, j) > f(i, res)) { res = j; }
+		}
+
+		if (f(i, res) > val) {
+			val = f(i, res);
+			ind = i;
+			sz = 2*i+1;
+		}
+	}
+	
+	vi res;
+	res.push_back(X[ind]);
+	if (sz%2 == 0) res.push_back(X[ind+1]);
+	for (int i = 0; i < i/2; i++)
+	{
+		res.push_back(X[n-i]);
+		res.push_back(X[ind-i-1]);
+	}
+
+	sortx(res);
+	cout << res.size() << '\n';
+	for (auto a : res) cout << a << ' ';
+	cout << '\n';
 }
 
 signed main()
 {
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;    
-  
-    // INIT();
-    // freopen("lazy.in", "r", stdin);
-    // freopen("lazy.out", "w", stdout);
- 
-    cin >> size;
-    for (int i = 1; i <= size; i++) solve(i);
+
+    // freopen("lightsout.in", "r", stdin);
+    // freopen("lightsout.out", "w", stdout);
+
+    // cin >> size;
+    for (int i = 1; i <= size ; i++) solve(i);
     return 0;
 }
