@@ -1,6 +1,8 @@
 const double EPS = 1e-9;
 const int INF = 2; // it doesn't actually have to be infinity or a big number
 
+// Time : O(n^3)
+// The function returns the number of solutions of the system  $(0, 1, infty)$ . If at least one solution exists, then it is returned in the vector ans.
 int gauss (vector < vector<double> > a, vector<double> & ans) {
     int n = (int) a.size();
     int m = (int) a[0].size() - 1;
@@ -45,6 +47,7 @@ int gauss (vector < vector<double> > a, vector<double> & ans) {
 }
 
 // Solve modular SLAE 
+// Time : O(n^3 / 64)
 int gauss (vector < bitset<N> > a, int n, int m, bitset<N> & ans) {
     vector<int> where (m, -1);
     for (int col=0, row=0; col<m && row<n; ++col) {
