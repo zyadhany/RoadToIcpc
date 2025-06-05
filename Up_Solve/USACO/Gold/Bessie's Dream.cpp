@@ -3,7 +3,7 @@
 #include <unordered_map>
 #include <unordered_set>
 
-#define ll int
+#define ll long long
 #define ld long double
 #define pl pair<ll, ll>
 #define vi vector<ll>
@@ -28,7 +28,7 @@ const int MXN = 1010;
 
 const int dx[] = {1, -1, 0, 0};
 const int dy[] = {0, 0, 1, -1};
-int dp[MXN][MXN][4][2];
+ll dp[MXN][MXN][4][2];
 
 ll n, m;
 bool isvalid(ll l, ll r) {
@@ -65,19 +65,36 @@ void solve(int tc) {
         int dir = q.front()[2], col = q.front()[3];
         ll w = dp[x][y][dir][col];
         q.pop();
-        col |= (X[x][y] == 2);
-
-
+        
+        if (X[x][y] == 2) col = 1;
+        if (X[x][y] == 4) col = 0;
+        
+        bool isdone = 0;
         for (int i = 0; i < 4; i++)
         {
             ll nx = dx[i] + x;
-            ll ny = dy[i] + y;
+            ll ny = dy[i] + y;  
             if (X[x][y] == 4 && i != dir) continue;
             if (!isvalid(nx, ny) || dp[nx][ny][i][col] <= w+1) continue;
             if (X[nx][ny] == 0) continue;
-            else if (X[nx][ny] != 2 || col) {
+            else if (X[nx][ny] != 3 || col) {
+                isdone = 1;
                 dp[nx][ny][i][col] = w + 1;
                 q.push({nx, ny, i, col});
+            }
+        }
+
+        if (X[x][y] == 4 && !isdone) {
+            for (int i = 0; i < 4; i++)
+            {
+                ll nx = dx[i] + x;
+                ll ny = dy[i] + y;
+                if (!isvalid(nx, ny) || dp[nx][ny][i][col] <= w+1) continue;
+                if (X[nx][ny] == 0) continue;
+                else if (X[nx][ny] != 3 || col) {
+                    dp[nx][ny][i][col] = w + 1;
+                    q.push({nx, ny, i, col});
+                }
             }
         }
     }
@@ -101,8 +118,8 @@ signed main()
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;    
 
-    // freopen("gravity.in", "r", stdin);
-    // freopen("gravity.out", "w", stdout);
+    freopen("dream.in", "r", stdin);
+    freopen("dream.out", "w", stdout);
 
     // cin >> size;
     for (int i = 1; i <= size ; i++) solve(i);

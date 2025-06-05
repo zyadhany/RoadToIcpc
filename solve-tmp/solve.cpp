@@ -22,98 +22,74 @@
 #define MUN {cout << "-1\n"; return;}
 using namespace std;
 
-
 const int MODE = 998244353;
-const int MXN =	1e6+10;
-const int lg = 63;
-int dp[MXN][lg];
 
+vp get(ll s, ll n) {
+    ll tm1 = sqrt(n);
+    ll tm2 = tm1 + (tm1 * tm1 != n);
+    tm1 += (tm1 * tm2 < n);
+    ll mxv = 2*n+2;
+    ll mnv = 2*(tm1 + tm2); 
+    if (s > mxv || s < mnv || s%2) return {};
+    ll rem = 4*n - s;
+    rem /= 2;
+    
+    vp res(1, {0, 0});
+    
+    ll len = 1;
+    while (n - res.size() < rem && res.size()<n) {
+        for (int i = 0; i < len && n - res.size() < rem && res.size()<n; i++) {
+            res.push_back({i, len});
+            rem--;
+            if (i) rem--;
+        }
+        for (int i = 0; i < len && n - res.size() < rem && res.size()<n; i++) {
+            res.push_back({len, i});
+            rem--;
+            if (i) rem--;
+        }
+        if (n - res.size() < rem && res.size()<n) {
+            res.push_back({len, len});
+            rem-=2;
+        }
+        len++;
+    }
+
+    for (int i = -1; res.size() < n; i--) res.push_back({i, 0}), rem--;
+    return res;
+}
 
 void solve(int tc) {
-	ll n, k, m;
+    ll n; 
+    cin >> n;
+ 
+    ll cnt = 1, at = 1;
+    while (at < n)
+    {
+        at = at * 2 + 1;
+        cnt++;
+    }
+    
+    cout << cnt * 2 + 1 << '\n';
+}
 
-	cin >> n >> k >> m;
+void solve(int tc) {
+    ll a, b;
+    cin >> a >> b;
 
-	vi X(n), Z(n);
-	for (int i = 0; i < n; i++)
-	{
-		cin >> X[i];
-	}
+    ll g = gcd(a, b);
+    a /= g, b /= g;
 
-	for (int i = 0; i < n; i++)
-	{
-		ll l = 0, r = i - 1;
-		while (l <= r)
-		{
-			ll mid = (l + r) / 2;
-			ll cnt = i - mid + 1;
-			
-			ll la = i, ra = n-1;
-			while (la < ra)
-			{
-				ll ma = (la + ra + 1) / 2;
-				if (X[ma]-X[i]<X[i]-X[mid]) la = ma;
-				else ra = ma - 1;
-			}
-			cnt += la-i;
+    vp res;
+    for (int i = 1; i*b <= 5e4; i++)
+    {
+        res = get(i*a, i*b);
+        if (!res.empty()) break;
+    }    
 
-			if (cnt == k-1) Z[i]=mid;
-			if (cnt < k) r = mid - 1;
-			else l = mid + 1;
-		}
-	}
-	reverse(all(X));
-	for (int i = 0; i < n; i++)
-	{
-		ll l = 0, r = i - 1;
-		while (l <= r)
-		{
-			ll mid = (l + r) / 2;
-			ll cnt = i - mid + 1;
-			
-			ll la = i, ra = n-1;
-			while (la < ra)
-			{
-				ll ma = (la + ra + 1) / 2;
-				if (X[ma]-X[i]<=X[i]-X[mid]) la = ma;
-				else ra = ma - 1;
-			}
-			cnt += la-i;
-
-			if (cnt == k-1) Z[i]=n-mid-1;
-			if (cnt < k) r = mid - 1;
-			else l = mid + 1;
-		}
-	}
-	
-	
-
-	for (int i = 0; i < n; i++) dp[i][0] = Z[i];
-	for (int j = 1; j < lg; j++)
-	{
-		for (int i = 0; i < n; i++)
-		{
-			dp[i][lg] = dp[dp[i][lg-1]][lg-1];
-		}
-	}
-	
-	vi res(n);
-
-	for (int i = 0; i < n; i++)
-	{
-		ll at = i;
-		for (ll j = 0; j < lg; j++)
-		{
-			if (m & (1ll<<j)) {
-				at = dp[at][j];
-			}
-		}
-		
-		res[i] = at + 1;
-	}
-	
-
-	for (auto a : res) cout << a << '\n';
+    if (res.empty()) MUN;
+    cout << res.size() << '\n';
+    for (auto p : res) cout << p.first << ' ' << p.second << '\n';
 }
 
 signed main()
@@ -121,10 +97,10 @@ signed main()
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;    
 
-    // freopen("lightsout.in", "r", stdin);
-    // freopen("lightsout.out", "w", stdout);
+    // freopen("cownav.in", "r", stdin);
+    // freopen("cownav.out", "w", stdout);
 
-    // cin >> size;
+    cin >> size;
     for (int i = 1; i <= size ; i++) solve(i);
     return 0;
 }
