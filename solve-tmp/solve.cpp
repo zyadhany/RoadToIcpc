@@ -21,65 +21,69 @@
 #define NO {cout << "NO\n"; return;}
 #define MUN {cout << "-1\n"; return;}
 using namespace std;
-
+#define int ll
 const int MODE = 998244353;
 
-// a_1 * x + b_1 = a_2 * x + b_2
-ll intersect(pl a, pl b) {
-    ll a1 = a.first, b1 = a.second;
-    ll a2 = b.first, b2 = b.second;
-    if (a1 == a2) throw runtime_error("Parallel lines");
-    ld x = (ld)(b2 - b1) / (a1 - a2);
-    return ceil(x);
-}
+const ll inf = 2e18;
+
+/**
+ * Author: Simon Lindholm
+ * Date: 2017-04-20
+ * License: CC0
+ * Source: own work
+ * Description: Container where you can add lines of the form kx+m, and query maximum values at points x.
+ *  Useful for dynamic programming (``convex hull trick'').
+ * Time: O(\log N)
+ * Status: stress-tested
+ */
+struct Line {
+	mutable ll k, m, p;
+	bool operator<(const Line& o) const { return k < o.k; }
+	bool operator<(ll x) const { return p < x; }
+};
+
+struct LineContainer : multiset<Line, less<>> {
+	// (for doubles, use inf = 1/.0, div(a,b) = a/b)
+	static const ll inf = LLONG_MAX;
+	ll div(ll a, ll b) { // floored division
+		return a / b - ((a ^ b) < 0 && a % b); }
+	bool isect(iterator x, iterator y) {
+		if (y == end()) return x->p = inf, 0;
+		if (x->k == y->k) x->p = x->m > y->m ? inf : -inf;
+		else x->p = div(y->m - x->m, x->k - y->k);
+		return x->p >= y->p;
+	}
+	void add(ll k, ll m) {
+		auto z = insert({k, m, 0}), y = z++, x = y;
+		while (isect(y, z)) z = erase(z);
+		if (x != begin() && isect(--x, y)) isect(x, y = erase(y));
+		while ((y = x) != begin() && (--x)->p >= y->p)
+			isect(x, erase(y));
+	}
+	ll query(ll x) {
+		assert(!empty());
+		auto l = *lower_bound(x);
+		return l.k * x + l.m;
+	}
+};
 
 void solve(int tc) {
-    ll n;
+    ll n, a, b, c;
 
-    cin >> n;
+    cin >> n >> a >> b >> c;
 
-    vii X(n, vi(3));
+    LineContainer lc;
 
-    for (int i = 0; i < n; i++)
+    ll dp = 0, p = 0;
+    for (int i = 1; i <= n; i++)
     {
-        for (int j = 0; j < 3; j++)
-        {
-            cin >> X[i][j];
-        }
+        lc.add(-2*a*p, dp-b*p+a*p*p);
+        ll x; cin >> x;
+        p += x;
+        dp = lc.query(p) + a*p*p + b*p + c;
     }
-    sortx(X);
-    
-    deque<pair<ll, pl>> dq;
-    dq.push_back({-1, {0, 0}});
-    vi dp(n);
 
-    for (int i = 0; i < n; i++)
-    {        
-        ll x = X[i][0], y = X[i][1], a = X[i][2];
-        while (y < dq.back().first) dq.pop_back();
-        dp[i] =x*y-a + dq.back().second.first * y + dq.back().second.second;
-        pl line = {-x ,dp[i]};
-        while (true)
-        {
-            ll inter = intersect(line, dq.front().second);
-            if (inter <= -1) break;
-            if (dq.size() == 1) {
-                dq.front().first = inter;
-                dq.push_front({-1, line});
-                break;
-            }
-            ll nx = dq[1].first;
-            if (nx <= inter) {
-                dq.pop_front();
-                continue;
-            }
-            dq.front().first = inter;
-            dq.push_front({-1, line});
-            break;
-        }        
-     }
-    
-    cout << *max_element(all(dp)) << '\n';
+    cout << dp << '\n';
 }
 
 signed main()
