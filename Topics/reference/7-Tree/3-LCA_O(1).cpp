@@ -7,7 +7,7 @@
 class Graph {
 public:
     int size, SPSIZE;
-    vi vis, Indeg, lvl;
+    vi Indeg, lvl;
     vp Trav;
     vector<vp> table;
 
@@ -50,7 +50,6 @@ public:
         size = n;
         lvl.resize(n + 1, 0);
         Indeg.assign(n + 1, 0);
-        vis.assign(n + 1, 0);
         BuildLCA(adj);
     }
 };
