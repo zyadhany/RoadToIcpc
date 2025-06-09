@@ -1,12 +1,7 @@
 /**
- * Author: Simon Lindholm
- * Date: 2017-04-20
- * License: CC0
- * Source: own work
+ * dp optimization in form dp[i] = max or min of (dp[j] + f(i,j)) for j < i
+ * where f(i,j) = k*i + constant in j
  * Description: Container where you can add lines of the form kx+m, and query maximum values at points x.
- *  Useful for dynamic programming (``convex hull trick'').
- * Time: O(\log N)
- * Status: stress-tested
  */
 struct Line {
 	mutable ll k, m, p;

@@ -24,7 +24,7 @@ struct monotonic_dp_hull {
 
     std::deque<line> lines;
 
-    void insert(ll k, ll b) {
+    void add(ll k, ll b) {
         assert(lines.empty() ||
                k >= lines.back().k); // ensure slope is monotonic
         line cur{k, b};

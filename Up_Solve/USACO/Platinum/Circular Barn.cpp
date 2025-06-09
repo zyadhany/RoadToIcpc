@@ -24,76 +24,65 @@
 using namespace std;
 const int MODE = 1e9 + 7;
 
-const int MXN = 1e5 + 10;
-const int MXK = 22;
 const ll INF = 1e16;
-ll dp[MXN][MXK];
-ll frq[MXN]={0};
-ll sl = 0, sr = 0;
-ll val = 0;
+const int MXN = 3e3 + 10;
+ll dp[MXN][MXN];
 
-void dac(vi &X, ll k, ll l, ll r, ll optl, ll optr) {
+void dac(deque<ll> &X, deque<ll> &V, ll k, ll l, ll r, ll optl, ll optr) {
 	if (l > r) return;
 	ll mid = (l+r)>>1;
 
 	pl best = {INF, optl};
-
-	while (sr <= mid) {
-		val += frq[X[sr]];
-		frq[X[sr]]++;
-		sr++;
-	}
-	while (sl > optl)
-	{
-		sl--;
-		val += frq[X[sl]];
-		frq[X[sl]]++;
-	}
-	while (sr > mid+1) {
-		sr--;
-		frq[X[sr]]--;
-		val -= frq[X[sr]];
-	}
-	while (sl < optl)
-	{
-		frq[X[sl]]--;
-		val -= frq[X[sl]];
-		sl++;
-	}
-	
-	
 	for (int i = optl; i <= min(mid, optr); i++)
 	{
-		frq[X[i]]--;
-		val -= frq[X[i]];
-		sl++;
-		best = min(best, pl(dp[i][k-1]+val, i));
+		ll c = V[mid]-V[i] - (i+1)*(X[mid]-X[i]);
+		best = min(best, pl(dp[i][k-1] + c, i));
 	}
 	
 	dp[mid][k] = best.first;
 	ll opt = best.second;
-	dac(X, k, l, mid-1, optl, opt);
-	dac(X, k, mid+1, r, opt, optr);
+	dac(X, V, k, l, mid-1, optl, opt);
+	dac(X, V, k, mid+1, r, opt, optr);
 }
 
 void solve(int tc) {
-	int n, k;
+	ll n, k;
+
 	cin >> n >> k;
 
-	vi X(n+1);
-	for (int i = 1; i <= n; i++)
+	deque<ll> X(n);
+	for (int i = 0; i < n; i++)
 	{
 		cin >> X[i];
 	}
-
-	dp[0][0] = 0;
+	
 	for (int i = 1; i <= n; i++) dp[i][0] = INF;
+	dp[0][0] = 0;
 
-	for (int i = 1; i <= k; i++) {
-		dac(X, i, 1, n, 0, n);
-	}	
-
-	cout << dp[n][k] << '\n';
+	ll mn = INF;
+	for (int i = 0; i < n; i++)
+	{
+		X.push_back(X[0]);
+		X.pop_front();
+		deque<ll> Z(all(X));
+		deque<ll> V(all(X));
+		Z.push_front(0);
+		V.push_front(0);
+		for (int j = 1; j <= n; j++)
+		{
+			Z[j] += Z[j-1];
+			V[j] = j*V[j] + V[j-1];
+		}
+		
+		for (int j = 1; j <= k; j++)
+		{
+			dac(Z, V, j, 1, n, 0, n-1);
+		}
+	
+		mn = min(mn, dp[n][k]);
+	}
+	
+	cout << mn << '\n';
 }
  
 signed main()
@@ -101,8 +90,8 @@ signed main()
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;    
  
-	// freopen("cbarn.in", "r", stdin);
-    // freopen("cbarn.out", "w", stdout);
+	freopen("cbarn.in", "r", stdin);
+    freopen("cbarn.out", "w", stdout);
  
     // cin >> size;
     for (int i = 1; i <= size ; i++) solve(i);
