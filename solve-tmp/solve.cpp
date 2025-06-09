@@ -2,12 +2,13 @@
 #include <bits/stdc++.h>
 #include <unordered_map>
 #include <unordered_set>
-
+ 
 #define ll long long
 #define ld long double
 #define pl pair<ll, ll>
 #define vi vector<ll>
 #define vii vector<vi>
+#define viii vector<vii>
 #define vc vector<char>
 #define vcc vector<vc>
 #define vp vector<pl>
@@ -21,79 +22,104 @@
 #define NO {cout << "NO\n"; return;}
 #define MUN {cout << "-1\n"; return;}
 using namespace std;
-#define int ll
-const int MODE = 998244353;
+const int MODE = 1e9 + 7;
 
-const ll inf = 2e18;
-
-/**
- * Author: Simon Lindholm
- * Date: 2017-04-20
- * License: CC0
- * Source: own work
- * Description: Container where you can add lines of the form kx+m, and query maximum values at points x.
- *  Useful for dynamic programming (``convex hull trick'').
- * Time: O(\log N)
- * Status: stress-tested
- */
-struct Line {
-	mutable ll k, m, p;
-	bool operator<(const Line& o) const { return k < o.k; }
-	bool operator<(ll x) const { return p < x; }
+struct line {
+	ll k, b;
+	ll eval(ll x) { return k * x + b; }
 };
 
-struct LineContainer : multiset<Line, less<>> {
-	// (for doubles, use inf = 1/.0, div(a,b) = a/b)
-	static const ll inf = LLONG_MAX;
-	ll div(ll a, ll b) { // floored division
-		return a / b - ((a ^ b) < 0 && a % b); }
-	bool isect(iterator x, iterator y) {
-		if (y == end()) return x->p = inf, 0;
-		if (x->k == y->k) x->p = x->m > y->m ? inf : -inf;
-		else x->p = div(y->m - x->m, x->k - y->k);
-		return x->p >= y->p;
-	}
-	void add(ll k, ll m) {
-		auto z = insert({k, m, 0}), y = z++, x = y;
-		while (isect(y, z)) z = erase(z);
-		if (x != begin() && isect(--x, y)) isect(x, y = erase(y));
-		while ((y = x) != begin() && (--x)->p >= y->p)
-			isect(x, erase(y));
-	}
-	ll query(ll x) {
-		assert(!empty());
-		auto l = *lower_bound(x);
-		return l.k * x + l.m;
-	}
-};
-
-void solve(int tc) {
-    ll n, a, b, c;
-
-    cin >> n >> a >> b >> c;
-
-    LineContainer lc;
-
-    ll dp = 0, p = 0;
-    for (int i = 1; i <= n; i++)
-    {
-        lc.add(-2*a*p, dp-b*p+a*p*p);
-        ll x; cin >> x;
-        p += x;
-        dp = lc.query(p) + a*p*p + b*p + c;
-    }
-
-    cout << dp << '\n';
+bool bad(const line &a, const line &b, const line &c) {
+	return (__int128)(c.b - a.b) * (a.k - b.k) <= (__int128)(b.b - a.b) * (a.k - c.k);
 }
 
+struct monotonic_dp_hull {
+
+
+    std::deque<line> lines;
+
+    void add(ll k, ll b) {
+        assert(lines.empty() ||
+               k >= lines.back().k); // ensure slope is monotonic
+        line cur{k, b};
+        while (lines.size() >= 2 && bad(lines.rbegin()[1], lines.back(), cur))
+            lines.pop_back();
+        lines.push_back(cur);
+    }
+
+    ll query(ll x) {
+        assert(!lines.empty());
+        while (lines.size() >= 2 && lines[0].eval(x) <= lines[1].eval(x))
+            lines.pop_front();
+        return lines[0].eval(x);
+    }
+};
+
+const int MXN = 3010;
+ll dp[MXN][MXN][2]{};
+deque<line> lc[MXN][2];
+
+void solve(int tc) {
+	ll n, k;
+	cin >> n >> k;
+ 
+	vi X(n), V(n);
+	for (int i = 0; i < n; i++)
+	{
+		cin >> X[i];
+		V[i] = X[i] * i;
+		if (i) X[i] += X[i-1], V[i] += V[i-1];
+	}
+	
+	for (int i = 0; i <= k; i++)
+	{
+		for (int j = 0; j < 2; j++)
+		{
+			lc[i][j] = deque<line>(1, {0, 0});
+		}
+	}
+
+	for (int i = 0; i < n; i++)
+	{
+		for (int j = 1; j <= k; j++)
+		{
+			// from j to m
+			// while (lines.size() >= 2 && lines[0].eval(x) <= lines[1].eval(x))
+    	    //     lines.pop_front();
+	        // return lines[0].eval(x);
+
+			while (lc[j-1][1].size() >= 2 && lc[j-1][1][0].eval(i) <= lc[j-1][1][1].eval(i))
+				lc[j-1][1].pop_front();
+			dp[i][j][0] = -lc[j-1][1][0].eval(i) + i*X[i]-V[i];
+			line cur{i, -(i*X[i]-V[i]+dp[i][j][0])};
+			while (lc[j][0].size() >= 2 && bad(lc[j][0].rbegin()[1], lc[j][0].back(), cur))
+				lc[j][0].pop_back();
+			lc[j][0].push_back(cur);
+			
+			// from m to i
+
+			while (lc[j][1].size() >= 2 && lc[j][1][0].eval(X[i]) <= lc[j][1][1].eval(X[i]))
+				lc[j][1].pop_front();
+			dp[i][j][1] = -lc[j][0][0].eval(X[i])+V[i];
+
+			cur = {X[i], -(dp[i][j][1]+V[i])};
+			while (lc[j][1].size() >= 2 && bad(lc[j][1].rbegin()[1], lc[j][1].back(), cur))
+				lc[j][1].pop_back();
+			lc[j][1].push_back(cur);
+		}
+	}
+ 
+	cout << dp[n-1][k][1] << '\n';
+}
+ 
 signed main()
 {
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;    
-
-    // freopen("cownav.in", "r", stdin);
+ 
+	// freopen("cownav.in", "r", stdin);
     // freopen("cownav.out", "w", stdout);
-
+ 
     // cin >> size;
     for (int i = 1; i <= size ; i++) solve(i);
     return 0;
