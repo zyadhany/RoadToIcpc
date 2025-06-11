@@ -24,76 +24,8 @@
 using namespace std;
 const int MODE = 1e9 + 7;
 
-const int MXN = 1e5 + 10;
-const int MXK = 22;
-const ll INF = 1e16;
-ll dp[MXN][MXK];
-ll frq[MXN]={0};
-ll sl = 0, sr = 0;
-ll val = 0;
-
-void dac(vi &X, ll k, ll l, ll r, ll optl, ll optr) {
-	if (l > r) return;
-	ll mid = (l+r)>>1;
-
-	pl best = {INF, optl};
-
-	while (sr <= mid) {
-		val += frq[X[sr]];
-		frq[X[sr]]++;
-		sr++;
-	}
-	while (sl > optl)
-	{
-		sl--;
-		val += frq[X[sl]];
-		frq[X[sl]]++;
-	}
-	while (sr > mid+1) {
-		sr--;
-		frq[X[sr]]--;
-		val -= frq[X[sr]];
-	}
-	while (sl < optl)
-	{
-		frq[X[sl]]--;
-		val -= frq[X[sl]];
-		sl++;
-	}
-	
-	
-	for (int i = optl; i <= min(mid, optr); i++)
-	{
-		frq[X[i]]--;
-		val -= frq[X[i]];
-		sl++;
-		best = min(best, pl(dp[i][k-1]+val, i));
-	}
-	
-	dp[mid][k] = best.first;
-	ll opt = best.second;
-	dac(X, k, l, mid-1, optl, opt);
-	dac(X, k, mid+1, r, opt, optr);
-}
-
 void solve(int tc) {
-	int n, k;
-	cin >> n >> k;
-
-	vi X(n+1);
-	for (int i = 1; i <= n; i++)
-	{
-		cin >> X[i];
-	}
-
-	dp[0][0] = 0;
-	for (int i = 1; i <= n; i++) dp[i][0] = INF;
-
-	for (int i = 1; i <= k; i++) {
-		dac(X, i, 1, n, 0, n);
-	}	
-
-	cout << dp[n][k] << '\n';
+    
 }
  
 signed main()
