@@ -117,7 +117,7 @@
     "editor.wordWrap": "on",
     "github.copilot.enable": {
         "*": false,
-        "plaintext": false,
+        "plaintext": true,
         "markdown": false,
         "scminput": false
     }

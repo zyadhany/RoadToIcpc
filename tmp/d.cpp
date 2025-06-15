@@ -22,109 +22,78 @@
 #define NO {cout << "NO\n"; return;}
 #define MUN {cout << "-1\n"; return;}
 using namespace std;
-const int MODE = 1e9 + 7;
- 
-struct Line {
-	mutable ll k, m, p;
-	bool operator<(const Line& o) const { return k < o.k; }
-	bool operator<(ll x) const { return p < x; }
-};
- 
-struct LineContainer {
-    multiset<Line> hull;
- 
-    static const ll inf = LLONG_MAX;
- 
-    struct cmpK {
-        bool operator()(const Line &a, const Line &b) const {
-            return a.k < b.k;
-        }
-    };
- 
-    struct cmpP {
-        bool operator()(const Line &a, const Line &b) const {
-            return a.p < b.p;
-        }
-        bool operator()(const Line &a, const ll &x) const {
-            return a.p < x;
-        }
-        bool operator()(const ll &x, const Line &a) const {
-            return x < a.p;
-        }
-    };
- 
-    using iter = multiset<Line, cmpK>::iterator;
-    multiset<Line, cmpK> s;
- 
-    ll div(ll a, ll b) {
-        return a / b - ((a ^ b) < 0 && a % b);
-    }
- 
-    bool isect(iter x, iter y) {
-        if (y == s.end()) return x->p = inf, 0;
-        if (x->k == y->k) x->p = x->m > y->m ? inf : -inf;
-        else x->p = div(y->m - x->m, x->k - y->k);
-        return x->p >= y->p;
-    }
- 
-    void add(ll k, ll m) {
-        k *= -1, m *= -1;
-        auto z = s.insert({k, m, 0}), y = z++, x = y;
-        while (isect(y, z)) z = s.erase(z);
-        if (x != s.begin() && isect(--x, y)) isect(x, y = s.erase(y));
-        while ((y = x) != s.begin() && (--x)->p >= y->p)
-            isect(x, s.erase(y));
-    }
- 
-    ll query(ll x) {
-        assert(!s.empty());
-        Line dummy{0, 0, x};
-        auto l = *lower_bound(s.begin(), s.end(), x, cmpP());
-        return -(l.k * x + l.m);
+
+struct query{
+    int u, v, c, r;
+    query(ll u, ll v, ll c, ll r) : u(u), v(v), c(c), r(r){}
+    bool operator<(const query& q) {
+        return c < q.c;
     }
 };
- 
- 
+
 void solve(int tc) {
-	ll n, k;
-	cin >> n >> k;
- 
-	vi X(n), V(n);
-	for (int i = 0; i < n; i++)
-	{
-		cin >> X[i];
-		V[i] = X[i] * i;
-		if (i) X[i] += X[i-1], V[i] += V[i-1];
-	}
- 
-	viii dp(n, vii(k+1, vi(2)));
-	vector<vector<LineContainer>> lc(k+1, vector<LineContainer>(2));
-	for (int i = 0; i <= k; i++)
-	{
-		for (int j = 0; j < 2; j++)
-		{
-			lc[i][j].add(0, 0);
-		}
-	}
- 
-	for (int i = 0; i < n; i++)
-	{
-		for (int j = 1; j <= k; j++)
-		{
-			// from j to m
-			dp[i][j][0] = lc[j-1][1].query(i) + i*X[i]-V[i];
-			lc[j][0].add(-i, i*X[i]-V[i]+dp[i][j][0]);
-			
-						cout << dp[i][j][0] << ' ' << i*X[i]-V[i]+dp[i][j][0] << " ";
-			cout << lc[j][0].query(X[i]) << "||\n";
-			// from m to i
-			dp[i][j][1] = lc[j][0].query(X[i])+V[i];
-			lc[j][1].add(-X[i],dp[i][j][1]+V[i]);
-		}
-	}
-	
- 
-	cout << dp[n-1][k][1] << '\n';
+    ll n, m;
+
+    cin >> n >> m;
+    vector<query> Q;
+    
+    vi X(n);
+    for (int i = 0; i < n; i++)
+    {
+        cin >> X[i];
+    }
+    
+    for (int i = 0; i < m; i++)
+    {
+        ll u, v, c, r; cin >> u >> v >> c >> r;
+        u--, v--;
+        Q.push_back(query(u, v, c, r));
+    }
+    sortx(Q);
+
+    vector<vector<vector<query>>> Y(n, vector<vector<query>>(n));
+
+    for (auto p : Q) {
+        while (!Y[p.u][p.v].empty() && Y[p.u][p.v].back().r >= p.r) Y[p.u][p.v].pop_back();
+        Y[p.u][p.v].push_back(p);
+    }
+
+    ll l = 1, r = 1e18;
+    while (l < r)
+    {
+        ll mid = (l+r)>>1;
+        bool isok = 1;
+
+        for (int u = 0; u < n; u++)
+        {
+            for (int v = 0; v < n; v++)
+            {
+                cout << mid << "|\n"; 
+                for (auto &p : Y[u][v]) {
+                    ll tank = mid, ref = 0;
+
+                    for (int h = u+1; h <= v; h++)
+                    {
+                        tank -= (X[h]-X[h-1])*p.c;
+                        if (tank < 0) {
+                            tank = mid - (X[h]-X[h-1])*p.c;
+                            ref++;
+                            if (ref > p.r || tank < 0) {
+                                isok = 0;
+                                goto out;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        out:;
+
+        if (isok) r = mid;
+        else l = mid+1;
+    }
+    
+    cout << l << '\n';
 }
  
 signed main()
@@ -132,8 +101,8 @@ signed main()
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;    
  
-	// freopen("cownav.in", "r", stdin);
-    // freopen("cownav.out", "w", stdout);
+	// freopen("cbarn.in", "r", stdin);
+    // freopen("cbarn.out", "w", stdout);
  
     // cin >> size;
     for (int i = 1; i <= size ; i++) solve(i);

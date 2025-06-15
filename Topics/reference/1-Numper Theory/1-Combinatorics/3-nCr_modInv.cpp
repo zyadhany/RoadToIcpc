@@ -8,7 +8,7 @@
 
 const int SIZE = 1e6 + 1;
 const int MODE = 998244353;
-vi fac(SIZE, 1), facinv(SIZE, 1);
+ll fac[SIZE], facinv[SIZE];
 
 ll gcdExtended(ll a, ll b, ll* x, ll* y)
 {
