@@ -25,56 +25,56 @@ using namespace std;
  
 const int MODE = 1e9+7;
 
-void add (ll &a, ll b) {
-    a = (a + b) % MODE;
-}
 
 void solve(int tc) {
-    ll st, en;
-    string s; 
+    ll n;
 
-    cin >> s;
-    cin >> st >> en;
+    cin >> n;
+    
+    vi X(n), Y(n);
+    for (int i = 0; i < n; i++) cin >> X[i];
+    for (int i = 0; i < n; i++) cin >> Y[i];
+    
 
-    ll n = s.size();
-    vii dp(n+1, vi(n+1));
-    dp[1][1] = (s[0] != 'L' || en == 1);
-
-    for (int i = 1; i < n; i++)
+    vector<vp> adj(2*n+1);
+    for (int i = 0; i < n; i++)
     {
-        for (int j = 1; j <= i; j++)
-        {
-            if (i == st-1) {
-                if (s[i-1] == 'L') {
-                    add(dp[i+1][j], dp[i][j]);
-                } else if (s[i-1] == 'R') {
-                    add(dp[i+1][j+1], dp[i][j]);
-                } else {
-                    add(dp[i+1][j], dp[i][j]);
-                    add(dp[i+1][j+1], dp[i][j]);
-                }    
-                continue;
-            }
-            if (i == en-1) {
-                add(dp[i+1][j], dp[i][j]);
-                add(dp[i+1][j+1], dp[i][j]);
-                continue;
-            }
-
-            if (s[i-1] == 'L') {
-                add(dp[i+1][j], (j - (i>=st)) * dp[i][j]);
-            } else if (s[i-1] == 'R') {
-                add(dp[i+1][j], (j - (i>=en)) * dp[i][j]);
-                add(dp[i+1][j+1], (j+1-(i>=st)-(i>=en)) * dp[i][j]);
-            } else {
-                add(dp[i+1][j], (2*j - (i>=en) - (i>=st)) * dp[i][j]);
-                add(dp[i+1][j-1], (j-1) * dp[i][j]);
-                add(dp[i+1][j+1], (j+1-(i>=st)-(i>=en)) * dp[i][j]);
-            }
-        }        
+        adj[X[i]].push_back({Y[i], i});
+        adj[Y[i]].push_back({X[i], i});
     }
     
-    cout << dp[n][1] << '\n';
+    vi vis(2*n+1);
+    vi edvis(2*n+1);
+    vi L(n), R(n);
+
+    function<void(ll, ll, ll)> dfs = [&](ll u, ll p, ll rev=0) -> void {
+        bool dn = 0;
+        vis[u] = 1;
+        for (auto [neg, ind] : adj[u]) if (ind != p && !edvis[ind]) {
+            edvis[ind] = 1;
+            if (!dn && p==-1) rev^=1;
+            L[ind] = u, R[ind] = neg;
+            if (rev) swap(L[ind], R[ind]);
+            if (!vis[neg]) dfs(neg, ind,rev);
+
+            if (!dn && p==-1) rev^=1, dn = 1;
+        }
+    };
+
+    for (int i = 1; i <= 2*n; i++)
+    {
+        if (!vis[i] && !adj[i].empty()) {
+            dfs(i, -1, 0);
+        }
+    }
+    
+
+    ll res = set<ll>(all(L)).size() + set<ll>(all(R)).size();
+    cout << res << '\n';
+    for (auto a : L) cout << a << ' ';
+    cout << '\n';
+    for (auto a : R) cout << a << ' ';
+    cout << '\n';
 }
  
 signed main()
@@ -85,7 +85,7 @@ signed main()
 	// freopen("kangaroo.in", "r", stdin);
     // freopen("kangaroo.out", "w", stdout);
  
-    // cin >> size;
+    cin >> size;
     for (int i = 1; i <= size ; i++) solve(i);
     return 0;
 }
