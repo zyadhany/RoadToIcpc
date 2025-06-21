@@ -26,36 +26,81 @@ using namespace std;
 const int MODE = 1e9+7;
 
 void solve(int tc) {
-    ll n;
+    ll n, d;
 
-    cin >> n;
+    cin >> n >> d;
 
-    vii dp(n, vi(100, -1));
+    vp X(n);
     for (int i = 0; i < n; i++)
     {
-        ll a; cin >> a;
-        dp[i][a] = i;
-    }
-
-    for (int j = 1; j < 100; j++)
-    {
-        for (int i = 0; i < n; i++)
-        {
-            if (dp[i][j-1] == -1 || dp[i][j-1] == n-1) continue;
-            dp[i][j] = dp[dp[i][j-1]+1][j-1];            
-        }
+        cin >> X[i].first >> X[i].second;
     }
     
-    ll res = -1;
+    map<ll, vp> mp;
     for (int i = 0; i < n; i++)
     {
-        for (int j = 0; j < 100; j++)
+        mp[X[i].first-X[i].second].push_back({X[i].first+X[i].second, i});
+    }
+    for (auto &v : mp) sortx(v.second);
+    
+    for (auto &[x, Y] : mp) {
+        ll r = 0;
+        for (int i = 0; i < Y.size(); i++)
         {
-            if (dp[i][j] != -1) res = max(res, (ll)j);
+            while (r < Y.size() && Y[r].first - Y[i].first < d) r++;
+            if (Y[r].first - Y[i].first == d) {
+                // look  at  x - d, x + d
+                if (mp.count(x-d)) {
+                    auto Z = mp[x-d];
+                    ll re = lower_bound(all(Z), pl(Y[i].first,0)) - Z.begin();
+                    if (re < Z.size() && Z[re].first <= Y[i].first+d) {
+                        cout << Y[i].second + 1 << ' ' << Y[r].second + 1 << ' ' << Z[re].second + 1;
+                    }
+                }
+                if (mp.count(x+d)) {
+                    auto Z = mp[x+d];
+                    ll re = lower_bound(all(Z), pl(Y[i].first,0)) - Z.begin();
+                    if (re < Z.size() && Z[re].first <= Y[i].first+d) {
+                        cout << Y[i].second + 1 << ' ' << Y[r].second + 1 << ' ' << Z[re].second + 1;
+                    }
+                }
+            }
         }
     }
+    mp.clear();
+
+    for (int i = 0; i < n; i++)
+    {
+        mp[X[i].first+X[i].second].push_back({X[i].first-X[i].second, i});
+    }
+    for (auto &v : mp) sortx(v.second);
     
-    cout << res << '\n';
+    for (auto &[x, Y] : mp) {
+        ll r = 0;
+        for (int i = 0; i < Y.size(); i++)
+        {
+            while (r < Y.size() && Y[r].first - Y[i].first < d) r++;
+            if (Y[r].first - Y[i].first == d) {
+                // look  at  x - d, x + d
+                if (mp.count(x-d)) {
+                    auto Z = mp[x-d];
+                    ll re = lower_bound(all(Z), pl(Y[i].first,0)) - Z.begin();
+                    if (re < Z.size() && Z[re].first <= Y[i].first+d) {
+                        cout << Y[i].second + 1 << ' ' << Y[r].second + 1 << ' ' << Z[re].second + 1;
+                    }
+                }
+                if (mp.count(x+d)) {
+                    auto Z = mp[x+d];
+                    ll re = lower_bound(all(Z), pl(Y[i].first,0)) - Z.begin();
+                    if (re < Z.size() && Z[re].first <= Y[i].first+d) {
+                        cout << Y[i].second + 1 << ' ' << Y[r].second + 1 << ' ' << Z[re].second + 1;
+                    }
+                }
+            }
+        }
+    }
+
+    cout << "0 0 0\n";
 }
 
 signed main()
@@ -63,8 +108,8 @@ signed main()
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;    
  
-	freopen("262144.in", "r", stdin);
-    freopen("262144.out", "w", stdout);
+	// freopen("262144.in", "r", stdin);
+    // freopen("262144.out", "w", stdout);
  
     // cin >> size;
     for (int i = 1; i <= size ; i++) solve(i);
