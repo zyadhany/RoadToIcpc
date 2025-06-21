@@ -40,7 +40,7 @@ private:
 
     item merge(item& a, item& b) {
         item res = a;
-        b.st.insert(all(b.st));
+        res.st.insert(all(b.st));
         return (res);
     }
 
@@ -82,8 +82,6 @@ private:
 
         build(X, m * 2 + 1, lx, mid);
         build(X, m * 2 + 2, mid + 1, rx);
-        s1 = tree[m * 2 + 1], s2 = tree[m * 2 + 2];
-
-        tree[m] = merge(s1, s2);
+        tree[m] = merge(tree[m * 2 + 1], tree[m * 2 + 2]);
     }
 };
