@@ -26,22 +26,14 @@ using namespace std;
 const int MODE = 1e9+7;
 
 const int N = 1e5+10;
-ll lvl[N]{}, vis[N]{};
+ll PC[N]{}, lvl[N]{};
 ll spt[N][18];
-vi adj[N];
-ll timer = 1;
-ll in[N], out[N];
 
-void dfs(ll n, ll p) {
-    in[n] = timer++;
+void add(ll n, ll p) {
     lvl[n] = lvl[p]+1;
     spt[n][0] = p;
     for (int j = 1; j < 18; j++)
         spt[n][j] = spt[spt[n][j-1]][j-1];     
-    for (auto neg : adj[n]) if (neg != p) {
-        dfs(neg, n);   
-    }
-    out[n] = timer;
 }
 
 ll kth(ll u, ll k) {
@@ -59,55 +51,42 @@ ll lca(ll u , ll v) {
     return spt[u][0];
 }
 
-void req(ll n, ll p) {
-    // if (vis[n]) return;
-    vis[n] = 1;
-    for (auto neg : adj[n]) if (neg != p) 
-        req(neg, n);
+ll dist(ll u, ll v) {
+    return lvl[u] + lvl[v] - 2 * lvl[lca(u, v)];
 }
 
 void solve(int tc) {
-    ll n, m;
+    ll q;
+    cin >> q;
 
-    cin >> n >> m;
+    vp T;
 
-    for (int i = 0; i < n-1; i++)
-    {
-        ll u, v; cin >> u >> v;
-        adj[u].push_back(v);
-        adj[v].push_back(u);
-    }
-    
-    dfs(1, 0);
+    ll at = 0;
+    while (q--) {
+        ll x;
+        char ty;
+        cin >> ty >> x;
 
-    vi prf(n+10, 0);
-    while (m--)
-    {
-        ll u, v; cin >> u >> v;
-        ll lc = lca(u, v);
-        if (lc != u) req(u, spt[u][0]);
-        else {
-            ll imd = kth(v, lvl[v]-lvl[u]-1);
-            req(u, imd);
+        if (ty == 'B') {
+            at++;
+            if (x == -1) {
+                PC[at] = T.size();
+                T.push_back({at, at});
+            } else {
+                add(at, x);
+                ll c = PC[x];
+                PC[at] = c;
+                ll cd = dist(T[c].first, T[c].second);
+                auto [a, b] = T[c];
+                if (dist(at, a) > cd) T[c] = {at, a};
+                else if (dist(at, b) > cd) T[c] = {at, b};
+            }
+        } else {
+            ll c = PC[x];
+            cout << max(dist(x, T[c].first), dist(x, T[c].second)) << '\n';
         }
     }
-
-    for (int i = 1; i <= n; i++)
-    {
-        cout << (vis[i]^1) << '\n';
-    }
-    return;
     
-    ll p = prf[0];
-    for (int i = 1; i < prf.size(); i++)
-    {
-        p += prf[i];
-        if (p) prf[i] = 0;
-        else prf[i] = 1;
-    }
-
-    for (int i = 1; i <= n; i++)
-        cout << prf[in[i]] << '\n';    
 }
 
 signed main()
@@ -115,8 +94,8 @@ signed main()
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;    
  
-	freopen("gathering.in", "r", stdin);
-    freopen("gathering.out", "w", stdout);
+	freopen("newbarn.in", "r", stdin);
+    freopen("newbarn.out", "w", stdout);
  
     // cin >> size;
     for (int i = 1; i <= size ; i++) solve(i);

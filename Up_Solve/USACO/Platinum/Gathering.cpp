@@ -25,7 +25,7 @@ using namespace std;
  
 const int MODE = 1e9+7;
 
-const int N = 1e5+10;
+const int N = 1e5+100;
 ll lvl[N]{}, vis[N]{};
 ll spt[N][18];
 vi adj[N];
@@ -59,11 +59,16 @@ ll lca(ll u , ll v) {
     return spt[u][0];
 }
 
-void req(ll n, ll p) {
-    // if (vis[n]) return;
+bool cyc = 0;
+void dfs2(vii &adj, vi &vis, ll n) {
+    if (vis[n] == 1)return;
+    if (vis[n] == 2) {
+        cyc = 1;
+        return;
+    }
+    vis[n] = 2;
+    for (auto neg : adj[n]) dfs2(adj, vis, neg);
     vis[n] = 1;
-    for (auto neg : adj[n]) if (neg != p) 
-        req(neg, n);
 }
 
 void solve(int tc) {
@@ -79,25 +84,34 @@ void solve(int tc) {
     }
     
     dfs(1, 0);
+    vii adj(n+1);
 
-    vi prf(n+10, 0);
+    vi prf(timer+10, 0);
     while (m--)
     {
         ll u, v; cin >> u >> v;
+        adj[u].push_back(v);
         ll lc = lca(u, v);
-        if (lc != u) req(u, spt[u][0]);
+        if (lc != u) prf[in[u]]++, prf[out[u]]--;
         else {
             ll imd = kth(v, lvl[v]-lvl[u]-1);
-            req(u, imd);
+            prf[0]++;
+            prf[in[imd]]--;
+            prf[out[imd]]++;
         }
     }
 
+    vi vis(n+1);
     for (int i = 1; i <= n; i++)
-    {
-        cout << (vis[i]^1) << '\n';
+        dfs2(adj, vis, i);    
+    if (cyc) {
+        for (int i = 0; i < n; i++)
+        {
+            cout << 0 << '\n';
+        }
+        return;
     }
-    return;
-    
+
     ll p = prf[0];
     for (int i = 1; i < prf.size(); i++)
     {

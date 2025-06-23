@@ -14,7 +14,9 @@ ll CountSubTree(vi &count, int n, int p) {
 }
 
 /**
- * Diameter of Tree.
+ * Diameter of Tree : farthest distance between two nodes in a tree.
+ * - for each node the farthest distance from it is one of the 2 diameters.
+ * 
  * Case 1: two node in same subtree not including (n).
  * Case 2: node in anoters subtree so diameter include (n).
 */
