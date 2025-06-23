@@ -25,117 +25,103 @@ using namespace std;
  
 const int MODE = 1e9+7;
 
-ll summ(ll l, ll r) {
-    return (r * (r + 1) / 2) - (l * (l - 1) / 2);
+const int N = 1e5+100;
+ll lvl[N]{}, vis[N]{};
+ll spt[N][18];
+vi adj[N];
+ll timer = 1;
+ll in[N], out[N];
+
+void dfs(ll n, ll p) {
+    in[n] = timer++;
+    lvl[n] = lvl[p]+1;
+    spt[n][0] = p;
+    for (int j = 1; j < 18; j++)
+        spt[n][j] = spt[spt[n][j-1]][j-1];     
+    for (auto neg : adj[n]) if (neg != p) {
+        dfs(neg, n);   
+    }
+    out[n] = timer;
+}
+
+ll kth(ll u, ll k) {
+    for (int i = 0; i < 18; i++)
+        if (k & (1<<i)) u = spt[u][i];    
+    return u;
+}
+
+ll lca(ll u , ll v) {
+    if (lvl[u] < lvl[v]) swap(u, v);
+    u = kth(u, lvl[u]-lvl[v]);
+    if (u == v) return u;
+    for (int i = 17; i >= 0; i--)
+        if (spt[u][i] != spt[v][i]) u = spt[u][i], v = spt[v][i];        
+    return spt[u][0];
+}
+
+bool cyc = 0;
+void dfs2(vii &adj, vi &vis, ll n) {
+    if (vis[n] == 1)return;
+    if (vis[n] == 2) {
+        cyc = 1;
+        return;
+    }
+    vis[n] = 2;
+    for (auto neg : adj[n]) dfs2(adj, vis, neg);
+    vis[n] = 1;
 }
 
 void solve(int tc) {
-    ll n, k;
-    cin >> n >> k;
+    ll n, m;
 
-    ll res = 0;
-    vi X(n);
-    for (int i = 0; i < n; i++)
+    cin >> n >> m;
+
+    for (int i = 0; i < n-1; i++)
     {
-        cin >> X[i];
-        res += summ(1, X[i]);
+        ll u, v; cin >> u >> v;
+        adj[u].push_back(v);
+        adj[v].push_back(u);
     }
     
-    deque<pl> dq;
-    sortx(X);
-    dq.push_front({X[0], 1});
-    for (int i = 1; i < n; i++)
+    dfs(1, 0);
+    vii adj(n+1);
+
+    vi prf(timer+10, 0);
+    while (m--)
     {
-        if (X[i] == dq.back().first) {
-            dq.back().second++;
-        } else {
-            dq.push_back({X[i], 1});
+        ll u, v; cin >> u >> v;
+        adj[u].push_back(v);
+        ll lc = lca(u, v);
+        if (lc != u) prf[in[u]]++, prf[out[u]]--;
+        else {
+            ll imd = kth(v, lvl[v]-lvl[u]-1);
+            prf[0]++;
+            prf[in[imd]]--;
+            prf[out[imd]]++;
         }
     }
 
-    ll rem = 0;
-    while (dq.size() > 1)
-    {
-        ll mxl = (dq[1].first - dq[0].first) * dq[0].second;
-        ll mxr = (dq.back().first - dq[dq.size() - 2].first) * dq.back().second;
-        ll mxtk = min(mxl, mxr);
-
-        auto f = [&](ll mid) -> ll {
-            ll res = -mid * k;
-
-            auto  [vr, cr] = dq.back();
-            ll mvr = mid / cr;
-            res += summ(vr - mvr + 1, vr) * cr;
-            if (mid % cr) {
-                res += (vr - mvr) * (mid % cr);
-            }
-            auto [vl, cl] = dq[0];
-            ll mvl = mid / cl;
-            res -= summ(vl+1, vl + mvl) * cl;
-            if (mid % cl) {
-                res -= (vl + mvl + 1) * (mid % cl);
-            }
-            return res;
-        };
-
-        ll l = 0, r = mxtk;
-        while (l < r)
+    vi vis(n+1);
+    for (int i = 1; i <= n; i++)
+        dfs2(adj, vis, i);    
+    if (cyc) {
+        for (int i = 0; i < n; i++)
         {
-            ll mid = (l + r + 1) / 2;
-            if (f(mid) >= f(mid-1)) l = mid;
-            else r = mid - 1;
+            cout << 0 << '\n';
         }
-
-        // for (int i = 0; i < 10; i++)
-        // {
-        //     cout << i << ' ' << f(i) << '\n';
-        // }
-        
-        // cout << l << '\n';
-        // cout << l << "|\n";
-        // cout << f(l) << "||\n";
-        // for (auto [v, c] : dq) {
-        //     cout << v << " " << c << " |\n";
-        // }
-        
-        rem += f(l);
-        if (l != mxtk) break;
-
-        if (l == mxl) {
-            dq[1].second += dq[0].second;
-            dq.pop_front();
-        
-            auto [v,c] = dq.back();
-            dq.pop_back();
-            v-= l/c;
-            if (l%c) {
-                if (!dq.empty() && dq.back().first == v-1) {
-                    dq.back().second += l%c;
-                } else dq.push_back({v-1, l%c});
-            }
-            if (!dq.empty() && dq.back().first == v) {
-                dq.back().second += c - l%c;
-            } else dq.push_back({v, c- l%c});
-        } else {
-            dq[dq.size() - 2].second += dq.back().second;
-            dq.pop_back();
-        
-            auto [v,c] = dq[0];
-            dq.pop_front();
-            v+= l/c;
-            if (l%c) {
-                if (!dq.empty() && dq[0].first == v+1) {
-                    dq[0].second += l%c;
-                } else dq.push_front({v+1, l%c});
-            }
-            if (!dq.empty() && dq[0].first == v) {
-                dq[0].second += c - l%c;
-            } else dq.push_front({v, c- l%c});
-        }
+        return;
     }
-    
-    res -= rem;
-    cout << res << '\n';
+
+    ll p = prf[0];
+    for (int i = 1; i < prf.size(); i++)
+    {
+        p += prf[i];
+        if (p) prf[i] = 0;
+        else prf[i] = 1;
+    }
+
+    for (int i = 1; i <= n; i++)
+        cout << prf[in[i]] << '\n';    
 }
 
 signed main()
@@ -143,10 +129,10 @@ signed main()
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;    
  
-	// freopen("runaway.in", "r", stdin);
-    // freopen("runaway.out", "w", stdout);
+	freopen("gathering.in", "r", stdin);
+    freopen("gathering.out", "w", stdout);
  
-    cin >> size;
+    // cin >> size;
     for (int i = 1; i <= size ; i++) solve(i);
     return 0;
 }
