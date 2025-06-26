@@ -1,3 +1,4 @@
+// make set and erase edge
 int par[MXN], sz[MXN], cdprc[MXN];
 struct CentrtiodDecomp {
     vii adj;

@@ -29,30 +29,52 @@ struct centroid
 {
     ll sz, root;
     vi cnt, P;
-    vii ch;
     ll ans;
     vector<set<pl>> adj;
 
     ll dfs(ll u, ll p) {
         cnt[u] = 1;
-        for (auto neg : adj[u]) if (neg != p) cnt[u] += dfs(neg, u);
+        for (auto [neg, w] : adj[u]) if (neg != p) cnt[u] += dfs(neg, u);
         return cnt[u];
     }
     ll dfs(ll u, ll p, ll n) {
-        for (auto neg : adj[u])
+        for (auto [neg, w] : adj[u])
             if (neg != p && cnt[neg] > n/2) return dfs(neg, u, n); 
         return u;
     }
 
-    ll decomp(ll u, ll p) {
+    void dfs2(mi &mp, mi &mpz, mi &tmp, ll u, ll p, ll w) {
+        if (tmp[w]) mpz[w]++;
+        else mp[w]++;
+        P[u] = w;
+        tmp[w]++;
+        for (auto [neg, nw] : adj[u]) if (neg != p) {
+            dfs2(mp, mpz, tmp, neg, u, w + nw);
+        }
+        tmp[w]--;
+    }
+
+    void decomp(ll u, ll p) {
         ll n = dfs(u, p);
         ll cen = dfs(u, p, n);
-        if (p == -1) p = cen;
-        P[cen] = p;
-        vi tm = vi(all(adj[cen]));
+
+        mi mp, mpz;
+        for (auto [neg, w] : adj[cen]) {
+            mi tmp, tmpz, st;
+            dfs2(tmp, tmpz, st, neg, cen, w);
+
+            for (auto [a,b] : tmp)
+                if (a) ans += mpz[-a] * b;
+            for (auto [a,b] : tmpz)
+                if (a) ans += (mp[-a] + mpz[-a]) * b;
+            ans += (tmp[0]+tmpz[0]) * (mp[0]+mpz[0]);
+            for (auto [a,b] : tmp) mp[a]+=b;
+            for (auto [a,b] : tmpz) mpz[a]+=b;
+        }
+        ans += mpz[0];
         for (auto [neg, w] : adj[cen]) {
             adj[neg].erase({cen, w});
-            push_back(decomp(neg, cen));
+            decomp(neg, cen);
         }
     }
 
@@ -60,6 +82,7 @@ struct centroid
         sz = n;
         ans = 0;
         adj.resize(n+1);
+        P.assign(n + 1, 0);
         cnt.assign(n+1, 0);
         for (int i = 0; i <= n; i++)
             adj[i].insert(all(adjtm[i]));
@@ -84,8 +107,6 @@ void solve(int tc) {
 
     centroid cd(adj, n);
 
-    cd.ans = 0;
-    cd.query(lc, cd.root);
     cout << cd.ans << '\n';
 }
 
@@ -94,8 +115,8 @@ signed main()
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;    
 
-	// freopen("yinyang.in", "r", stdin);
-    // freopen("yinyang.out", "w", stdout);
+	freopen("yinyang.in", "r", stdin);
+    freopen("yinyang.out", "w", stdout);
  
     // cin >> size;
     for (int i = 1; i <= size ; i++) solve(i);
