@@ -24,66 +24,43 @@
 using namespace std;
  
 const int MODE = 998244353;
-/**
- * Matching is taking edges from graph such that no two edges share a vertex.
- * 
- * In bipartite graph we can find max matching using max_flow.
- * 
- * In a bipartite graph, we can find a maximum matching using the Hopcroft-Karp algorithm.
- */
 
- /*
- The whole theory: when graph is maximum matching, then the size of left set is equal to the size of right set and for every set in left graph of size A there is atleast A nodes in right graph that are reachable from it.
- */
+ll gcdExtended(ll a, ll b, ll* x, ll* y)
+{
+    if (a == 0) {
+        *x = 0, *y = 1;
+        return b;
+    }
+    ll x1, y1;
+    ll gcd = gcdExtended(b % a, a, &x1, &y1);
+    *x = y1 - (b / a) * x1;
+    *y = x1;
+    return gcd;
+}
 
-
-// Hopcroft-Karp: O(sqrt(V) * E)
-const int MXN = 2e5+100;
-vi adj[MXN];
-ll P[MXN]{}, vis[MXN]{};
-
-bool dfs(ll u) {
-	if (vis[u]) return 0;
-	vis[u] = 1;
-	for (auto neg : adj[u]) {
-		if (P[neg] == -1) {
-			P[neg] = u, P[u] = neg;
-			return 1;
-		}
-		if (dfs(P[neg])) {
-			P[neg] = u, P[u] = neg;
-			return 1;
-		}
+// get a where a = a1 (mod m1) and a = a2 (mod m2)
+pl CRT(ll a1, ll m1, ll a2, ll m2) {
+	if (a2 < a1) {
+		swap(a1, a2);
+		swap(m1, m2);
 	}
-	return 0;
+	ll x, y;
+	ll d = a2 - a1;
+	ll m = lcm(m1, m2);
+	ll g = gcdExtended(m1, m2, &x, &y);
+	if (d % g != 0) return {-1, -1}; // no solution
+	x = (x * (d / g)) % (m2 / g);
+	if (x < 0) x += (m2 / g);
+	ll ans = (a1 + x * m1) % m;
+	if (ans < 0) ans += m;
+	return {ans, m};
 }
 
 void solve(int tc) {
-    ll n, m, k;
-	cin >> n >> m >> k;
+	ll a, n, b, m;
 
-	for (int i = 0; i < k; i++)
-	{
-		ll u, v; cin >> u >> v;
-		adj[u].push_back(v+n);
-	}
-	fill(P, P+n+m+1, -1);
-	for (int i = 0; i < n; i++)
-	{
-		if(P[i] == -1) {
-			fill(vis, vis+n+1, 0);
-			dfs(i);
-		}
-	}
-
-	vp res;
-	for (int i = 0; i < n; i++)
-	{
-		if (P[i] != -1) res.push_back({i, P[i]-n});
-	}
-	
-	cout << res.size() << '\n';
-	for (auto p : res) cout << p.first << ' ' << p.second << '\n';
+	cin >> a >> n >> b >> m;
+	cout << CRT(a, n, b, m).first << '\n';
 }
 
 signed main()
@@ -94,7 +71,7 @@ signed main()
 	// freopen("yinyang.in", "r", stdin);
     // freopen("yinyang.out", "w", stdout);
  
-    // cin >> size;
+    cin >> size;
     for (int i = 1; i <= size ; i++) solve(i);
     return 0;
 }
