@@ -24,65 +24,39 @@ Where:
 
 
 /*
-for general case with n equations: we can us lagrange interpolation to find the solution.
+for general case with n equations: 
+we can run solution for each pair of equations iteratively.
+*/
+
+/*
+we can us lagrange interpolation to find the solution.
 as: m1, m2, ..., mn are pairwise coprime.   
 */
-struct Congruence {
-    long long a, m;
-};
-
-long long chinese_remainder_theorem(vector<Congruence> const& congruences) {
-    long long M = 1;
-    for (auto const& congruence : congruences) {
-        M *= congruence.m;
-    }
-
-    long long solution = 0;
-    for (auto const& congruence : congruences) {
-        long long a_i = congruence.a;
-        long long M_i = M / congruence.m;
-        long long N_i = mod_inv(M_i, congruence.m);
-        solution = (solution + a_i * M_i % M * N_i) % M;
-    }
-    return solution;
+pl crt(const vector<ll> &remainders, const vector<ll> &moduli) {
+	ll MOD = accumulate(moduli.begin(), moduli.end(), 1LL, multiplies<ll>());
+	ll x = 0;
+	for (int i = 0; i < (int)moduli.size(); i++) {
+		ll a = remainders[i] * inv(MOD / moduli[i], moduli[i]) % moduli[i];
+		x = (x + a * (MOD / moduli[i])) % MOD;
+	}
+	return {x, MOD};
 }
-
 
 // if given equations are not coprime.
-#include<bits/stdc++.h>
-using namespace std;
-const int N = 20;
-long long GCD(long long a, long long b) { return (b == 0) ? a : GCD(b, a % b); }
-inline long long LCM(long long a, long long b) { return a / GCD(a, b) * b; }
-inline long long normalize(long long x, long long mod) { x %= mod; if (x < 0) x += mod; return x; }
-struct GCD_type { long long x, y, d; };
-GCD_type ex_GCD(long long a, long long b)
-{
-    if (b == 0) return {1, 0, a};
-    GCD_type pom = ex_GCD(b, a % b);
-    return {pom.y, pom.x - a / b * pom.y, pom.d};
-}
-int testCases;
-int t;
-long long a[N], n[N], ans, lcm;
-int main()
-{
-    ios_base::sync_with_stdio(0);
-    cin.tie(0);
-    cin >> t;
-    for(int i = 1; i <= t; i++) cin >> a[i] >> n[i], normalize(a[i], n[i]);
-    ans = a[1];
-    lcm = n[1];
-    for(int i = 2; i <= t; i++)
-    {
-        auto pom = ex_GCD(lcm, n[i]);
-        int x1 = pom.x;
-        int d = pom.d;
-        if((a[i] - ans) % d != 0) return cerr << "No solutions" << endl, 0;
-        ans = normalize(ans + x1 * (a[i] - ans) / d % (n[i] / d) * lcm, lcm * n[i] / d);
-        lcm = LCM(lcm, n[i]); // you can save time by replacing above lcm * n[i] /d by lcm = lcm * n[i] / d
-    }
-    cout << ans << " " << lcm << endl;
-
-    return 0;
+// get a where a = a1 (mod m1) and a = a2 (mod m2)
+pl CRT(ll a1, ll m1, ll a2, ll m2) {
+	if (a2 < a1) {
+		swap(a1, a2);
+		swap(m1, m2);
+	}
+	ll x, y;
+	ll d = a2 - a1;
+	ll m = lcm(m1, m2);
+	ll g = gcdExtended(m1, m2, &x, &y);
+	if (d % g != 0) return {-1, -1}; // no solution
+	x = (x * (d / g)) % (m2 / g);
+	if (x < 0) x += (m2 / g);
+	ll ans = (a1 + x * m1) % m;
+	if (ans < 0) ans += m;
+	return {ans, m};
 }

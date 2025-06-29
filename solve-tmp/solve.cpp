@@ -25,42 +25,8 @@ using namespace std;
  
 const int MODE = 998244353;
 
-ll gcdExtended(ll a, ll b, ll* x, ll* y)
-{
-    if (a == 0) {
-        *x = 0, *y = 1;
-        return b;
-    }
-    ll x1, y1;
-    ll gcd = gcdExtended(b % a, a, &x1, &y1);
-    *x = y1 - (b / a) * x1;
-    *y = x1;
-    return gcd;
-}
-
-// get a where a = a1 (mod m1) and a = a2 (mod m2)
-pl CRT(ll a1, ll m1, ll a2, ll m2) {
-	if (a2 < a1) {
-		swap(a1, a2);
-		swap(m1, m2);
-	}
-	ll x, y;
-	ll d = a2 - a1;
-	ll m = lcm(m1, m2);
-	ll g = gcdExtended(m1, m2, &x, &y);
-	if (d % g != 0) return {-1, -1}; // no solution
-	x = (x * (d / g)) % (m2 / g);
-	if (x < 0) x += (m2 / g);
-	ll ans = (a1 + x * m1) % m;
-	if (ans < 0) ans += m;
-	return {ans, m};
-}
-
 void solve(int tc) {
-	ll a, n, b, m;
 
-	cin >> a >> n >> b >> m;
-	cout << CRT(a, n, b, m).first << '\n';
 }
 
 signed main()
@@ -71,7 +37,8 @@ signed main()
 	// freopen("yinyang.in", "r", stdin);
     // freopen("yinyang.out", "w", stdout);
  
-    cin >> size;
+    // cin >> size;
     for (int i = 1; i <= size ; i++) solve(i);
+   
     return 0;
 }
