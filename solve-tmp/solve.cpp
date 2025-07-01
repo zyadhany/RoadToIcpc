@@ -27,14 +27,6 @@ public:
         return mx;
     }
 
-    void build(int n) {
-        size = 1;
-        while (size < n)
-            size *= 2;
-        tree.assign(size * 2, item());
-        lazy.assign(size * 2, 0);
-    }
-
     void build(vi& X) {
         size = 1;
         while (size < X.size())
@@ -58,6 +50,7 @@ private:
             }
             if (x) res.push_back(x);
         } 
+        // sort(res.begin(), res.end());
         return (res);
     }
 
@@ -65,7 +58,8 @@ private:
         if (pos < lx || rx < pos) return;
         if (lx == rx && lx == pos)
         {
-            tree[m] = {val};
+            if (val) tree[m] = {val};
+            else tree[m] = {};
             return;
         }
 
@@ -94,7 +88,10 @@ private:
 
     void build(vi& X, int m, int lx, int rx) {
         if (lx == rx) {
-            if (lx < X.size()) tree[m] = {X[lx]};
+            if (lx < X.size()) {
+                if (X[lx]) tree[m] = {X[lx]};
+                tree[m] = {};
+            }
             return;
         }
 
@@ -118,7 +115,6 @@ void solve() {
     vi X(n);
 
     vector<set<ll>> bt(18);
-    cout << (1<<17) << '\n';
     for (int i = 0; i < n; i++)
     {
         cin >> X[i];
@@ -140,9 +136,15 @@ void solve() {
                     auto it = bt[i].lower_bound(l);
                     while (it != bt[i].end() && *it <= r)
                     {
-                        X[*it] &= x;
-                        sg.set(*it, X[*it]);
-                        bt[i].erase(it);
+                        ll ind = *it;
+                        
+                        for (int j = 0; j < 18; j++)
+                            if (bt[j].count(ind)) bt[j].erase(ind);
+                        X[ind] &= x;
+                        sg.set(ind, X[ind]);
+                        for (int j = 0; j < 18; j++)
+                            if ((X[ind]>>j)&1) bt[j].insert(ind); 
+
                         it = bt[i].lower_bound(l);
                     }
                 }
