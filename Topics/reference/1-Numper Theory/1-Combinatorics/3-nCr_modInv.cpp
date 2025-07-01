@@ -44,7 +44,8 @@ ll nPr(ll n, ll r) {
 }
 
 void INIT() {
-    facinv[0] = facinv[1] = 1;
+    fill(fac, fac+SIZE, 1);
+    fill(facinv, facinv+SIZE, 1);
     for (int i = 2; i < SIZE; i++) {
         fac[i] = (i * fac[i - 1]) % MODE;
         facinv[i] = MODE - MODE / i * facinv[MODE%i] % MODE;

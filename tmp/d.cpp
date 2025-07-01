@@ -1,103 +1,148 @@
-#define _CRT_SECURE_NO_WARNINGS
-#include <bits/stdc++.h>
-#include <unordered_map>
-#include <unordered_set>
- 
+#include "bits/stdc++.h"
 #define ll long long
 #define ld long double
 #define pl pair<ll, ll>
 #define vi vector<ll>
 #define vii vector<vi>
-#define viii vector<vii>
-#define vc vector<char>
-#define vcc vector<vc>
-#define vp vector<pl>
-#define mi map<ll,ll>
-#define mc map<char,int>
-#define sortx(X) sort(X.begin(),X.end());
-#define all(X) X.begin(),X.end()
-#define allr(X) X.rbegin(),X.rend()
-#define ln '\n'
-#define YES {cout << "YES\n"; return;}
-#define NO {cout << "NO\n"; return;}
-#define MUN {cout << "-1\n"; return;}
+#define all(X) X.begin(), X.end()
+
 using namespace std;
- 
-const int MODE = 998244353;
 
-struct centroid
-{
-    ll sz, root;
-    vi cnt, P;
-    vii ch;
-    ll ans;
-    vector<set<pl>> adj;
-
-    ll dfs(ll u, ll p) {
-        cnt[u] = 1;
-        for (auto neg : adj[u]) if (neg != p) cnt[u] += dfs(neg, u);
-        return cnt[u];
-    }
-    ll dfs(ll u, ll p, ll n) {
-        for (auto neg : adj[u])
-            if (neg != p && cnt[neg] > n/2) return dfs(neg, u, n); 
-        return u;
-    }
-
-    ll decomp(ll u, ll p) {
-        ll n = dfs(u, p);
-        ll cen = dfs(u, p, n);
-        if (p == -1) p = cen;
-        P[cen] = p;
-        vi tm = vi(all(adj[cen]));
-        for (auto [neg, w] : adj[cen]) {
-            adj[neg].erase({cen, w});
-            push_back(decomp(neg, cen));
-        }
-    }
-
-    centroid(vector<vp> adjtm, ll n) {
-        sz = n;
-        ans = 0;
-        adj.resize(n+1);
-        cnt.assign(n+1, 0);
-        for (int i = 0; i <= n; i++)
-            adj[i].insert(all(adjtm[i]));
-        decomp(1, -1);
-    }
-};
-
-
-void solve(int tc) {
+void solve(vi &X) {
     ll n;
 
-    cin >> n;
+    n = X.size()-1;
+    // cin >> n;
 
-    vector<vp> adj(n+1);
-    for (int i = 0; i < n-1; i++)
+    // vi X(n + 1), P(n+1);
+    vi P(n+1);
+    for (int i = 1; i <= n; i++)
     {
-        ll u, v, w; cin >> u >> v >> w;
-        if (!w) w = -1;
-        adj[u].push_back({v, w});
-        adj[v].push_back({u, w});
+        // cin >> X[i];
+        P[i] = X[i] + P[i-1];
     }
 
-    centroid cd(adj, n);
+    vi dp2(n+1);    
+    for (int i = 1; i <= n; i++)
+    {
+        ll mx = 0;
+        for (int l = 1; l <= i; l++)
+        {
+            for (int r = l; r <= i; r++)
+            {
+                ll summ = 0;
+                for (int h = l; h <= r; h++) summ += X[h];
+                mx = max(mx, summ);
+                for (int h = l; h <= r; h++) {
+                    for (int h2 = 1; h2 < l; h2++)
+                    {
+                        mx = max(mx, summ-X[h]+X[h2]);                        
+                    }
+                    for (int h2 = r+1; h2 <= i; h2++)
+                    {
+                        mx = max(mx, summ-X[h]+X[h2]);                        
+                    }
+                }
+            }
+        }
+        dp2[i] = mx;
+    }
+    vi dp(n+1);
 
-    cd.ans = 0;
-    cd.query(lc, cd.root);
-    cout << cd.ans << '\n';
+    ll summ = 0;
+    for (int i = 1; i <= n; i++)
+    {
+        summ += X[i];
+        summ = max(summ, 0ll);
+        dp[i] = summ;
+    }
+    
+    vi C(n+1), MNP(n+1, INT32_MAX), MXP(n+1, INT32_MIN);
+    ll mx = X[1];
+    for (int i = 1; i <= n; i++)
+    {
+        mx = max(mx, X[i]);
+        C[i] = mx-P[i];
+        MNP[i] = min(MNP[i-1], X[i]);
+        MXP[i] = max(MXP[i-1], X[i]);
+    }
+
+    stack<pl> stnx;
+    set<pl> stprev;
+    ll mxprev = 0;
+    pl mxnx = {INT32_MIN, 0};
+    for (int i = 2; i <= n; i++)
+    {
+        dp[i] = max(dp[i], dp[i-1]);
+
+        // X[i] is max for previos
+        ll at = P[i-1] - MNP[i-1];
+        while (!stprev.empty() && stprev.begin()->first < X[i])
+        {
+            at = max(stprev.begin()->second, at);
+            stprev.erase(stprev.begin());
+        }
+        stprev.insert({X[i], at});
+        mxprev = max(mxprev, at+X[i]);
+        dp[i] = max(dp[i], mxprev);
+
+        // Segment from i to j(>1)
+        
+        at = i-1;
+        while (!stnx.empty() && stnx.top().second > X[i])
+        {
+            if (C[stnx.top().first] > C[at]) at = stnx.top().first;
+            stnx.pop();
+        }
+        stnx.push({at, X[i]});
+        pl v = {P[i]+C[at]-X[i], at};
+        mxnx = max(mxnx, v);
+        dp[i] = max(dp[i], v.first);
+
+        swap(v.first, v.second);
+        v.first = MXP[v.first];
+        v.second -= v.first;        
+        stprev.insert(v);
+    }
+    
+    if (dp != dp2) {
+        for (int i = 1; i <= n; i++) cout << X[i] << ' ';
+    cout << '\n';
+
+    for (int i = 1; i <= n; i++) cout << dp2[i] << ' ';
+    cout << '\n';
+    for (int i = 1; i <= n; i++) cout << dp[i] << ' ';
+    cout << '\n' << endl;
+    }
+    assert(dp == dp2);
+    // for (int i = 1; i <= n; i++) cout << dp[i] << ' ';
+    // cout << '\n';
 }
 
-signed main()
-{
-    ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
-    int size = 1;    
+void solve(vi &X, ll at) {
+    if (at == 5) {
+        // for (auto a : X) cout << a << ' ';
+        // cout << "|\n";
+        solve(X);
+        return;
+    }
+    for (int i = -3; i <= 3; i++)
+    {
+        X.push_back(i);
+        solve(X, at+1);
+        X.pop_back();
+    }
+        
+}
 
-	// freopen("yinyang.in", "r", stdin);
-    // freopen("yinyang.out", "w", stdout);
- 
-    // cin >> size;
-    for (int i = 1; i <= size ; i++) solve(i);
-    return 0;
+int main() {
+    int t = 1;
+    ios::sync_with_stdio(0), cin.tie(nullptr), cout.tie(nullptr);
+
+    // cin >> t;
+    while (t--)
+    {
+        vi X(1,0);
+        solve(X, 0);
+    }
 }
