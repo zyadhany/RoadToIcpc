@@ -1,177 +1,50 @@
-#include "bits/stdc++.h"
+    #define _CRT_SECURE_NO_WARNINGS
+    #include <bits/stdc++.h>
+    #include <unordered_map>
+    #include <unordered_set>
 
-#define ll long long
-#define vi vector<ll>
-#define vii vector<vi>
-#define int ll
-#define pl pair<ll, ll>
-#define vp vector<pl>
-using namespace std;
+    #define ll long long
+    #define ld long double
+    #define pl pair<ll, ll>
+    #define vi vector<ll>
+    #define vii vector<vi>
+    #define vc vector<char>
+    #define vcc vector<vc>
+    #define vp vector<pl>
+    #define mi map<ll,ll>
+    #define mc map<char,int>
+    #define sortx(X) sort(X.begin(),X.end());
+    #define all(X) X.begin(),X.end()
+    #define allr(X) X.rbegin(),X.rend()
+    #define ln '\n'
+    #define YES {cout << "Alice\n"; return;}
+    #define NO {cout << "Bob\n"; return;}
+    #define MUN {cout << "-1\n"; return;}
 
+    const int MODE = 1e9 + 7;
 
+    using namespace std;
 
-typedef vi item;
+    void solve(int tc) {
+        ll n, k;
+        string s;
+        cin >> n >> k >> s;
 
-class SegmentTree
-{
-public:
-
-    void set(int index, ll value) {
-        set(0, 0, size - 1, index, value);
+        if (k > n / 2) YES;
+        ll c = count(all(s), '1');
+        if (c <= k) YES;
+        NO;
     }
 
-    ll getrange(int l, int r) {
-        auto v = getrange(0, 0, size-1, l, r);
-        ll mx = 0;
-        for (auto a : v) mx = max(mx, mx^a);
-        return mx;
-    }
-
-    void build(vi& X) {
-        size = 1;
-        while (size < X.size())
-            size *= 2;
-        tree.assign(size * 2, item());
-        lazy.assign(size * 2, 0);
-
-        build(X, 0, 0, size - 1);
-    }
-
-private:
-    int size;
-    vector<item> tree;
-    vector<long long> lazy;
-
-    item merge(item &a, item &b) {
-        item res = a;
-        for (auto x : b) {
-            for (int i = 0; i < (int)res.size(); i++) {  
-                x = min(x, x ^ res[i]);
-            }
-            if (x) res.push_back(x);
-        } 
-        // sort(res.begin(), res.end());
-        return (res);
-    }
-
-    void set(int m, int lx, int rx, int pos, ll val) {
-        if (pos < lx || rx < pos) return;
-        if (lx == rx && lx == pos)
-        {
-            if (val) tree[m] = {val};
-            else tree[m] = {};
-            return;
-        }
-
-        int mid = (lx + rx) / 2;
-        item s1, s2;
-
-        set(m * 2 + 1, lx, mid, pos, val);
-        set(m * 2 + 2, mid + 1, rx, pos, val);
-        s1 = tree[m * 2 + 1], s2 = tree[m * 2 + 2];
-
-        tree[m] = merge(s1, s2);
-    }
-
-    item getrange(int m, int lx, int rx, int l, int r) {
-        if (rx < l || r < lx) return {};
-        if (l <= lx && rx <= r) return (tree[m]);
-
-        int mid = (lx + rx) / 2;
-        item s1, s2;
-
-        s1 = getrange(m * 2 + 1, lx, mid, l, r);
-        s2 = getrange(m * 2 + 2, mid + 1, rx, l, r);
-
-        return merge(s1, s2);
-    }
-
-    void build(vi& X, int m, int lx, int rx) {
-        if (lx == rx) {
-            if (lx < X.size()) {
-                if (X[lx]) tree[m] = {X[lx]};
-                tree[m] = {};
-            }
-            return;
-        }
-
-        int mid = (lx + rx) / 2;
-        item s1, s2;
-
-        build(X, m * 2 + 1, lx, mid);
-        build(X, m * 2 + 2, mid + 1, rx);
-        s1 = tree[m * 2 + 1], s2 = tree[m * 2 + 2];
-
-        tree[m] = merge(s1, s2);
-    }
-};
-
-
-void solve() {
-    ll n, q;
-
-    cin >> n >> q;
-
-    vi X(n);
-
-    vector<set<ll>> bt(18);
-    for (int i = 0; i < n; i++)
+    int main()
     {
-        cin >> X[i];
-        for (int j = 0; j < 18; j++)
-            if ((X[i]>>j)&1) bt[j].insert(i);        
-    }
-    
-    SegmentTree sg;
-    sg.build(X);
-    
-    while (q--)
-    {
-        ll ty; cin >> ty;
-        if (ty == 1) {
-            ll l, r, x; cin >> l >> r >> x; l--, r--;
-            for (int i = 0; i < 18; i++)
-            {
-                if (!(x&(1<<i))) {
-                    auto it = bt[i].lower_bound(l);
-                    while (it != bt[i].end() && *it <= r)
-                    {
-                        ll ind = *it;
-                        
-                        for (int j = 0; j < 18; j++)
-                            if (bt[j].count(ind)) bt[j].erase(ind);
-                        X[ind] &= x;
-                        sg.set(ind, X[ind]);
-                        for (int j = 0; j < 18; j++)
-                            if ((X[ind]>>j)&1) bt[j].insert(ind); 
+        ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
+        int size = 1;
 
-                        it = bt[i].lower_bound(l);
-                    }
-                }
-            }
-        } else if (ty == 2) {
-            ll ind, x; cin >> ind >> x;
-            for (int i = 0; i < 18; i++)
-                if (bt[i].count(ind)) bt[i].erase(ind);
-            X[ind] = x;
-            sg.set(ind, x);
-            for (int j = 0; j < 18; j++)
-                if ((x>>j)&1) bt[j].insert(ind);     
-        } else {
-            ll l, r; cin >> l >> r;
-            l--, r--;
-            cout << sg.getrange(l, r) << '\n';
-        }
-    }
-    
-}
+        //freopen("input.txt", "r", stdin);
+        //freopen("output.txt", "w", stdout);
 
-signed main() {
-    ios::sync_with_stdio(0), cin.tie(nullptr), cout.tie(nullptr);
-    ll t = 1;
-    cin >> t;
-    while (t--)
-    {
-        solve();
+        cin >> size;
+        for (int i = 1; i <= size; i++)
+            solve(i);
     }
-}
