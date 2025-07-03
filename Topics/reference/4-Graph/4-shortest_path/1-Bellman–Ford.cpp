@@ -27,7 +27,7 @@ public:
 			for (int j = 0; j < E.size(); j++)
 			{
 				ll u = E[j].u, v = E[j].v, w = E[j].w;
-				if (Z[u] + w < Z[v]) Z[v] = Z[u] + w;
+				if (Z[u] != INF && Z[u] + w < Z[v]) Z[v] = Z[u] + w;
 			}
 		}
 		
@@ -36,7 +36,7 @@ public:
 			for (int j = 0; j < E.size(); j++)
 			{
 				ll u = E[j].u, v = E[j].v, w = E[j].w;
-				if (Z[u] + w < Z[v]) Z[v] = -INF;
+				if (Z[u] != INF && Z[u] + w < Z[v]) Z[v] = -INF;
 				if (Z[u] == -INF) Z[v] = -INF;
 			}
 		}
@@ -48,6 +48,38 @@ public:
         size = n;
     }
 };
+
+
+// find the negative cycle
+vi BelmenNegativeCycle() {
+	vi Z(size + 1, INF);
+	vi P(size + 1, -1);
+	
+	ll ls = -1;
+	for (int i = 1; i <= size; i++)
+	{
+		ls = -1;
+		for (int j = 0; j < E.size(); j++)
+		{
+			ll u = E[j].u, v = E[j].v, w = E[j].w;
+			if (Z[u] + w < Z[v]) {
+				Z[v] = Z[u] + w;
+				P[v] = u;
+				ls = v;
+			}
+		}
+	}
+
+	vi res;
+	if (ls == -1) return {};
+	for (int i = 0; i < size-1; i++) ls = P[ls];        
+	for (int x = ls;; x = P[x]) {
+		res.push_back(x);
+		if (x == ls && res.size() > 1) break;
+	}
+	reverse(all(res));
+	return res;
+}
 
 /**
  * get start of node

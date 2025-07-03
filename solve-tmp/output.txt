@@ -1,6 +1,1 @@
-Bob
-Alice
-Alice
-Bob
-Bob
-Alice
+1 0 0 1 

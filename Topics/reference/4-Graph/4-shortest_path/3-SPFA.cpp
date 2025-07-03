@@ -20,47 +20,84 @@ Bellman–Ford algorithm.
 class Graph {
 public:
     int size;
-    vi vis;
     vector<vector<pl>> adj;
 
-    void addEdge(int u, pl v) {
-        adj[u].push_back(v);
+    void addEdge(int u, ll v, ll w) {
+        adj[u].push_back({v, w});
     }
 
-	vi SPFA(int src) {
-		vi Z(size + 1, INF);
-        vector<bool> InQueue(size + 1, 0);
-		queue<int> que;
-        
-        que.push(src);
-        Z[src] = 0;
-        InQueue[src] = 1;
+    bool spfa(int s, vi &dist) {  /// Shortest Path Faster Algorithm
+        vi cnt(size+1);
+        vi inq(size+1);
+        for(int i=0; i<size; i++) {
+            dist[i] = INF;
+            cnt[i] = 0; inq[i] = 0;
+        }
+        queue<int> q;
 
-        while (!que.empty())
-        {
-            int u = que.front();
-            que.pop();
-            InQueue[u] = 0;
+        dist[s] = 0;
+        q.push(s); inq[s] = 1;
+        while (!q.empty()) {
+            int v = q.front();
+            q.pop(); inq[v] = 0;
 
-            for (auto neg : adj[u]) {
-                int v = neg.first;
-                int w = neg.second;
-                if (Z[v] > Z[u] + w) {
-                    Z[v] = Z[u] + w;
-                    if (!InQueue[v]) {
-                        InQueue[v] = 1;
-                        que.push(v);
+            for(auto e : adj[v]) {
+                int u = e.first, w = e.second;
+                if(dist[v] + w < dist[u]) {
+                    dist[u] = dist[v] + w;
+                    if(dist[u] < 0 ) return false; /// optimization for TLE.
+                    if(!inq[u]) {
+                        q.push(u); inq[u] = 1;
+                        cnt[u]++;
+                        if(cnt[u]>size) return false;
                     }
                 }
             }
         }
 
-		return (Z);
-	}
+        return true;
+    }
 
     Graph(ll n) {
         size = n;
-        vis.assign(n + 1, 0);
         adj.resize(n + 1);
     }
 };
+
+// cp algo
+const int INF = 1000000000;
+vector<vector<pair<int, int>>> adj;
+
+bool spfa(int s, vector<int>& d) {
+    int n = adj.size();
+    d.assign(n, INF);
+    vector<int> cnt(n, 0);
+    vector<bool> inqueue(n, false);
+    queue<int> q;
+
+    d[s] = 0;
+    q.push(s);
+    inqueue[s] = true;
+    while (!q.empty()) {
+        int v = q.front();
+        q.pop();
+        inqueue[v] = false;
+
+        for (auto edge : adj[v]) {
+            int to = edge.first;
+            int len = edge.second;
+
+            if (d[v] + len < d[to]) {
+                d[to] = d[v] + len;
+                if (!inqueue[to]) {
+                    q.push(to);
+                    inqueue[to] = true;
+                    cnt[to]++;
+                    if (cnt[to] > n)
+                        return false;  // negative cycle
+                }
+            }
+        }
+    }
+    return true;
+}
