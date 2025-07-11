@@ -25,6 +25,26 @@ for (int k = 0; k < n; ++k) {
     }
 }
 
+// to get all negative cycles, you can use this loop twice after the first loop:
+for (int k = 0; k < n; k++) {
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            if (dist[i][k] != INF && dist[k][j] != INF &&
+                dist[i][j] > dist[i][k] + dist[k][j]) {
+                dist[i][j] = -INF;
+            }
+        }
+    }
+}
+for (int k = 0; k < n; k++) {
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            if (dist[i][k] < INF && dist[k][j]==-INF) { dist[i][j] = -INF; }
+            if (dist[k][j] < INF && dist[i][k]==-INF) { dist[i][j] = -INF; }
+        }
+    }
+}
+
 // to build from Graph object.
 vii floydBuild(){
     vii dist(size + 1, vi(size + 1, INT32_MAX));

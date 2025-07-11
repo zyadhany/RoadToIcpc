@@ -50,3 +50,16 @@ public:
         SPT.resize(n + 1, vi(ceil(log2(n + 1)) + 1));
     }
 };
+
+
+// check if z on path  of x to y
+auto on_path = [&](int x, int y, int z) {
+    int lca = find_lca(x, y);
+    int lca1 = find_lca(x, z);
+    int lca2 = find_lca(y, z);
+
+    if (lca == z || (lca1 == lca && lca2 == z) || (lca2 == lca && lca1 == z)) {
+        return true;
+    }
+    return false;
+};

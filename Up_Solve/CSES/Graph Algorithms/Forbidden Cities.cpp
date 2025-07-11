@@ -3,7 +3,7 @@
 #include <unordered_map>
 #include <unordered_set>
 
-#define ll int
+#define ll long long
 #define ld long double
 #define pl pair<ll, ll>
 #define vi vector<ll>
@@ -91,10 +91,63 @@ vii biconnected_components(vii &g, vi &is_cutpoint, vi &id) {
 	return build_tree();
 }
 
-void solve(int tc) {
-	ll n, m;
+class Graph {
+public:
+    int size;
+    vi vis, lvl;
+    vii adj, SPT;
 
-	cin >> n >> m;
+
+    void BuildSparse(ll node=1, ll parent=0){
+        lvl[node] = lvl[parent] + 1;
+        SPT[node][0] = parent;
+        for (int i = 1; i < SPT[node].size(); i++)
+            SPT[node][i] = SPT[SPT[node][i - 1]][i - 1];        
+        for (auto neg : adj[node])
+            if (neg != parent) BuildSparse(neg, node);
+    }
+
+    ll getKth(ll u, ll k){
+        for (int i = 0; i < SPT[u].size(); i++)
+            if ((1 << i) & k) u = SPT[u][i];
+        return (u);
+    }
+
+    ll LCA(ll u, ll v) {
+        if (lvl[u] > lvl[v]) swap(u, v);
+        v = getKth(v, lvl[v] - lvl[u]);
+        if (u == v) return (u);
+        for (int i = SPT[u].size() - 1; i >= 0; i--)
+        {
+            if (SPT[u][i] != SPT[v][i]){
+                u = SPT[u][i], v = SPT[v][i];
+            }
+        }
+        return (SPT[u][0]);
+    }
+
+    ll dist(ll u, ll v) {
+        ll p = LCA(u , v);
+        return (lvl[u] + lvl[v] - 2 * lvl[p]);
+    }
+
+    void addEdge(int u, int v) {
+        adj[u].push_back(v);
+    }
+
+    Graph(ll n, vii &adj) : adj(adj) {
+        size = n;
+        vis.assign(n + 1, 0);
+        lvl.assign(n + 1, 0);
+        SPT.resize(n + 1, vi(ceil(log2(n + 1)) + 1));
+		BuildSparse(0, 0);
+    }
+};
+
+
+void solve(int tc) {
+	ll n, m, q;
+	cin >> n >> m >> q;
 
 	vii adj(n);
 	for (int i = 0; i < m; i++)
@@ -104,39 +157,34 @@ void solve(int tc) {
 		adj[u].push_back(v);
 		adj[v].push_back(u);
 	}
-	vi  cut(n), id(n);
-	adj = biconnected_components(adj, cut, id);
-
-	vi val(n*2);
-	for (int i = 0; i < n; i++)
-	{
-		val[id[i]]++;
-	}
 	
-	vi cnt(n*2), P(n*2);
-	function<ll(ll, ll)> dfs = [&](ll u, ll p) -> ll {
-		cnt[u] = val[u];
-		P[u] = p;
-		for (auto neg : adj[u]) if (neg != p) {
-			cnt[u] += dfs(neg, u);
-		}
-		return cnt[u];
-	};
-	dfs(0, 0);
-
-	for (int i = 0; i < n; i++)
+	vi cut(n), id(n);
+	adj = biconnected_components(adj, cut, id);
+	
+	
+	Graph gr(n*2, adj);
+	while (q--)
 	{
-		long long res = 2 * (n-1);
-		if (cut[i]) {
-			long long summ = 0;
-			long long u = id[i];
-			for (auto neg : adj[u]) if (neg != P[u]) {
-				summ += cnt[neg];
-				res += cnt[neg] * (n - 1ll - cnt[neg]);
-			}
-			res += summ * (n - 1ll - summ);
-		}		
-		cout << res << '\n';
+		ll u, v, c;
+		cin >> u >> v >> c;
+
+		u--, v--, c--;
+		if (u == c || v == c) NO;
+		if (!cut[c]) YES;
+		u = id[u];
+		v = id[v];
+		c = id[c];
+
+		ll lc = gr.LCA(u, v);
+		int lca = gr.LCA(u, v);
+		int lca1 = gr.LCA(u, c);
+		int lca2 = gr.LCA(v, c);
+
+		if (lca == c || (lca1 == lca && lca2 == c) || (lca2 == lca && lca1 == c)) {
+			NO;
+		}
+
+		YES;
 	}
 }
 

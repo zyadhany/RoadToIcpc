@@ -8,47 +8,32 @@
 */
 
 struct Graph {
-    vi lvl, prf, arth;
-    vii gradj, adj, backedge;
-    vp bridges;
-    vii ConnectedComp;
+	vpp adj;
+	int timer = 0;
+	vi up, in;
+	vii scc;
+	stack<ll> st;
 
-    ll dfstree(ll n=1, ll p=0) {
-        lvl[n] = lvl[p] + 1;
-        for (auto neg : gradj[n]) if (neg != p) {
-            if (lvl[neg] > lvl[n]) continue;
-            if (lvl[neg]) {
-                if (lvl[neg] < lvl[n]) {
-                    prf[n]++, prf[neg]--;
-                    backedge[n].push_back(neg);
-                }
-            } else {
-                adj[n].push_back(neg);
-                prf[n] += dfstree(neg, n);
-            }
-        }
-        
-        if (!prf[n] && p != 0) {
-            bridges.push_back({n, p});
-            arth[n] = 1;
-        }
-        return prf[n];
-    }
+	void dfs(ll n, ll p=0, ll id=-1) {
+		in[n] = up[n] = ++timer;
+		
+		st.push(n);
+		for (auto [neg, idx] : adj[n]) if (idx != id) {
+			if (!up[neg]) {
+				dfs(neg, n, idx);
+				up[n] = min(up[n], up[neg]);
+			} else up[n] = min(up[n], in[neg]);
+		} 
+		
+		if (up[n] == in[n]) {
+			scc.push_back({});
+			while (st.top() != n) scc.back().push_back(st.top()), st.pop();
+			scc.back().push_back(st.top()), st.pop();
+		}
+	}
 
-    void dfsconnected(ll n=1, ll p=0, ll at=0) {
-        if (arth[n] || !p) {
-            at = ConnectedComp.size();
-            ConnectedComp.push_back({});
-        }
-        ConnectedComp[at].push_back(n);
-
-        for (auto neg : adj[n]) if (neg != p) {
-            dfsconnected(neg, n, at);
-        }
-    }
-
-    Graph(ll n, vii &gradj): gradj(gradj), adj(n+1), lvl(n+1)
-    , backedge(n+1), prf(n+1), arth(n+1) {
-        ConnectedComp.resize(1);
-    }
+	Graph(ll n, vpp &adj) : adj(adj), up(n+1), in(n+1) {
+		for (int i = 1; i <= n; i++)
+			if (!up[i]) dfs(i);
+	}
 };
