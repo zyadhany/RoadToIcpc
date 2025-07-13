@@ -3,7 +3,7 @@
 #include <unordered_map>
 #include <unordered_set>
 
-#define ll int
+#define ll long long
 #define ld long double
 #define pl pair<ll, ll>
 #define vi vector<ll>
@@ -11,143 +11,131 @@
 #define vc vector<char>
 #define vcc vector<vc>
 #define vp vector<pl>
-#define vpp vector<vp>
 #define mi map<ll,ll>
 #define mc map<char,int>
 #define sortx(X) sort(X.begin(),X.end());
 #define all(X) X.begin(),X.end()
 #define allr(X) X.rbegin(),X.rend()
 #define ln '\n'
-#define YES {cout << "YES\n"; continue;}
-#define NO {cout << "NO\n"; continue;}
+#define YES {cout << "YES\n"; return;}
+#define NO {cout << "NO\n"; return;}
 #define MUN {cout << "-1\n"; return;}
 
 const int MODE = 1e9 + 7;
 
 using namespace std;
 
-vii biconnected_components(vii &g, vi &is_cutpoint, vi &id) {
-	int n = (int)g.size();
+struct TwoSatSolver {
+	int n_vars;
+	int n_vertices;
+	vector<vector<int>> adj, adj_t;
+	vector<bool> used;
+	vector<int> order, comp;
+	vector<bool> assignment;
 
-	vii comps;
-	vi stk;
-	vi num(n);
-	vi low(n);
-
-	is_cutpoint.resize(n);
-
-	// Finds the biconnected components
-	function<void(int, int, int &)> dfs = [&](int node, int parent, int &timer) {
-		num[node] = low[node] = ++timer;
-		stk.push_back(node);
-		for (auto son : g[node]) {
-			if (son == parent) { continue; }
-			if (num[son]) {
-				low[node] = min(low[node], num[son]);
-			} else {
-				dfs(son, node, timer);
-				low[node] = min(low[node], low[son]);
-				if (low[son] >= num[node]) {
-					is_cutpoint[node] = (num[node] > 1 || num[son] > 2);
-					comps.push_back({node});
-					while (comps.back().back() != son) {
-						comps.back().push_back(stk.back());
-						stk.pop_back();
-					}
-				}
-			}
+	TwoSatSolver(int _n_vars) : n_vars(_n_vars), n_vertices(2 * n_vars), adj(n_vertices), adj_t(n_vertices), used(n_vertices), order(), comp(n_vertices, -1), assignment(n_vars) {
+		order.reserve(n_vertices);
+	}
+	void dfs1(int v) {
+		used[v] = true;
+		for (int u : adj[v]) {
+			if (!used[u])
+				dfs1(u);
 		}
-	};
+		order.push_back(v);
+	}
 
-	int timer = 0;
-	dfs(0, -1, timer);
-	id.resize(n);
+	void dfs2(int v, int cl) {
+		comp[v] = cl;
+		for (int u : adj_t[v]) {
+			if (comp[u] == -1)
+				dfs2(u, cl);
+		}
+	}
 
-	// Build the block-cut tree
-	function<vii()> build_tree = [&]() {
-		vii t(1);
-		int node_id = 0;
-		for (int node = 0; node < n; node++) {
-			if (is_cutpoint[node]) {
-				id[node] = node_id++;
-				t.push_back({});
-			}
+	bool solve_2SAT() {
+		order.clear();
+		used.assign(n_vertices, false);
+		for (int i = 0; i < n_vertices; ++i) {
+			if (!used[i])
+				dfs1(i);
 		}
 
-		for (auto &comp : comps) {
-			int node = node_id++;
-			t.push_back({});
-			for (int u : comp)
-				if (!is_cutpoint[u]) {
-					id[u] = node;
-				} else {
-					t[node].push_back(id[u]);
-					t[id[u]].push_back(node);
-				}
+		comp.assign(n_vertices, -1);
+		for (int i = 0, j = 0; i < n_vertices; ++i) {
+			int v = order[n_vertices - i - 1];
+			if (comp[v] == -1)
+				dfs2(v, j++);
 		}
-		return t;
-	};
 
-	return build_tree();
-}
+		assignment.assign(n_vars, false);
+		for (int i = 0; i < n_vertices; i += 2) {
+			if (comp[i] == comp[i + 1])
+				return false;
+			assignment[i / 2] = comp[i] > comp[i + 1];
+		}
+		return true;
+	}
+
+	void add_disjunction(int a, bool na, int b, bool nb) {
+		// na and nb signify whether a and b are to be negated 
+		a = 2 * a ^ na;
+		b = 2 * b ^ nb;
+		int neg_a = a ^ 1;
+		int neg_b = b ^ 1;
+		adj[neg_a].push_back(b);
+		adj[neg_b].push_back(a);
+		adj_t[b].push_back(neg_a);
+		adj_t[a].push_back(neg_b);
+	}
+};
 
 void solve(int tc) {
 	ll n, m;
 
 	cin >> n >> m;
 
-	vii adj(n);
+	vi X(n);
+	for (int i = 0; i < n; i++) cin >> X[i];
+	
+	vii Y(n);
 	for (int i = 0; i < m; i++)
 	{
-		ll u, v; cin >> u >> v;
-		u--, v--;
-		adj[u].push_back(v);
-		adj[v].push_back(u);
-	}
-	vi  cut(n), id(n);
-	adj = biconnected_components(adj, cut, id);
-
-	vi val(n*2);
-	for (int i = 0; i < n; i++)
-	{
-		val[id[i]]++;
+		ll k; cin >> k;
+		for (int j = 0; j < k; j++)
+		{
+			ll a; cin >> a; a--;
+			Y[a].push_back(i);
+		}
 	}
 	
-	vi cnt(n*2), P(n*2);
-	function<ll(ll, ll)> dfs = [&](ll u, ll p) -> ll {
-		cnt[u] = val[u];
-		P[u] = p;
-		for (auto neg : adj[u]) if (neg != p) {
-			cnt[u] += dfs(neg, u);
-		}
-		return cnt[u];
-	};
-	dfs(0, 0);
-
+	
+	TwoSatSolver sat(m*2+10);
 	for (int i = 0; i < n; i++)
 	{
-		long long res = 2 * (n-1);
-		if (cut[i]) {
-			long long summ = 0;
-			long long u = id[i];
-			for (auto neg : adj[u]) if (neg != P[u]) {
-				summ += cnt[neg];
-				res += cnt[neg] * (n - 1ll - cnt[neg]);
-			}
-			res += summ * (n - 1ll - summ);
-		}		
-		cout << res << '\n';
+		if (X[i]) {
+			// i^n+j = 0 
+			sat.add_disjunction(Y[i][0], true, Y[i][1], false);
+			sat.add_disjunction(Y[i][0], false, Y[i][1], true);
+		} else {
+			// i^n+j = 1 			
+			sat.add_disjunction(Y[i][0], false, Y[i][1], false);
+			sat.add_disjunction(Y[i][0], true, Y[i][1], true);
+		}
 	}
+	
+	if (sat.solve_2SAT()) YES;
+	NO;
 }
 
 int main()
 {
-    ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
-    int size = 1;
-    //freopen("input.txt", "r", stdin);
-    //freopen("output.txt", "w", stdout);
+	ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
+	int size = 1;
+	//freopen("input.txt", "r", stdin);
+	//freopen("output.txt", "w", stdout);
 
-    // cin >> size;
-    for (int i = 1; i <= size; i++)
-        solve(i);
+	// cin >> size;
+	for (int i = 1; i <= size; i++)
+		solve(i);
 }

@@ -1,50 +1,29 @@
-/**
- * 2Sat: given formula  (a1 ∨ b1)∧(a2 ∨ b2)∧··· ∧(am ∨ bm)
- * to montain that make adge for !a1>b1 and !b1>a1
-  if a1 is false b1 must be true and via verse.
- * to solve that we can check if a is in same SCC with -b
-    then no solution
- */
+#define _CRT_SECURE_NO_WARNINGS
+#include <bits/stdc++.h>
+#include <unordered_map>
+#include <unordered_set>
 
- /*
- // i^j = 1 (Xor)
- // iorj and -ior-j
- sat.add_disjunction(i, false, j, false);
- sat.add_disjunction(i, true, j, true);
-// i^j = 0  (not Xor)
-// ior-j and -iorj 
-sat.add_disjunction(i, true, j, false);
-sat.add_disjunction(i, false, j, true);
-}
- */
+#define ll long long
+#define ld long double
+#define pl pair<ll, ll>
+#define vi vector<ll>
+#define vii vector<vi>
+#define vc vector<char>
+#define vcc vector<vc>
+#define vp vector<pl>
+#define mi map<ll,ll>
+#define mc map<char,int>
+#define sortx(X) sort(X.begin(),X.end());
+#define all(X) X.begin(),X.end()
+#define allr(X) X.rbegin(),X.rend()
+#define ln '\n'
+#define YES {cout << "Alice\n"; return;}
+#define NO {cout << "Bob\n"; return;}
+#define MUN {cout << "-1\n"; return;}
 
-// X is array of pairs as each element is condtion
-// -a if a false, a if true.
-bool is2SAT (ll n, vp X) {
-    Graph gr((n + 1) * 2);
+const int MODE = 1e9 + 7;
 
-    for (int i = 0; i < X.size(); i++)
-    {
-        ll l = abs(X[i].first), r = abs(X[i].second);
-        ll a = (X[i].first < 0), b = (X[i].second < 0);
-        cout << l + a * n << ' ' << r + (b ^ 1) * n << "||\n";
-        gr.addEdge(l + (a ^ 1) * n, r + b * n);
-        gr.addEdge(r + (b ^ 1) * n, l + a * n);
-    }
-    auto Z = gr.stronglyConnectedComponents();
-    for (int i = 0; i < Z.size(); i++)
-    {
-        mi Y;
-        for (auto m : Z[i]) {
-            if (m > n) m -= n;
-            if (Y[m]) return 0;
-            Y[m] = 1;
-        }
-    }
-
-    return (1);
-}
-
+using namespace std;
 
 struct TwoSatSolver {
     int n_vars;
@@ -109,15 +88,44 @@ struct TwoSatSolver {
         adj_t[b].push_back(neg_a);
         adj_t[a].push_back(neg_b);
     }
-
-    static void example_usage() {
-        TwoSatSolver solver(3); // a, b, c
-        solver.add_disjunction(0, false, 1, true);  //     a  v  not b
-        solver.add_disjunction(0, true, 1, true);   // not a  v  not b
-        solver.add_disjunction(1, false, 2, false); //     b  v      c
-        solver.add_disjunction(0, false, 0, false); //     a  v      a
-        assert(solver.solve_2SAT() == true);
-        auto expected = vector<bool>(True, False, True);
-        assert(solver.assignment == expected);
-    }
 };
+
+void solve(int tc) {
+	ll n, m;
+
+	cin >> n >> m;
+
+	TwoSatSolver sat(m+1);
+
+	for (int i = 0; i < n; i++)
+	{
+		ll a, b;
+		char ac, bc;
+		cin >> ac >> a >> bc >> b;
+		sat.add_disjunction(a, ac=='-', b, bc=='-');
+	}
+	
+	if (!sat.solve_2SAT()) {
+		cout << "IMPOSSIBLE\n";
+		return;
+	}
+	
+	for (int i = 1; i <= m; i++)
+	{
+		if (sat.assignment[i]) cout << "+ ";
+		else cout << "- ";
+	}
+	cout << '\n';
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
+    int size = 1;
+    //freopen("input.txt", "r", stdin);
+    //freopen("output.txt", "w", stdout);
+
+    // cin >> size;
+    for (int i = 1; i <= size; i++)
+        solve(i);
+}
