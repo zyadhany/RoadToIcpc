@@ -1,3 +1,19 @@
-4 3
-1 2 3 7
-2 4 5 6
+    3
+    3 5
+    cbabc
+    babca
+    abcaa
+    3
+    abc
+    4 5
+    aabcd
+    bbzzz
+    cczzz
+    ddzzz
+    4
+    abcd
+    2 1
+    x
+    y
+    2
+    yx
