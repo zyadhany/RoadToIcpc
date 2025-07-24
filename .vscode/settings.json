@@ -116,8 +116,8 @@
     },
     "editor.wordWrap": "on",
     "github.copilot.enable": {
-        "*": true,
-        "plaintext": true,
+        "*": false,
+        "plaintext": false,
         "markdown": false,
         "scminput": false
     }

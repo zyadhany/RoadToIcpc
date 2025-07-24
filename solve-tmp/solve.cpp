@@ -1,162 +1,179 @@
-#pragma GCC optimize ("sse4")
-#pragma GCC target ("avx,avx2")
-#pragma GCC optimize("unroll-loops")
-
-#define _CRT_SECURE_NO_WARNINGS
 #include <bits/stdc++.h>
-#include <unordered_map>
-#include <unordered_set>
-
-#define ll long long
-#define ld long double
-#define pl pair<ll, ll>
-#define vi vector<ll>
-#define vii vector<vi>
-#define vc vector<char>
-#define vcc vector<vc>
-#define vp vector<pl>
-#define mi map<ll,ll>
-#define mc map<char,int>
-#define sortx(X) sort(X.begin(),X.end());
-#define all(X) X.begin(),X.end()
-#define allr(X) X.rbegin(),X.rend()
-#define ln '\n'
-#define YES {cout << "YES\n"; return;}
-#define NO {cout << "NO\n"; return;}
-#define MUN {cout << "-1\n"; return;}
-
-const int MODE = 1e9 + 7;
-
 using namespace std;
 
-struct HopcroftKarp {
-  static const int inf = 1e9;
-  int n;
-  vector<int> l, r, d;
-  vector<vector<int>> g;
-  HopcroftKarp(int _n, int _m) {
-    n = _n;
-    int p = _n + _m + 1;
-    g.resize(p);
-    l.resize(p, 0);
-    r.resize(p, 0);
-    d.resize(p, 0);
-  }
-  void add_edge(int u, int v) {
-    g[u].push_back(v + n); //right id is increased by n, so is l[u]
-  }
-  bool bfs() {
-    queue<int> q;
-    for (int u = 1; u <= n; u++) {
-      if (!l[u]) d[u] = 0, q.push(u);
-      else d[u] = inf;
+typedef long long ll;
+
+#include <bits/stdc++.h>
+using namespace std;
+
+struct LCT {
+    struct Node {
+        int p = -1, ch[2] = {-1, -1};
+        bool rev = false;
+        long long val = 0, sum = 0;
+    };
+
+    vector<Node> T;
+
+    LCT(int n) : T(n) {}
+
+    // Utilities
+    bool is_root(int x) {
+        int p = T[x].p;
+        return p == -1 || (T[p].ch[0] != x && T[p].ch[1] != x);
     }
-    d[0] = inf;
-    while (!q.empty()) {
-      int u = q.front();
-      q.pop();
-      for (auto v : g[u]) {
-        if (d[r[v]] == inf) {
-          d[r[v]] = d[u] + 1;
-          q.push(r[v]);
+
+    void push(int x) {
+        if (T[x].rev) {
+            swap(T[x].ch[0], T[x].ch[1]);
+            for (int &c : T[x].ch)
+                if (c != -1) T[c].rev ^= 1;
+            T[x].rev = false;
         }
-      }
     }
-    return d[0] != inf;
-  }
-  bool dfs(int u) {
-    if (!u) return true;
-    for (auto v : g[u]) {
-      if(d[r[v]] == d[u] + 1 && dfs(r[v])) {
-        l[u] = v;
-        r[v] = u;
-        return true;
-      }
+
+    void pull(int x) {
+        T[x].sum = T[x].val;
+        for (int c : T[x].ch)
+            if (c != -1) T[x].sum += T[c].sum;
     }
-    d[u] = inf;
-    return false;
-  }
-  int maximum_matching() {
-    int ans = 0;
-    while (bfs()) {
-      for(int u = 1; u <= n; u++) if (!l[u] && dfs(u)) ans++;
+
+    void rotate(int x) {
+        int p = T[x].p, g = T[p].p;
+        bool isL = (T[p].ch[0] == x);
+        int b = T[x].ch[isL ^ 1];
+
+        if (!is_root(p)) T[g].ch[T[g].ch[1] == p] = x;
+        T[x].p = g;
+
+        T[x].ch[isL ^ 1] = p;
+        T[p].p = x;
+
+        T[p].ch[isL] = b;
+        if (b != -1) T[b].p = p;
+
+        pull(p);
+        pull(x);
     }
-    return ans;
-  }
+
+    void splay(int x) {
+        vector<int> path;
+        for (int y = x; !is_root(y); y = T[y].p)
+            path.push_back(T[y].p);
+        reverse(path.begin(), path.end());
+        for (int y : path) push(y);
+        push(x);
+
+        while (!is_root(x)) {
+            int p = T[x].p, g = T[p].p;
+            if (!is_root(p))
+                rotate((T[p].ch[0] == x) == (T[g].ch[0] == p) ? p : x);
+            rotate(x);
+        }
+    }
+
+    int access(int x) {
+        int last = -1;
+        for (int y = x; y != -1; y = T[y].p) {
+            splay(y);
+            T[y].ch[1] = last;
+            pull(y);
+            last = y;
+        }
+        splay(x);
+        return last;
+    }
+
+    void make_root(int x) {
+        access(x);
+        T[x].rev ^= 1;
+    }
+
+    void link(int u, int v) {
+        make_root(u);
+        T[u].p = v;
+    }
+
+    void cut(int u, int v) {
+        make_root(u);
+        access(v);
+        if (T[v].ch[0] == u && T[u].p == v) {
+            T[v].ch[0] = -1;
+            T[u].p = -1;
+            pull(v);
+        }
+    }
+
+    int lca(int u, int v) {
+        if (u == v) return u;
+        access(u);
+        int res = access(v);
+        return get_root(u) == get_root(v) ? res : -1;
+    }
+
+    int get_root(int x) {
+        access(x);
+        while (T[x].ch[0] != -1) {
+            x = T[x].ch[0];
+            push(x);
+        }
+        splay(x);
+        return x;
+    }
+
+    int get_parent(int x) {
+        access(x);
+        splay(x);
+        if (T[x].ch[0] == -1) return -1;
+        x = T[x].ch[0];
+        push(x);
+        while (T[x].ch[1] != -1) {
+            x = T[x].ch[1];
+            push(x);
+        }
+        splay(x);
+        return x;
+    }
+
+    void set_val(int x, long long v) {
+        access(x);
+        T[x].val = v;
+        pull(x);
+    }
+
+    void add(int x, long long v) {
+        access(x);
+        T[x].val += v;
+        pull(x);
+    }
+
+    long long query(int x) {
+        access(x);
+        return T[x].sum;
+    }
 };
 
 
-void solve(int tc) {
-	ll n, m;
-	cin >> n >> m;
+int main() {
+	ll n, q;
+	cin >> n >> q;
 
-	vector<string> X(n);
-	for (int i = 0; i < n; i++)
-	{
-		cin >> X[i];
-	}
-	ll t; cin >> t;
-	string s; cin >> s;
+	LCT lc(n);
 
-	ll cur = 1;
-	vii id(n, vi(m,-1));
-	vii adj(n*m);
-	for (int i = 0; i < n; i++)
+	while (q--)
 	{
-		ll at = 0;
-		for (int j = 0; j < m; j++)
-		{
-			if (X[i][j] == s[at]) {
-				at++;
-				if (at == s.size()) {
-					for (int k = 0; k < s.size(); k++)
-						id[i][j-k] = cur;					
-					cur++;
-					at = 0;
-				}
-			} else at = (X[i][j] == s[0]);
+		string ty;
+		cin >> ty;
+
+		if (ty == "lca") {
+			ll u, v; cin >> u >> v;
+			cout << lc.lca(u, v) << '\n';
+		} else if (ty == "link") {
+			ll u, v; cin >> u >> v;
+			lc.link(u, v);
+		} else {
+			ll u; cin >> u;
+			// lc.cut(u, lc.get_parent(u));
 		}
-	}
-
-	vp E;
-	ll sz1 = cur-1;
-	for (int j = 0; j < m; j++)
-	{
-		ll at = 0;
-		for (int i = 0; i < n; i++)
-		{
-			if (X[i][j] == s[at]) {
-				at++;
-				if (at == s.size()) {
-					for (int k = 0; k < s.size(); k++) {
-						if (id[i-k][j] == -1) continue;
-						E.push_back({id[i-k][j], cur-sz1});                        
-					}
-					at = 0;
-					cur++;
-				}
-			} else at = (X[i][j] == s[0]);
-		}
-	}
-	HopcroftKarp HK(sz1, cur - sz1 -1);
-	for (auto [a, b] : E) {
-		HK.add_edge(a, b);
-	}
-	
-	// ll res = minvertexcover(sz1, cur - sz1-1, E);
-	ll res = HK.maximum_matching();
-	cout << cur - res - 1 << '\n';	
-}
-
-int main()
-{
-    ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
-    int size = 1;
-
-    freopen("grid.in", "r", stdin);
-    //freopen("output.txt", "w", stdout);
-
-    cin >> size;
-    for (int i = 1; i <= size; i++)
-        solve(i);
+	}	
 }
