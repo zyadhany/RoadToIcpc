@@ -67,3 +67,62 @@ int gauss (vector < bitset<N> > a, int n, int m, bitset<N> & ans) {
     }
         // The rest of implementation is the same as above
 }
+
+
+
+vi gauss(vii A, vi b) {
+    int n = A.size();
+    vi where(n, -1);  // where[i] = row where variable i was used as pivot
+
+    for (int col = 0, row = 0; col < n && row < n; ++col) {
+        int sel = row;
+        for (int i = row; i < n; ++i) {
+            if (A[i][col]) {
+                sel = i;
+                break;
+            }
+        }
+
+        if (A[sel][col] == 0) continue;
+
+        swap(A[sel], A[row]);
+        swap(b[sel], b[row]);
+        where[col] = row;
+
+        ll inv_pivot = inv(A[row][col]);
+        for (int j = col; j < n; ++j)
+            A[row][j] = A[row][j] * inv_pivot % MODE;
+        b[row] = b[row] * inv_pivot % MODE;
+
+        for (int i = 0; i < n; ++i) {
+            if (i != row && A[i][col]) {
+                ll factor = A[i][col];
+                for (int j = col; j < n; ++j)
+                    A[i][j] = (A[i][j] - factor * A[row][j] % MODE + MODE) % MODE;
+                b[i] = (b[i] - factor * b[row] % MODE + MODE) % MODE;
+            }
+        }
+        row++;
+    }
+
+    // check for inconsistency
+    for (int i = 0; i < n; ++i) {
+        bool all_zero = true;
+        for (int j = 0; j < n; ++j)
+            if (A[i][j]) all_zero = false;
+        if (all_zero && b[i] != 0) {
+            // cout << "No solution\n";
+            return {};
+        }
+    }
+
+    // construct solution (free variables = 0)
+    vi ans(n);
+    for (int i = 0; i < n; ++i) {
+        if (where[i] != -1)
+            ans[i] = b[where[i]];
+        else
+            ans[i] = 0; // free variable set to 0
+    }
+    return ans;
+}

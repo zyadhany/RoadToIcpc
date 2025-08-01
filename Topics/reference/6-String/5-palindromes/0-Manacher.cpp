@@ -21,6 +21,8 @@ By adding a '#' between each character we can find all palindromes of even lengt
 
 d[2*i] = 2*d[i] + 1 (even length)
 d[2*i+1] = 2*d[i] (odd length)
+
+for pos i its odd at 2*i and even at 2*i+1
 */
 vector<int> manacher(string s) {
     string t;
