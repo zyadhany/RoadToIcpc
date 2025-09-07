@@ -19,6 +19,21 @@ void updatepoint(vi& BIT, ll idx, ll val) {
 		BIT[i] += val - summ;
 }
 
+// lower bound using binery lifting to find first index with prefix greater or equal v
+ll BITlowerbound(ll v) {
+	ll summ = 0;
+    ll idx = 0;
+    for (int i = 20; i >= 0; i--)
+    {
+        if (idx + (1ll << i) < N && summ + BIT[idx + (1ll << i)] < v) {
+            idx += (1ll << i);
+            summ += BIT[idx];
+        }
+    }
+    
+	return idx+1;
+}
+
 // Construct fenwick tree from array in O(n)
 FenwickTree(vector<int> const &a) : FenwickTree(a.size()){
     for (int i = 0; i < n; i++) {

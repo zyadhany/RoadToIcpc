@@ -1,3 +1,2 @@
 g++ solve.cpp -o solve
-ulimit -s unlimited
-time ./solve < input.txt > output.txt
+./solve < input.txt > output.txt

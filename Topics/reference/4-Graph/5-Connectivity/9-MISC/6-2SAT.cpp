@@ -117,7 +117,7 @@ struct TwoSatSolver {
         solver.add_disjunction(1, false, 2, false); //     b  v      c
         solver.add_disjunction(0, false, 0, false); //     a  v      a
         assert(solver.solve_2SAT() == true);
-        auto expected = vector<bool>(True, False, True);
+        auto expected = vector<bool>({true, false, true});
         assert(solver.assignment == expected);
     }
 };

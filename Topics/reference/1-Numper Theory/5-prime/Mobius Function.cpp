@@ -16,3 +16,49 @@ void INIT() {
         }
     }
 }
+
+
+//  Given array find 2 index where a_i and a_j are coprime
+pl sol(vp &X) {
+    ll m = 0;
+    for (auto [a, b] : X) m = max(a, m);
+
+    vi dp(m+1);
+
+    ll n = 0;
+    for (auto [v, ind] : X) {
+        n++;
+        
+        vi P;
+        ll a = v;
+        while (a > 1)
+        {
+            ll p = prime[a];
+            P.push_back(p);
+            while (a%p==0) a/=p;
+        }
+        
+        ll cnt = 0;
+        for (int i = 0; i < (1ll<<P.size()); i++)
+        {
+            ll sing = 1;
+            ll v = 1;
+            for (int j = 0; j < P.size(); j++)
+            {
+                if (i & (1<<j)) v *= P[j], sing *= -1;
+            }
+            cnt += sing * dp[v];
+            dp[v]++;
+        }
+
+        if (cnt) {
+            for (auto [v2, ind2] : X) {
+                if (gcd(v2, v) == 1) {
+                    return {ind, ind2};
+                }
+            }
+        }
+    }
+    
+    return {-1, -1};
+}
