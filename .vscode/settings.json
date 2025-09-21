@@ -116,9 +116,15 @@
     },
     "editor.wordWrap": "on",
     "github.copilot.enable": {
-        "*": false,
-        "plaintext": false,
+        "*": true,
+        "plaintext": true,
         "markdown": false,
         "scminput": false
+    },
+    "files.watcherExclude": {
+    "**/node_modules": true,
+    "**/build": true,
+    "**/.git": true,
+    "**/*.exe": true,
     }
 }
