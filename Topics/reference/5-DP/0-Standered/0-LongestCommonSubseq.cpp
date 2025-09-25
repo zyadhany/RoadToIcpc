@@ -8,3 +8,6 @@ ll LongestCommonSubseq(string &s, string &t) {
 		}
 	return (X[s.size()][t.size()]);
 }
+
+
+// if all element are uniq we can map each element to index in other set and find the longest increasing subsequance.

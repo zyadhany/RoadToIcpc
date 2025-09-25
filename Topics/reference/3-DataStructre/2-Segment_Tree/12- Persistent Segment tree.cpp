@@ -27,6 +27,18 @@ struct PST {
     tree[cur].val = marge(tree[lc].val, tree[rc].val);
     return cur;
   }
+  int build(int b, int e) {
+    int cur = ++T;
+    if(b == e) {
+        tree[cur].val = neutral;
+        return cur;
+    }
+    int mid = b + e >> 1;
+    lc = build(b, mid);
+    rc = build(mid + 1, e);
+    tree[cur].val = marge(tree[lc].val, tree[rc].val);
+    return cur;
+  }
   int upd(int pre, int b, int e, int i, item v) {
     int cur = ++T;
     tree[cur] = tree[pre];

@@ -1,5 +1,18 @@
 // Check if range [l, r] is is permutation of size r-l+1
 // after getting Hashval of [l, r] we can just compare with PERM[r-l+1]
+
+//Single Value
+mi F({{0,0}});
+mt19937_64 rng(chrono::steady_clock::now().time_since_epoch().count());
+
+ll get(ll v) {
+    auto it = F.find(v);
+    if (it != F.end()) return it->second;
+    return F[v] = uniform_int_distribution<ll>(0, (1ull << 63) - 1)(rng);
+}
+
+
+// Prefix  array
 mt19937_64 rng(chrono::steady_clock::now().time_since_epoch().count());
 const int MXN = 3e5+10;
 ll F[MXN], PERM[MXN];

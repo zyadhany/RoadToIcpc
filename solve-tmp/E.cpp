@@ -24,52 +24,32 @@
 
 using namespace std;
 
+mt19937_64 rng(chrono::steady_clock::now().time_since_epoch().count());
+const int MODE = 1e9+9;
+const int K = uniform_int_distribution<ll>(0, MODE - 1)(rng);
+
+mi F({{0,0}});
+ll get(ll v) {
+    auto it = F.find(v);
+    if (it != F.end()) return it->second;
+    return F[v] = uniform_int_distribution<ll>(0, MODE>>1)(rng);
+}
+
+
+ll hashval(ll v) {
+    return (v + K) % MODE;
+}
 
 void solve(int tc) {
-    ll n, k;
+    ll n, q;
 
-
-    cin >> n >> k;
-
-    vii adj(n, vi(n));
-
-    for (int h = 0; h < k; h++)
+    cin >> n >> q;
+    vi X(n);
+    for (int i = 1; i <= n; i++)
     {
-        vi X(n);
-        for (int i = 0; i < n; i++)
-        {
-            cin >> X[i]; X[i]--;
-        }
-        for (int i = 0; i < n; i++)
-        {
-            for (int j = i+1; j < n; j++)
-            {
-                adj[X[i]][X[j]]++;
-            }
-            
-        }
-                
+        
     }
     
-    vi dp(n, -1);
-    function<ll(ll)> dfs = [&](ll u) -> ll {
-        ll &res = dp[u];
-        if (res != -1) return res;
-        res = 0;
-        for (int i = 0; i < n; i++)
-        {
-            if (adj[u][i] == k) res = max(res, dfs(i));
-        }
-        res++;
-        return res;
-    };
-
-    ll sol = 0;
-    for (int i = 0; i < n; i++)
-    {
-        sol = max(sol, dfs(i));
-    }
-    cout << sol << '\n';
 }
 
 int main()
@@ -78,7 +58,8 @@ int main()
     int size = 1;    
     //freopen("input.txt", "r", stdin);
     //freopen("output.txt", "w", stdout);
-    // cin >> size;
+
+    cin >> size;
     for (int i = 1; i <= size; i++)
         solve(i);
 }
