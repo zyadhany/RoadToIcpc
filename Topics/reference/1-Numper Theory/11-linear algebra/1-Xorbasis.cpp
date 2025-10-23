@@ -55,6 +55,19 @@ struct Basis {
     return 0;
   }
 
+  ll orderofkey(ll x) {
+        ll k = 1;
+        ll c = cnt-1;
+        for(int i = LOG - 1; i >= 0; i --) {
+            if ((x >> i) & 1) {
+                if (!basis[i]) return 0;
+                k += (1ll << c);
+            }
+            c--;
+        }
+        return k;
+    }
+
   bool get(int mask) {
     for (int i = LOG - 1; ~i; --i) {
       if ((mask >> i) & 1) {
