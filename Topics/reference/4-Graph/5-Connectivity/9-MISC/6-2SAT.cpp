@@ -109,6 +109,16 @@ struct TwoSatSolver {
         adj_t[b].push_back(neg_a);
         adj_t[a].push_back(neg_b);
     }
+    void add_xor(int a, bool na, int b, bool nb) {
+    // (A != B) ⇔ (A ∨ B) ∧ (¬A ∨ ¬B)
+        add_disjunction(a, na,     b, nb    ); //  A  v  B
+        add_disjunction(a, !na,    b, !nb   ); // ¬A v ¬B
+    }
+    void add_xnor(int a, bool na, int b, bool nb) {
+        // (A == B) ⇔ (A ∨ ¬B) ∧ (¬A ∨ B)
+        add_disjunction(a, na,     b, !nb   ); // A  v ¬B
+        add_disjunction(a, !na,    b, nb    ); // ¬A v B
+    }
 
     static void example_usage() {
         TwoSatSolver solver(3); // a, b, c
