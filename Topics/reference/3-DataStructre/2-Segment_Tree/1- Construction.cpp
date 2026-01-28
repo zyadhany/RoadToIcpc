@@ -6,7 +6,7 @@
  * 
  * Functions you can use:
  * @set: set index or range to value.
- * @geteange: get value of given range.
+ * @getrange: get value of given range.
  * @build: build tree with given vector or size.
  * 
  * make sure to look at item typedef.
