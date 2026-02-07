@@ -1,3 +1,10 @@
+/*
+    for 2D LIS, longest chain such that: x1 < x2, y1 < y2
+    - Sort by x increasing
+    - If x ties → sort y decreasing
+    - Now run LIS on y
+*/
+
 ll Longest_Increasing_SubSeq(vi &X) {
     vi Z;
     for (int i = 0; i < X.size(); i++) {
