@@ -24,45 +24,58 @@
 #define YES {cout << "YES\n"; return;}
 #define NO {cout << "NO\n"; return;}
 #define MUN {cout << "-1\n"; return;}
-
-const int MODE = 1e9 + 7;
+#define int long long
 
 using namespace std;
 
-void solve() {
-    ll n;
-    cin >> n;
+const int MODE = 998244353;
+const int MOD2 = (MODE+1)/2;
 
-
-    vi res = {1, 2, -3};
-
-    ll at = 4;
-    bool neg = 0;
-    if (n < 0) neg = 1, n = -n;
-    while (n--)
-    {
-        res.push_back(at);
-        res.push_back(at+1);
-        at+=2;
-        if (neg) res.back() *= -1;
-        else res[res.size()-2] *= -1;
+ll gcdExtended(ll a, ll b, ll* x, ll* y)
+{
+    if (a == 0) {
+        *x = 0, *y = 1;
+        return b;
     }
-
-    cout << res.size() << '\n';
-    for (auto a : res) {
-        if (a > 0) cout << "+";
-        cout << a;
+    ll x1, y1;
+    ll gcd = gcdExtended(b % a, a, &x1, &y1);
+    *x = y1 - (b / a) * x1;
+    *y = x1;
+    return gcd;
+}
+ll fpow(ll x, ll y) {
+    ll res = 1;
+    x %= MODE;
+    while (y > 0) {
+        if (y & 1) res = (res * x) % MODE;
+        x = (x * x) % MODE;
+        y >>= 1;
     }
-    cout << '\n';
+    return res;
 }
 
-int main()
+ll modinv(ll x) {
+    return fpow(x, MODE - 2);
+}
+
+void solve(int tc) {
+    ll k;
+    cin >> k;
+
+    ll b = (MODE+1)/2;
+
+    ll a = fpow(b, k);
+    cout << a << '\n';
+}
+
+signed main()
 {
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;
-
     //freopen("input.txt", "r", stdin);
     //freopen("output.txt", "w", stdout);
-    cin >> size;
-    for (int i = 1; i <= size; i++) solve();
+
+    // cin >> size;
+    for (int i = 1; i <= size; i++)
+        solve(i);
 }
