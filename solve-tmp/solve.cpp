@@ -31,103 +31,68 @@ const ll INF = 2e16;
 using namespace std;
 
 
+
 void solve(int tc) {
-    ll n, k;
+    ll n, m;
 
-    cin >> n >> k;
+    cin >> n >> m;
 
-    vii IT;
-
+    vi X(n), P(1);
     for (int i = 0; i < n; i++)
     {
-        ll a, b, c; cin >> a >> b >> c;
-        IT.push_back({a, b, c});
+        cin >> X[i];
+        ll v = X[i];
+        while (v--) P.push_back(i);
+        if (i) X[i] += X[i-1];
     }
-
-    sort(all(IT), [&](vi &a, vi &b) {
-        ll v1 = a[1]*b[0];
-        ll v2 = b[1]*a[0];
-        return v1 > v2;
-    });
-
-    ll brut = min(300ll, k);
-    ll c = k-brut;
-
-    ll summ = 0;
-    for (auto &Y:IT) {
-        ll tk = min(c/Y[0], Y[2]);
-        summ += tk * Y[1];
-        c -= tk;
-        Y[2]-=tk;
-    }
+    for (int i = 1; i <= m; i++) P[i] += P[i-1];
     
     
-    vector<vp> X(3);
-    for (auto &Y:IT) {
-        ll a = Y[0], b = Y[1], c = Y[2];
-        if (!c) continue;
-        X[a-1].push_back({b, c});
-    }
-    for (int i = 0; i < 3; i++) sort(allr(X[i]));
-    brut += c;
-    ll sol = summ;
-
-    for (int i = 0; i <= brut; i++)
+    vii dp(m+1, vi(m+1, INF));
+    for (int i = 0; i <= m; i++)
     {
-        for (int j = 0; j <= brut; j++)
-        {
-            for (int h = 0; h <= brut; h++)
-            {
-                if (i+2*j+3*h>brut) break;
-
-                
-                ll re = 0;
-                ll at = 0;
-                ll hv = i;
-                while (at < X[0].size() && hv) {
-                    pl p = X[0][at];
-                    ll tk = min(hv, p.second);
-                    re += tk * p.first;
-                    if (tk == p.second) at++;
-                    hv -= tk;
-                }
-
-                at = 0;
-                hv = j;
-                while (at < X[1].size() && hv) {
-                    pl p = X[1][at];
-                    ll tk = min(hv, p.second);
-                    re += tk * p.first;
-                    if (tk == p.second) at++;
-                    hv -= tk;
-                }
-
-                at = 0;
-                hv = h;
-                while (at < X[2].size() && hv) {
-                    pl p = X[2][at];
-                    ll tk = min(hv, p.second);
-                    re += tk * p.first;
-                    if (tk == p.second) at++;
-                    hv -= tk;
-                }
-
-                sol = max(sol, summ + re);
-            }
-        }
+        if (i < X[0]) dp[i][i] = X[0]-i;
+        else dp[i][i] = P[i];
     }
 
+    for (ll j = m-1; j >= 0; j--)
+        for (ll k = m; k >= 0; k--)
+            dp[j][k] = min(dp[j][k], dp[j+1][k]);   
+    // cout << dp[4][4] << ' ' << dp[3][4] << "|\n";
+    for (int i = 1; i < n; i++)
+    {
+        vii TM(m+1, vi(m+1, INF));
+        for (ll j = 0; j <= m; j++)
+        {
+            for (ll k = j; k <= m; k++)
+            {
+                ll ad = 0;
+                if (X[i] >= k) ad = X[i]-k;
+                else {
+                    ll tk = min(j, k-X[i]);
+                    // if (tk > j) break;
+                    ad = P[k] - P[k-tk] - i * tk;
+                }
+                TM[j][k] = ad + dp[j][k-j];
+                // cout << j << ' ' << k << ' ' << TM[j][k] << "|\n";
+            }            
+        }
+        // cout << "||||||||||||\n";
+        for (ll j = m-1; j >= 0; j--)
+            for (ll k = m-1; k >= 0; k--)
+                TM[j][k] = min(TM[j][k], TM[j+1][k]);        
+        swap(dp, TM);
+        cout << dp[1][9] << "|\n";
+    }
+    
+
+    ll sol = INF;
+    for (int i = 0; i <= m; i++) sol = min(sol, dp[i][m]);
     cout << sol << '\n';
 }
 
-int main()
-{
+int main() {
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr);
     int size = 1;
-
-    //freopen("input.txt", "r", stdin);
-    //freopen("output.txt", "w", stdout);
-
-    cin >> size;
     for (int i = 1; i <= size; i++) solve(i);
 }
