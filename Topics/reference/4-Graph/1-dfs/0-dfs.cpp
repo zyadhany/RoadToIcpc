@@ -18,3 +18,20 @@ void DFS(int s)
         }
     }
 }
+
+
+// forward star
+/*
+int nd = 0;
+int head[MAXN], to[MAXE], next[MAXE];
+void add(int u, int v) {
+    to[nd] = v;
+    next[nd] = head[u];
+    head[u] = nd++;
+}
+
+for (int i = head[u]; i != -1; i = next[i]) {
+    int v = to[i];
+    // do something with v
+}
+*/
