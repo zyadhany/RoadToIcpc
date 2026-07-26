@@ -12,5 +12,7 @@ int main() {
     int random_number = distrib(gen);
     std::cout << "Random number between 1 and 1,000,000: " << random_number << std::endl;
 
+    shuffle(p.begin(), p.end(), mt19937(random_device()()));
+
     return 0;
 }
