@@ -41,7 +41,7 @@ struct Basis {
     clear();
   };
  
-  bool insert(int mask) {
+  bool insert(ll mask) {
     for (int i = LOG - 1; ~i; --i) {
       if ((mask >> i) & 1) {
         if (!basis[i]) {
@@ -68,7 +68,7 @@ struct Basis {
         return k;
     }
 
-  bool get(int mask) {
+  bool get(ll mask) {
     for (int i = LOG - 1; ~i; --i) {
       if ((mask >> i) & 1) {
         if (!basis[i]) {
@@ -93,10 +93,23 @@ struct Basis {
   ll getmax() {
     int ret = 0;
     for (int i = LOG - 1; ~i; --i) {
-      if ((ret >> i) & 1) continue;
+      if ((ret >> i) & 1) continue; // invert this oppration to get min.
       ret ^= basis[i];
     }
     return ret;
+  }
+
+  // it convert evert elemment in space to be anded & wtih x
+  // it just &= all possible elemments in the space with x
+  void AND(ll x) {
+      ll size = 0;
+      vector<ll> update;
+      for (ll i = LOG - 1; i >= 0; --i) {
+          basis[i] = (basis[i] & x);
+          if (basis[i]) update.push_back(basis[i]);
+          basis[i] = 0;
+      }
+      for (int& value : update) insert(value);
   }
  
  
