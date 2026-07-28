@@ -88,8 +88,8 @@ void add(ll u, ll v) {
     PAR[v] = u;    
 }
  
-void INIT() {
-    for (int i = 0; i < MXN; i++) {
+void INIT(ll n = MXN-1) {
+    for (int i = 0; i <= n; i++) {
         PAR[i] = i;
         RAN[i] = 0;
     } 

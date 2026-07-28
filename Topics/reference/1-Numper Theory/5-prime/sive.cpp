@@ -9,6 +9,10 @@ void INIT() {
     for (int i = 2; i < MAXSZ; i++) if(prime[i] == i) primes.push_back(i);
 }
 
+// fast check with bitset
+// for (int i = 2; i * i < MAXSZ; ++i) if (prime[i] == i)
+//     for (int j = i * i; j < MAXSZ; j += i) prime[j] = i;
+
 void divsorFactors(vp &faccnt, vi &div, ll at, ll d) {
     if (at == faccnt.size()) {div.push_back(d); return;}
     divsorFactors(faccnt, div, at + 1, d);

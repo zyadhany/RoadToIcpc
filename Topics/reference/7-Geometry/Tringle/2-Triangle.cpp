@@ -17,3 +17,8 @@ bool is_right_triangle(pl A, pl B, pl C) {
     // Check if any dot product is zero (indicating 90-degree angle) 
     return (dot_product(AB, BC) == 0 || dot_product(BC, CA) == 0 || dot_product(CA, AB) == 0); 
 } 
+
+ld get_area(ld a, ld b, ld c) {
+    ld s = (a + b + c) / 2.0;
+    return sqrtl(s * (s - a) * (s - b) * (s - c));
+}

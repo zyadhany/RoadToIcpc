@@ -95,3 +95,15 @@ ll nCrNoOverFlow(ll n, ll k) {
         ans = (ans * i) / (n - i + 1);
     return ans;
 }
+
+// n up to 1e18, k up to 1e5, mod is prime. O(k)
+ll nCr(ll n, ll k) {
+    if (n < k || k < 0) return 0;
+    k = min(k, n - k);
+    ll ans = 1;
+    for (int i = 1; i <= k; i++) {
+        ans = (ans * ((n - i + 1) % MODE)) % MODE;
+        ans = (ans * inv[i]) % MODE;
+    }
+    return ans;
+}
