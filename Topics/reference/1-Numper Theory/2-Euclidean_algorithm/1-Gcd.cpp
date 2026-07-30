@@ -21,7 +21,7 @@ ll gcdExtended(ll a, ll b, ll* x, ll* y)
 * if a,b are coprimes then:
 * x be a mode inv for b and via verse.
 */
-ll modeenv(ll n) {
+ll modinv(ll n) {
     ll x, y;
     gcdExtended(n, MODE, &x, &y);
     return (x % MODE + MODE) % MODE;
