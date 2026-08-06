@@ -87,6 +87,30 @@ struct SuffixAutomaton {
     }
 };
 
+// longest common substring of S and T
+string lcs (string S, string T) {
+    sa_init();
+    for (int i = 0; i < S.size(); i++)
+        sa_extend(S[i]);
+
+    int v = 0, l = 0, best = 0, bestpos = 0;
+    for (int i = 0; i < T.size(); i++) {
+        while (v && !st[v].next.count(T[i])) {
+            v = st[v].link ;
+            l = st[v].len;
+        }
+        if (st[v].next.count(T[i])) {
+            v = st [v].next[T[i]];
+            l++;
+        }
+        if (l > best) {
+            best = l;
+            bestpos = i;
+        }
+    }
+    return T.substr(bestpos - best + 1, best);
+}
+
 int32_t main() {
     ios_base::sync_with_stdio(0);
     cin.tie(0);

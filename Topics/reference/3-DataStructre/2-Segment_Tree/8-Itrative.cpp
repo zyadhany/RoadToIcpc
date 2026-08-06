@@ -50,7 +50,7 @@ struct segmax
         iteam ra, rb; ra = rb = neutral;
         for (lo += sgsize, hi += sgsize + 1; lo < hi; lo /= 2, hi /= 2) {
             if (lo & 1) ra = marge(ra, sgtree[lo++]);
-            if (hi & 1) rb = marge(rb, sgtree[--hi]);
+            if (hi & 1) rb = marge(sgtree[--hi], rb);
         }
         return marge(ra, rb);
     }
