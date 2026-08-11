@@ -8,56 +8,28 @@ otherwise we use spfa from the source node to find the value of array. it gives 
 */
 
 /*
-ID: USACO_template
-LANG: C++
-PROG: https://oj.uz/problem/view/RMI19_restore
+    you need to construct and array with given constraints.
+    1. summ(l,r) >= v
+    2. summ(l,r) <= v
+    3. summ(l,r) == v
+    all value array strictly in that range [1, 1e9]
+
+    we can solve it by build prefix sum and make constraints.
+    1. P[r] - P[l-1] >= v
+    2. P[r] - P[l-1] <= v
+    3. P[r] - P[l-1] == v
+    P[i] - P[i-1] >= 1
+    P[i] - P[i-1] <= 1e9
 */
-#include <iostream>  //cin , cout
-#include <fstream>   //fin, fout
-#include <stdio.h>   // scanf , pringf
-#include <cstdio>
-#include <algorithm> // sort , stuff
-#include <stack>     // stacks
-#include <queue>     // queues
-#include <map>
-#include <string>
-#include <string.h>
-#include <set>
-#include <assert.h>     /* assert */
+const ll INF = 1e16;
+const int MAXV = 1e6+10;
+vp adj[MAXV];
+ll useNode[MAXV];
+ll dist[MAXV], cnt[MAXV], inq[MAXV];
 
-
-using namespace std;
-
-typedef pair<int, int>          pii;
-typedef vector<int>             vi;     /// adjlist without weight
-typedef vector<pii>             vii;    /// adjlist with weight
-typedef vector<pair<int,pii>>   vpip;   /// edge with weight
-typedef long long               ll;
-
-#define mp  make_pair
-#define ff  first
-#define ss  second
-#define pb  push_back
-#define sz(x)   (int)(x).size()
-
-const int MOD = 1e9+7;  // 998244353;
-const int MX  = 2e5+5;   //
-const ll  INF = 1e18;    //
-
-#define MAXV 5007
-#define MAXE 100007
-
-
-bool debug;
-
-int N, M;
-vii adjlist[MAXV];
-int useNode[MAXV];
-int dist[MAXV], cnt[MAXV], inq[MAXV];
-
-bool spfa(int s) {  /// Shortest Path Faster Algorithm
-    for(int i=0; i<N; i++) {
-        dist[i] = MX;
+bool spfa(ll n, int s) {  /// Shortest Path Faster Algorithm
+    for(int i=0; i<n; i++) {
+        dist[i] = INF;
         cnt[i] = 0; inq[i] = 0;
     }
     queue<int> q;
@@ -68,15 +40,15 @@ bool spfa(int s) {  /// Shortest Path Faster Algorithm
         int v = q.front();
         q.pop(); inq[v] = 0;
 
-        for(auto e : adjlist[v]) {
-            int u = e.ff, w = e.ss;
+        for(auto e : adj[v]) {
+            int u = e.first, w = e.second;
             if(dist[v] + w < dist[u]) {
                 dist[u] = dist[v] + w;
                 if(dist[u] < 0 ) return false; /// optimization for TLE.
                 if(!inq[u]) {
                     q.push(u); inq[u] = 1;
                     cnt[u]++;
-                    if(cnt[u]>N) return false;
+                    if(cnt[u]>n) return false;
                 }
             }
         }
@@ -85,65 +57,50 @@ bool spfa(int s) {  /// Shortest Path Faster Algorithm
     return true;
 }
 
-int main() {
-    debug = false;
-    ios_base::sync_with_stdio(false); cin.tie(0);
+void solve(int tc) {
+    ll n, q;
 
-    cin >> N >> M;
+    cin >> n >> q;
 
-    /// solve linear inequality function using negative weight SSSP approach
-    for(int i=0;i<M; i++) {
-        int l, r, k, val; cin >> l >> r >> k >> val;
-        /// xi is number of 1 from 0 to i
-        l++; r++;
-        if(val == 1) {
-            /// k-th smallest is 1, i.e. # of 0 < k
-            /// (r-l+1) - (x[r] - x[l-1]) < k, i.e. x[l-1] - x[r] <= -(r-l+1) + k -1
-            adjlist[r].pb(mp(l-1, -(r-l+1) + k -1));
-            if(debug) cout << r << "->" << l-1 << " = " << -(r-l+1) + k -1 << endl;
-        } else {
-            /// k-th smallest is 0, i.e. # of 0 >= k
-            /// (r-l+1) - (x[r] - x[l-1]) >= k, i.e. x[r] - x[l-1] <= (r-l+1)-k
-            adjlist[l-1].pb(mp(r, (r-l+1)-k));
-            if(debug) cout << l-1 << "->" << r << " = " << k -1 << endl;
+    for (int i = 1; i <= n; i++)
+    {
+        // r - l >= 1
+        // l - r <= -1
+        adj[i].push_back({i-1, -1});
+        // r - l <= 1e9
+        adj[i-1].push_back({i, 1e9});
+    }
+    
+    for(int i=0;i<q;i++){
+        int op,l,r,v;
+        cin>>op>>l>>r>>v;
+        l--;
+
+        if(op==1){
+            // r - l >= v
+            // l - r <= -v
+            adj[r].push_back({l, -v});
+        }
+        else if(op==2){
+            // r - l <= v
+            adj[l].push_back({r, v});
+        }
+        else{
+            // r-l == v 
+            adj[r].push_back({l, -v});
+            adj[l].push_back({r, v});            
         }
     }
-    /// restriction: the increase from x[i-1] to x[i] is either 0 or 1
-    for(int i=1; i<=N; i++) {
-        /// x[i] - x[i-1] <=1
-        adjlist[i-1].pb(mp(i, 1));
-        /// x[i] - x[i-1] >=0, i.e. x[i-1] - x[i] <=0
-        adjlist[i].pb(mp(i-1, 0));
+    
+    if (!spfa(n+1, 0)) {
+        cout << "-1\n";
+        return;
     }
-    N++;
-
-    /// SPFA
-    if(!spfa(0)) {
-        cout << -1 << endl;
-        if(debug) {
-            cout << endl;
-            for(int i=1; i<N; i++) cout << dist[i] << endl;
-        }
-        exit(0);
+    
+    for (int i = 1; i <= n; i++)
+    {
+        cout << dist[i] - dist[i-1] << ' ';
     }
-
-    /// output a possible solution which is the distance from source s
-    for(int i=1; i<N; i++) {
-        if(dist[i] > dist[i-1]) cout << 1;
-        else cout << 0;
-        cout << " ";
-    }
-    cout << endl;
-
-    if(debug) cout << endl << "EOL" << endl;
-
+    cout << '\n';
 }
 
-/**
-4 5
-0 1 2 1
-0 2 2 0
-2 2 1 0
-0 1 1 0
-1 2 1 0
-*/

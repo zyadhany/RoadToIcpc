@@ -53,3 +53,19 @@ ll count_combinations(ll n, ll m, ll k) {
 
     return result;
 }
+// work in faster time O(min(n, k/m))
+ll count_combinations(ll n, ll m, ll k) {
+    if (k < 0) return 0;
+    if (n == 0) return k == 0 ? 1 : 0;
+ 
+    ll res = 0;
+    ll limit = min((ll)n, k / m);
+ 
+    for (int i = 0; i <= limit; i++) {
+        ll term = nCr(n, i) * nCr(n + k - i * m - 1, n - 1) % MODE;
+        if (i & 1) res = (res - term + MODE) % MODE;
+        else res = (res + term) % MODE;
+    }
+ 
+    return res;
+}
