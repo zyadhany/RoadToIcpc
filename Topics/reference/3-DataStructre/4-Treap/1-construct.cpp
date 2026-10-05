@@ -16,12 +16,18 @@ void recalc (pitem it) {
         it->cnt = count(it->l) + count(it->r) + 1;
 }
 
+void apply_lazy(pitem it, bool rev) {
+    if (!it) return;
+    if (rev) swap (it->l, it->r);
+    it->rev ^= rev;
+}
+
 void push (pitem it) {
-    if (it && it->rev) {
+    if (!it) return;
+    if (it->rev) {
+        apply_lazy(it->l, true);
+        apply_lazy(it->r, true);
         it->rev = false;
-        swap (it->l, it->r);
-        if (it->l)  it->l->rev ^= true;
-        if (it->r)  it->r->rev ^= true;
     }
 }
 
@@ -53,7 +59,7 @@ void reverse (pitem t, int l, int r) {
     pitem t1, t2, t3;
     split (t, t1, t2, l);
     split (t2, t2, t3, r-l+1);
-    t2->rev ^= true;
+    apply_lazy(t2, 1);
     merge (t, t1, t2);
     merge (t, t, t3);
 }
@@ -95,6 +101,16 @@ void erase(pitem & t, int value) {
 	merge(t, l, r);
 }
 
+ll query (pitem t, int l, int r) {
+    pitem t1, t2, t3; t1 = t2 = t3 = nullptr;
+    split (t, t1, t2, l);
+    split (t2, t2, t3, r-l+1);
+    // ll ret = getsum(t2);
+    merge (t, t1, t2);
+    merge (t, t, t3);
+    return ret;
+}
+
 void heapify (pitem t) {
     if (!t) return;
     pitem max = t;
@@ -120,3 +136,71 @@ pitem build (vi::iterator X, int n) {
     recalc(t);
     return t;
 }
+
+void falt_treap(pitem it, vi &X) {
+    if (!it) return;
+    falt_treap(it->l, X);
+    X.push_back(it->value);
+    falt_treap(it->r, X);
+}
+
+
+
+void splitbyvalue(pitem t, pitem & l, pitem & r, int value) {
+    if (!t) {
+        l = r = nullptr;
+        return;
+    }
+    push(t);
+    if (t->value <= value) {
+        splitbyvalue(t->r, t->r, r, value);
+        l = t;
+    } else {
+        splitbyvalue(t->l, l, t->l, value);
+        r = t;
+    }
+    recalc(t);
+}
+// unite 2 treap in O(M*log(N/M)) where M,N size of 2 treaps
+pitem unite (pitem l, pitem r) {
+    if (!l || !r)  return l ? l : r;
+    if (l->prior < r->prior)  swap (l, r);
+    push(l);
+    pitem lt, rt;
+    splitbyvalue (r, lt, rt, l->value);
+    l->l = unite (l->l, lt);
+    l->r = unite (l->r, rt);
+    recalc(l);
+    return l;
+}
+
+/*
+    to get pointer for parent
+
+void recalc (pitem it) {
+    if (it) {
+        if (it->l) it->l->p = it;
+        if (it->r) it->r->p = it;
+    }
+}
+
+void merge (pitem & t, pitem l, pitem r) {
+    ....
+    t->p = nullptr;
+    recalc (t);
+}
+
+void split (pitem t, pitem & l, pitem & r, int key, int add = 0) {
+    .....
+    t->p = nullptr;
+    recalc (t);
+}
+
+pitem getroot(pitem it) {
+    if (!it) return nullptr;
+    while (it->p) {
+        it = it->p;
+    }
+    return it;
+}
+*/

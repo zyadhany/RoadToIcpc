@@ -2,6 +2,7 @@ const int sigma = 26;
 struct AhoVertex {
     int next[sigma];
     
+    int exit = 0; // first failer parent that contain pattern
     int link = -1; // failer link
     int p=-1; // parent node
     char ch='\0'; // char from parent
@@ -25,8 +26,8 @@ struct AhoCorasick {
         for (auto ch : s) {
             int c = ch - 'a';
             if (tree[v].next[c] == -1) {
-                tree[v].next[c] = curnd;
-                tree[++curnd] = AhoVertex(v, ch);
+                tree[curnd] = AhoVertex(v, ch);
+                tree[v].next[c] = curnd++;
             }
             v = tree[v].next[c];
         }
@@ -48,6 +49,10 @@ struct AhoCorasick {
         while (!q.empty())
         {
             ll v = q.front(); q.pop();
+
+            if (!tree[tree[v].link].IDX.empty()) tree[v].exit = tree[v].link;
+            else tree[v].exit = tree[tree[v].link].exit;
+            
             for (int i = 0; i < sigma; i++)
             {
                 if (tree[v].next[i] != -1) {
@@ -70,7 +75,8 @@ struct AhoCorasick {
         for (auto x : tree[v].IDX) vis[x] = cnt;
         return cnt;
     }
-        
+     
+    // one way
     vi search(string const& s, int n) {
         int v = 0;
         vi vis(n, 0);
@@ -81,6 +87,26 @@ struct AhoCorasick {
         }
  
         dfs(seen, vis, 0);
+        return vis;
+    }
+
+    // another way
+    vi search2(string const& s, int n) {
+        int v = 0;
+        vi dp(curnd, 0);
+        vi vis(n, 0);
+
+        for (auto c : s) {
+            v = tree[v].next[c - 'a'];
+            
+            ll u = v;
+            while (u && !dp[u]) {
+                dp[u] = 1;
+                for (auto x : tree[u].IDX) vis[x]++;
+                u = tree[u].exit;
+            } 
+        }
+ 
         return vis;
     }
     
