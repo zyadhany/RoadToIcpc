@@ -8,8 +8,8 @@ vii buildSparseTable(vi &X)
  
     for (int j = 1; j <= m; j++)
         for (int i = 0; i <= n - (1 << j); i++)
-            table[i][j] = table[i][j - 1] +
-               table[i + (1 << (j - 1))][j - 1];
+            table[i][j] = (table[i][j - 1] +
+               table[i + (1 << (j - 1))][j - 1]);
 
     return (table);
 }

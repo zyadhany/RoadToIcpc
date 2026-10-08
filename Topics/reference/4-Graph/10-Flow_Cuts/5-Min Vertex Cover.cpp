@@ -64,6 +64,8 @@ struct Dinic {     // flow template
 	}
 };
 
+
+// 1 indexed L(1->n), R(n+1->n+m)
 // In Barbartide graph you have n vertex on left and m in right and edges connect them.
 vi minvertexcover(ll n, ll m, vp edges) {
 	Dinic D;

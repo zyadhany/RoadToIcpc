@@ -1,6 +1,6 @@
-pair<vi, vi> LCP(vector<int> &suff, string &s) {
+pair<vector<int>, vector<int>> LCP(vector<int> &suff, string &s) {
     ll n = s.size();
-    vi ind(n), lcp(n-1); // -1 for $ char
+    vector<int> ind(n), lcp(n-1); // -1 for $ char
     for (int i = 0; i < n; i++) ind[suff[i]] = i;
     
     int ls = 0;
